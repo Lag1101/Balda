@@ -5,4 +5,6 @@ module.exports = function(app) {
     app.use('/users', require('routes/users'));
     app.use('/game', require('routes/game'));
 
+    app.use('/login', require('routes/login'));
+    app.use('/logout', require('routes/logout'));
 };
