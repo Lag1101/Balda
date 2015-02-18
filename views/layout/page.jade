@@ -2,6 +2,13 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+
+    link( rel="stylesheet" href="/vendor/bower_components/bootstrap/dist/css/bootstrap.css")
+    link( rel="stylesheet" href="/stylesheets/style.css")
+
+    script( src="/vendor/bower_components/jquery/dist/jquery.js")
+    script( src="/vendor/bower_components/bootstrap/dist/js/bootstrap.js")
   body
-    block content
+    section( class="container")
+        include ../partials/topNavigation
+        block content
