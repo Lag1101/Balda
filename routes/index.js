@@ -1,10 +1,11 @@
+var checkAuth = require('middleware/checkAuth');
 
 module.exports = function(app) {
 
     app.use('/', require('routes/frontpage'));
-    app.use('/users', require('routes/users'));
-    app.use('/game', require('routes/game'));
 
     app.use('/login', require('routes/login'));
-    app.use('/logout', require('routes/logout'));
+    app.use('/logout',checkAuth, require('routes/logout'));
+
+    app.use('/game', checkAuth, require('routes/game'));
 };
