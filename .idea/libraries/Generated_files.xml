@@ -2,13 +2,19 @@
   <library name="Generated files" type="javaScript">
     <properties>
       <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
         <item url="file://$PROJECT_DIR$/models/UserModel.js" />
-        <item url="file://$PROJECT_DIR$/models/UserModel.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
       <root url="file://$PROJECT_DIR$/models/UserModel.js" />
-      <root url="file://$PROJECT_DIR$/models/UserModel.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
     </CLASSES>
     <SOURCES />
   </library>

@@ -1,8 +1,8 @@
 
 module.exports = function(app) {
 
-    app.use('/', require('./frontpage'));
-    app.use('/users', require('./users'));
-    app.use('/game', require('./game'));
+    app.use('/', require('routes/frontpage'));
+    app.use('/users', require('routes/users'));
+    app.use('/game', require('routes/game'));
 
 };
