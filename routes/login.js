@@ -4,8 +4,8 @@
 var express = require('express');
 var router = express.Router();
 var HttpError = require('error').HttpError;
-var AuthError = require('models/UserModel').AuthError;
-var users = require('models/UserModel').users;
+var AuthError = require('../models/UserModel').AuthError;
+var users = require('../models/UserModel').users;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

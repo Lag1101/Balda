@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var users = require('models/UserModel').users;
+var users = require('../models/UserModel').users;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
