@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var HttpError = require('error').HttpError;
+var HttpError = require('../error').HttpError;
 var AuthError = require('../models/UserModel').AuthError;
 var users = require('../models/UserModel').users;
 
