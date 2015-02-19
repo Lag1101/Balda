@@ -17,15 +17,14 @@ function UsersCollection(filename){
     this.users = [];
     this.filename = filename || "users.data";
 
-
     if(fs.existsSync(this.filename)) {
         var rawUsers = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
         for(var i = 0; i < rawUsers.length; i++) {
             this.add(rawUsers[i]);
         }
     } else {
-        console.error(e.message);
         this.users = [];
+        this.save();
     }
 
 }
