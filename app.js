@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var AuthError = require('./models/UserModel').AuthError;
 
 var app = express();
 
@@ -39,26 +40,21 @@ app.use(function(req, res, next) {
 
 // error handlers
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+app.use(function(err, req, res, next) {
+
+    if(err instanceof AuthError) {
+        res.status(403);
+        res.send({
+            message: err.message,
+            error: {}
+        });
+    } else {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: err
+            error: (app.get('env') === 'development' ? err : {})
         });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    }
 });
 
 
