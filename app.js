@@ -69,11 +69,6 @@ server.listen(port, function(){
     debug('Listening on ' + port);
 });
 
-var io = require('socket.io').listen(server);
-io.on('connection', function(socket){
-    socket.on('chat message', function(msg){
-        io.emit('chat message', msg);
-    });
-});
+require('./socket')(server);
 
 module.exports = app;

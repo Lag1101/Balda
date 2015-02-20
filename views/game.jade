@@ -1,17 +1,49 @@
 extends layout/page
 block content
     h1 Здесь будет поле игры
-    ul( id="messages")
-    form( action="")
-        input( id="m" autocomplete="off" )
-        button Send
+    div( id="room")
+        ul( class="list-unstyled")
+        form
+            input( disabled class="form-control" autocomplete="off" autofocus placeholder="Сообщение...")
     script.
-        var socket = io();
-        $('form').submit(function(){
-            socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-            return false;
+        var input = $('#room input');
+        var ul = $('#room ul');
+        var form = $('#room form');
+        var socket = io.connect('', {
+            reconnect: false
         });
-        socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+        socket
+        .on('message', function(message) {
+            printMessage(message);
+        })
+        .on('connect', function() {
+            printStatus("соединение установлено");
+            form.on('submit', sendMessage);
+            input.prop('disabled', false);
+        })
+        .on('disconnect', function() {
+            printStatus("соединение потеряно");
+            form.off('submit', sendMessage);
+            input.prop('disabled', true);
+            setTimeout(reconnect, 500);
         });
+        function sendMessage() {
+        var text = input.val();
+        socket.emit('message', text, function() {
+            printMessage(text);
+        });
+        input.val('');
+        return false;
+        }
+        function reconnect() {
+        socket.once('error', function() {
+            setTimeout(reconnect, 500);
+        });
+        socket.socket.connect();
+        }
+        function printStatus(status) {
+        $('<li>').append($('<i>').text(status)).appendTo(ul);
+        }
+        function printMessage(text) {
+        $('<li>').text(text).appendTo(ul);
+        }
