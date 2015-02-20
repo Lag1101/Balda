@@ -1,4 +1,13 @@
 {
   "PORT": 3000,
-  "title": "Balda"
+  "title": "Balda",
+  "session": {
+    "secret": "KillerIsJim",
+    "key": "connect.sid",
+    "cookie": {
+      "path": "/",
+      "httpOnly": true,
+      "maxAge": null
+    }
+  }
 }

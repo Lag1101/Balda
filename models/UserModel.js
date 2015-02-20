@@ -7,7 +7,7 @@ var util = require('util');
 var _id = 0;
 
 function User(user){
-    this._id = user._id || _id++ && _id;
+    this._id = user._id || _id;
     this.username = user.username;
     this.password = user.password;
 }
@@ -30,6 +30,7 @@ function UsersCollection(filename){
 }
 
 UsersCollection.prototype.add = function(user) {
+    _id ++;
     this.users.push(new User(user));
     return this.users[this.users.length-1];
 };
