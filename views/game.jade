@@ -6,9 +6,10 @@ block content
         form
             input( disabled class="form-control" autocomplete="off" autofocus placeholder="Сообщение...")
     script.
-        var input = $('#room input');
-        var ul = $('#room ul');
-        var form = $('#room form');
+        var room = $('#room');
+        var input = room.find('input');
+        var ul = room.find('ul');
+        var form = room.find('form');
         var socket = io.connect('', {
             reconnect: false
         });
@@ -28,22 +29,22 @@ block content
             setTimeout(reconnect, 500);
         });
         function sendMessage() {
-        var text = input.val();
-        socket.emit('message', text, function() {
-            printMessage(text);
-        });
-        input.val('');
-        return false;
+            var text = input.val();
+            socket.emit('message', text, function() {
+                printMessage(text);
+            });
+            input.val('');
+            return false;
         }
         function reconnect() {
-        socket.once('error', function() {
-            setTimeout(reconnect, 500);
-        });
-        socket.socket.connect();
+            socket.once('error', function() {
+                setTimeout(reconnect, 500);
+            });
+            socket.socket.connect();
         }
         function printStatus(status) {
-        $('<li>').append($('<i>').text(status)).appendTo(ul);
+            $('<li>').append($('<i>').text(status)).appendTo(ul);
         }
         function printMessage(text) {
-        $('<li>').text(text).appendTo(ul);
+            $('<li>').text(text).appendTo(ul);
         }
