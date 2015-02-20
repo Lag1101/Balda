@@ -15,7 +15,7 @@ function User(user){
 function UsersCollection(filename){
 
     this.users = [];
-    this.filename = filename || "users.data";
+    this.filename = filename || "./users.data";
 
     if(fs.existsSync(this.filename)) {
         var rawUsers = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
@@ -50,7 +50,9 @@ UsersCollection.prototype.authorize = function(username, password, callback){
         }
     }
     if(!exist) {
-        callback(null, this.add({username:username, password:password}));
+        var newUser = this.add({username:username, password:password});
+        this.save();
+        callback(null, newUser);
     }
 };
 
