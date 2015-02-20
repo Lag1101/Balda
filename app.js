@@ -6,6 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var AuthError = require('./models/UserModel').AuthError;
+var debug = require('debug')('Balda:server');
+var http = require('http');
+var config = require('./config');
 
 var app = express();
 
@@ -57,5 +60,20 @@ app.use(function(err, req, res, next) {
     }
 });
 
+var port = config.get('PORT');
+app.set('port', port);
+
+var server = http.createServer(app);
+
+server.listen(port, function(){
+    debug('Listening on ' + port);
+});
+
+var io = require('socket.io').listen(server);
+io.on('connection', function(socket){
+    socket.on('chat message', function(msg){
+        io.emit('chat message', msg);
+    });
+});
 
 module.exports = app;
