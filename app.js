@@ -15,6 +15,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.set('port', config.get('PORT'));
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.png'));
@@ -60,13 +61,9 @@ app.use(function(err, req, res, next) {
     }
 });
 
-var port = config.get('PORT');
-app.set('port', port);
-
 var server = http.createServer(app);
-
-server.listen(port, function(){
-    debug('Listening on ' + port);
+server.listen(config.get('PORT'), function(){
+    debug('Listening on ' + config.get('PORT'));
 });
 
 require('./socket')(server);
