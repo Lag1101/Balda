@@ -1,14 +1,16 @@
 extends layout/page
 block content
     h1 Здесь будет поле игры
+
     div( id="room")
         ul( class="list-unstyled")
         form
             input( disabled class="form-control" autocomplete="off" autofocus placeholder="Сообщение...")
     script.
-        var input = $('#room input');
-        var ul = $('#room ul');
-        var form = $('#room form');
+        var room = $('#room');
+        var input = room.find('input');
+        var ul = room.find('ul');
+        var form = room.find('form');
 
         var socket = io.connect('', {
             reconnect: false
