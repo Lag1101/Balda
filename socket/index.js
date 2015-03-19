@@ -3,7 +3,6 @@ var config = require('../config');
 var async = require('async');
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
-var AuthError = require('../models/UserModel').AuthError;
 
 
 module.exports = function(server, sessionStore, cookieParser) {
