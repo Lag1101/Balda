@@ -1,0 +1,54 @@
+.hex_main {
+    position: relative;
+    width: 90px;
+    height: 51.96px;
+    margin: 25.98px 0;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    border-left: solid 5px #333333;
+    border-right: solid 5px #333333;
+    align-content: center;
+}
+
+.hex_main:before,
+.hex_main:after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    width: 63.64px;
+    height: 63.64px;
+    -webkit-transform: scaleY(0.5774) rotate(-45deg);
+    -ms-transform: scaleY(0.5774) rotate(-45deg);
+    transform: scaleY(0.5774) rotate(-45deg);
+    background-color: inherit;
+    left: 9.5px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+
+.hex_main:before {
+    top: -35.5px;
+    border-top: solid 7.0711px #333333;
+    border-right: solid 7.0711px #333333;
+}
+
+.hex_main:after {
+    bottom: -35.5px;
+    border-bottom: solid 7.0711px #333333;
+    border-left: solid 7.0711px #333333;
+}
+
+/*cover up extra shadows*/
+.hex_main span {
+    display: block;
+    position: absolute;
+    top:2.8867513459481286px;
+    left: 0;
+    width:90px;
+    height:46px;
+    z-index: 2;
+    background: inherit;
+    text-align: center;
+    font-size: 40px;
+    vertical-align: middle;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bolder;
+}

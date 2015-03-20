@@ -1,0 +1,34 @@
+.hex_act_nw {
+    background-color: #21cc2c;
+}
+.hex_act_nw:hover {
+    background-color: #fff800;
+}
+
+.hex_dis_nw {
+    background-color: #14cc7d;
+}
+
+.hex_act_ww {
+    background-color: #75afcc;
+}
+
+.hex_dis_ww {
+    background-color: #1148cd;
+}
+
+.hex_new span{
+    color: white;
+}
+
+.hex_picked {
+    background-color: #cc3d00;
+}
+
+.hex_send {
+    background-color: #28cc2b;
+}
+
+.hex_not_send {
+    background-color: #cc2422;
+}

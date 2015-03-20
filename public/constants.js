@@ -1,0 +1,7 @@
+var ACTIVE_PLAYER = 1;
+var PASSIVE_PLAYER = 0;
+
+var ACTION_NONE = 0;
+var ACTION_GET_PLACE = 1;
+var ACTION_LETTERS = 2;
+
