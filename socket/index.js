@@ -23,8 +23,12 @@ module.exports = function(server, sessionStore, cookieParser) {
                 cb && cb();
             });
             socket.on('disconnect', function () {
-
                 console.log(user.username + ' disconnected');
+            });
+            socket.on('New Game', function(cb) {
+
+                socket.broadcast.emit('message', user.username, text);
+                cb && cb();
             });
         });
 

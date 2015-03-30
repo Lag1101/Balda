@@ -9,6 +9,9 @@ var HttpError = require('./models/UserModel').HttpError;
 var http = require('http');
 var config = require('./config');
 var AuthError = require('./models/UserModel').AuthError;
+var WordTree = require('./lib/WordTree');
+
+var wordTree = new WordTree('./Words.txt');
 
 
 var cookieParser = CookieParser;
