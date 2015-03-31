@@ -2,6 +2,9 @@ var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
 
+var WordTree = require('../lib/WordTree');
+
+var wordTree = new WordTree('./Words.txt');
 
 module.exports = function(server, sessionStore, cookieParser) {
 
@@ -14,7 +17,7 @@ module.exports = function(server, sessionStore, cookieParser) {
             if(err)
                 return console.error(err);
 
-            var user = socket.handshake.user;
+            var user = socket.handshake.user || {};
 
             console.log(user.username + ' connected');
 
@@ -28,6 +31,11 @@ module.exports = function(server, sessionStore, cookieParser) {
             socket.on('New Game', function(cb) {
 
                 socket.broadcast.emit('message', user.username, text);
+                cb && cb();
+            });
+            socket.on('checkWord', function(word, cb) {
+                var ans = wordTree.exist(word) ? "true" : "false";
+                socket.emit('checkWord', ans);
                 cb && cb();
             });
         });

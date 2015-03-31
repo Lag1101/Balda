@@ -8,4 +8,6 @@ module.exports = function(app) {
     app.use('/logout',checkAuth, require('./logout'));
 
     app.use('/game', checkAuth, require('./game'));
+
+    app.use('/testWords', require('./testWords'));
 };
