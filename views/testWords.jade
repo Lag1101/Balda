@@ -1,5 +1,6 @@
 extends layout/page
 block content
+    h1 Проверь слово!
     div( id="room")
         ul( class="list-unstyled")
         form
@@ -8,21 +9,26 @@ block content
     script.
         var room = $('#room');
         var input = room.find('input');
+        var ul = room.find('ul');
         var form = room.find('form');
         var socket = io.connect('', {
             reconnect: false
         });
         socket
                 .on('connect', function () {
+                    printStatus("Connection established");
                     form.on('submit', sendWord);
+                    input.on('input', sendWord);
                     input.prop('disabled', false);
                 })
                 .on('disconnect', function () {
+                    printStatus("Disconnect");
                     form.off('submit', sendWord);
                     input.prop('disabled', true);
                     this.emit('error');
                 })
                 .on('error', function (reason) {
+                    printStatus("Error: " + reason);
                     if (reason == "handshake unauthorized") {
                     } else {
                         setTimeout(function () {
@@ -41,4 +47,7 @@ block content
                 console.log('sent');
             });
             return false;
+        }
+        function printStatus(status) {
+            $('<li>').append($('<i>').text(status)).appendTo(ul);
         }
