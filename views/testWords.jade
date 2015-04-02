@@ -3,27 +3,24 @@ block content
     h1 Проверь слово!
     div( id="room")
         ul( class="list-unstyled")
-        form
-            input( disabled class="form-control" autocomplete="off" autofocus placeholder="Слово...")
+        input( disabled class="form-control" autocomplete="off" autofocus placeholder="Слово...")
 
     script.
         var room = $('#room');
         var input = room.find('input');
         var ul = room.find('ul');
-        var form = room.find('form');
         var socket = io.connect('', {
-            reconnect: false
+            reconnect: true
         });
         socket
                 .on('connect', function () {
                     printStatus("Connection established");
-                    form.on('submit', sendWord);
                     input.on('input', sendWord);
                     input.prop('disabled', false);
                 })
                 .on('disconnect', function () {
                     printStatus("Disconnect");
-                    form.off('submit', sendWord);
+                    input.off('input', sendWord);
                     input.prop('disabled', true);
                     this.emit('error');
                 })
@@ -32,19 +29,19 @@ block content
                     if (reason == "handshake unauthorized") {
                     } else {
                         setTimeout(function () {
-                            socket.socket.connect();
+                            socket.connect();
                         }, 500);
                     }
                 })
                 .on('checkWord', function(exist){
-                    console.log('received');
+                    console.log('received ' + exist);
 
                     input.css("background-color", exist == "true" ? "green" : "red");
                 });
         function sendWord() {
             var text = input.val();
             socket.emit('checkWord', text, function () {
-                console.log('sent');
+                console.log('sent ' + text);
             });
             return false;
         }
