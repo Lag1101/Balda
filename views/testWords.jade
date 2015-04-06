@@ -3,48 +3,26 @@ block content
     h1 Проверь слово!
     div( id="room")
         ul( class="list-unstyled")
-        input( disabled class="form-control" autocomplete="off" autofocus placeholder="Слово...")
+        input( class="form-control" autocomplete="off" autofocus placeholder="Слово...")
 
     script.
         var room = $('#room');
         var input = room.find('input');
-        var ul = room.find('ul');
+
         var socket = io.connect('', {
             reconnect: true
         });
-        socket
-                .on('connect', function () {
-                    printStatus("Connection established");
-                    input.on('input', sendWord);
-                    input.prop('disabled', false);
-                })
-                .on('disconnect', function () {
-                    printStatus("Disconnect");
-                    input.off('input', sendWord);
-                    input.prop('disabled', true);
-                    this.emit('error');
-                })
-                .on('error', function (reason) {
-                    printStatus("Error: " + reason);
-                    if (reason == "handshake unauthorized") {
-                    } else {
-                        setTimeout(function () {
-                            socket.connect();
-                        }, 500);
-                    }
-                })
-                .on('checkWord', function(exist){
-                    console.log('received ' + exist);
 
-                    input.css("background-color", exist == "true" ? "green" : "red");
-                });
-        function sendWord() {
+        input.on('input', function () {
             var text = input.val();
             socket.emit('checkWord', text, function () {
                 console.log('sent ' + text);
             });
             return false;
-        }
-        function printStatus(status) {
-            $('<li>').append($('<i>').text(status)).appendTo(ul);
-        }
+        });
+
+        socket.on('checkWord', function(exist){
+            console.log('received ' + exist);
+
+            input.css("background-color", exist == "true" ? "green" : "red");
+        });
