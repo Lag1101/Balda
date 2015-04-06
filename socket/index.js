@@ -1,9 +1,7 @@
 var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
-var GamePool = require('../game').GamePool;
-
-var gamePool = new GamePool();
+var gamePool = require('../game').gamePool;
 
 var WordTree = require('../lib/WordTree');
 

@@ -34,4 +34,6 @@ GamePool.prototype.joinGame = function(player2) {
     return game;
 };
 
+module.exports.gamePool = module.exports.gamePool || new GamePool();
+
 module.exports.GamePool = GamePool;
