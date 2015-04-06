@@ -1,4 +1,4 @@
-function initialize() {
+function initialize(letters) {
 
     var player = ACTIVE_PLAYER;
     var needed_action = ACTION_GET_PLACE;
@@ -31,7 +31,6 @@ function initialize() {
         }
     }
 
-    var letters = ['в', 'а', 'с', 'ё', 'к']; //получить слово от сервера
     for (j = 1; j < 6; j++) {
         hex_obj = $('#hex3' + j);
         hex_obj.find('span').text(letters[j - 1]);
