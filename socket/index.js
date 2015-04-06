@@ -38,6 +38,11 @@ module.exports = function(server, sessionStore, cookieParser) {
                 socket.emit('checkWord', ans);
                 cb && cb();
             });
+            socket.on('GiveMeWord', function(letters_num, cb) {
+                var letters = ['в', 'а', 'с', 'ё', 'к'];
+                socket.emit('GiveMeWord', letters);
+                cb && cb();
+            });
         });
 
     });

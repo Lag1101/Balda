@@ -5,11 +5,17 @@ function initSocket() {
     });
 
     socket.on('connect', function(){
-        alert('123');
         socket.emit('GiveMeWord', 5);
         });
 
     socket.on('GiveMeWord', function (letters) {
         initialize(letters);
+    });
+
+    socket.on('checkWord', function(answer){
+        if(answer === "true")
+        {
+
+        }
     });
 }

@@ -32,7 +32,6 @@ function what_it_mean(hex_obj, struct) {
         }
         if(hex_obj.is(".hex_send"))
         {
-            alert(struct.ret_word);
 
             //socket.emit('checkWord',struct.ret_word);
             // отсылка
