@@ -10,6 +10,8 @@ function User(user){
     this._id = user._id || _id;
     this.username = user.username;
     this.password = user.password;
+    this.socket = null;
+    this.game = null;
 }
 
 function UsersCollection(filename){

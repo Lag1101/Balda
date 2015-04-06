@@ -1,6 +1,9 @@
 var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
+var GamePool = require('../game').GamePool;
+
+var gamePool = new GamePool();
 
 var WordTree = require('../lib/WordTree');
 
@@ -19,10 +22,14 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             var user = socket.handshake.user || {};
 
+            if( user.username ) user.socket = socket;
+
             console.log(user.username + ' connected');
 
             socket.on('message', function(text, cb) {
-                socket.broadcast.emit('message', user.username, text);
+                user.game.player1.socket.emit('message', user.username, text);
+                if(user.game.player2)
+                    user.game.player2.socket.emit('message', user.username, text);
                 cb && cb();
             });
             socket.on('disconnect', function () {
@@ -30,7 +37,12 @@ module.exports = function(server, sessionStore, cookieParser) {
             });
             socket.on('New Game', function(cb) {
 
-                socket.broadcast.emit('message', user.username, text);
+                if(!gamePool.joinGame(user))
+                    gamePool.createGame(user);
+
+                socket.emit('field', user.game.field);
+                if(user.game.player2)
+                    user.game.player2.socket.emit('field', user.game.field);
                 cb && cb();
             });
             socket.on('checkWord', function(word, cb) {

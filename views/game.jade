@@ -6,7 +6,6 @@ block content
         ul( class="list-unstyled")
         form
             input( disabled class="form-control" autocomplete="off" autofocus placeholder="Сообщение...")
-    button(id="NewGame") New Game
 
     script.
         var room = $('#room');
@@ -31,9 +30,7 @@ block content
         .on('connect', function() {
             printStatus("соединение установлено");
             form.on('submit', sendMessage);
-            $('#NewGame').click(function(){
-                socket.emit('New Game');
-            });
+            socket.emit('New Game');
             input.prop('disabled', false);
         })
         .on('disconnect', function() {
