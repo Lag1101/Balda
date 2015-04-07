@@ -5,7 +5,12 @@ function initSocket() {
     });
 
     socket.on('connect', function(){
-
+        $('#Create').click(function(){
+            socket.emit('CreateGame', 5, 7);
+        });
+        $('#Join').click(function(){
+            socket.emit('JoinGame');
+        });
     });
 
     socket

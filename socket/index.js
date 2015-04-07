@@ -20,19 +20,21 @@ module.exports = function(server, sessionStore, cookieParser) {
             var user = socket.handshake.user || {};
             user.socket = socket;
 
-            if(gamePool.joinGame(user)) {
-
-            } else {
-                gamePool.createGame(user, "рачье");
-                user.game.emit('waiting');
-            }
-
-            if( user.game.ready() )
-                user.game.emit('ready', user.game.player1.username, user.game.player2.username);
-
             console.log(user.username + ' connected');
 
             socket
+                .on('CreateGame', function(wordSize, fieldSize){
+                    if(user.game)
+                        gamePool.deleteGame(user.game._id);
+
+                    gamePool.createGame(user);
+                    user.game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
+                    user.game.emit('waiting');
+                })
+                .on('JoinGame', function(){
+                    if(gamePool.joinGame(user))
+                        user.game.emit('ready');
+                })
                 .on('message', function(text, cb) {
                     room.emit('message', text);
                     cb && cb();

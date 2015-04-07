@@ -12,8 +12,8 @@ function Game() {
     this.field = ['t','e','s','t']; // todo: need to define field structure
 }
 
-Game.prototype.generateField = function(word) {
-    var length = word.length;
+Game.prototype.generateField = function(word, size) {
+    var length = size;
     var field = [];
 
     var n = length;
@@ -21,10 +21,10 @@ Game.prototype.generateField = function(word) {
         n += (length - (i+1)) * 2;
     }
     for(var i = 0; i < n; i++) {
-        field.push('');
+        field.push(' ');
     }
-    var shift = (n-length)/2;
-    for( var i = 0; i < length; i++ ) {
+    var shift = (n-word.length)/2;
+    for( var i = 0; i < word.length; i++ ) {
         field[i+shift] = word[i];
     }
     this.field = field;
@@ -45,9 +45,8 @@ function GamePool(){
     this.runningQueue = [];
 }
 
-GamePool.prototype.createGame = function(player1, word) {
+GamePool.prototype.createGame = function(player1) {
     var game  = new Game();
-    game.generateField(word);
 
     game.player1 = player1;
     player1.game = game;
