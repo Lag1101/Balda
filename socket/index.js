@@ -76,7 +76,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                     }
                 })
                 .on('turn', function() {
-                    socket.emit('turn', user.is(user.game.currentTurn) ? "true" : "false");
+                    if(user.game.currentTurn === null)
+                        socket.emit('turn', "true");
+                    else
+                        socket.emit('turn', user.is(user.game.currentTurn) ? "true" : "false");
                 });
 
 
@@ -89,5 +92,7 @@ module.exports = function(server, sessionStore, cookieParser) {
 
     });
 };
+
+
 
 
