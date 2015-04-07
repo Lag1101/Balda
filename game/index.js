@@ -29,7 +29,13 @@ Game.prototype.generateField = function(word) {
     }
     this.field = field;
 };
+Game.prototype.emit = function(key, val1, val2) {
+    if( this.player1 && this.player1.socket )
+        this.player1.socket.emit(key, val1, val2);
 
+    if( this.player2 && this.player2.socket )
+        this.player2.socket.emit(key, val1, val2);
+};
 Game.prototype.ready = function() {
     return !!(this.player1 != null && this.player2 != null);
 };

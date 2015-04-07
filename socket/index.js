@@ -3,7 +3,6 @@ var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
 var gamePool = require('../game').gamePool;
 var WordTree = require('../lib/WordTree');
-var Room = require('./room');
 
 var wordTree = new WordTree('./Words.txt');
 
@@ -25,13 +24,11 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             } else {
                 gamePool.createGame(user, "рачье");
-                user.game.player1.socket.emit('waiting');
+                user.game.emit('waiting');
             }
 
-            var room = new Room(user.game);
-
-            if( room.game.ready() )
-                room.emit('ready', room.game.player1.username, room.game.player2.username);
+            if( user.game.ready() )
+                user.game.emit('ready', user.game.player1.username, user.game.player2.username);
 
             console.log(user.username + ' connected');
 
@@ -42,13 +39,13 @@ module.exports = function(server, sessionStore, cookieParser) {
                 })
                 .on('field', function(field){
                     if(field)
-                        room.game.field = field;
-                    room.emit('field', room.game.field);
+                        user.game.field = field;
+                    user.game.emit('field', user.game.field);
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
-                    room.emit('disconnected', user.username);
-                    gamePool.deleteGame(room.game._id);
+                    user.game.emit('disconnected', user.username);
+                    gamePool.deleteGame(user.game._id);
                 });
 
 
