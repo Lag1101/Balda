@@ -28,6 +28,13 @@ module.exports = function(server, sessionStore, cookieParser) {
                 user.game = undefined;
             }
 
+            function turn() {
+                if(user.game.currentTurn === null)
+                    return "true";
+                else
+                    return user.is(user.game.currentTurn) ? "true" : "false";
+            }
+
             socket
                 .on('CreateGame', function(wordSize, fieldSize){
                     if(user.game){
@@ -66,7 +73,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                         currentPlayer.socket.emit('turn', "true");
                         secondPlayer.socket.emit('turn', "false");
                     }
-                    user.game.emit('field', user.game.field);
+                    user.game.emit('state', {
+                        field: user.game.field,
+                        turn: turn()
+                    });
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
@@ -75,11 +85,14 @@ module.exports = function(server, sessionStore, cookieParser) {
                         clear();
                     }
                 })
+                .on('state', function() {
+                    user.game.emit('state', {
+                        field: user.game.field,
+                        turn: turn()
+                    });
+                })
                 .on('turn', function() {
-                    if(user.game.currentTurn === null)
-                        socket.emit('turn', "true");
-                    else
-                        socket.emit('turn', user.is(user.game.currentTurn) ? "true" : "false");
+                    socket.emit('turn', turn());
                 });
 
 
