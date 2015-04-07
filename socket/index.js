@@ -65,13 +65,16 @@ module.exports = function(server, sessionStore, cookieParser) {
                         }
                         if(user.is(user.game.currentTurn)) {
                             user.game.field = field;
-                        }
-                        var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
-                        var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
 
-                        user.game.currentTurn = currentPlayer;
-                        currentPlayer.socket.emit('turn', "true");
-                        secondPlayer.socket.emit('turn', "false");
+                            var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+                            var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+
+                            user.game.currentTurn = currentPlayer;
+
+                            currentPlayer.socket.emit('turn', "true");
+                            secondPlayer.socket.emit('turn', "false");
+                        }
+
                     }
                     user.game.emit('state', {
                         field: user.game.field,
@@ -90,9 +93,6 @@ module.exports = function(server, sessionStore, cookieParser) {
                         field: user.game.field,
                         turn: turn()
                     });
-                })
-                .on('turn', function() {
-                    socket.emit('turn', turn());
                 });
 
 
