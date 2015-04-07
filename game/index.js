@@ -13,24 +13,29 @@ function Queue(){
 Queue.prototype.push = function(key, val){
     if(val === undefined) return null;
 
-    this.keys.push(key);
-    this.elements[key] = val;
-    this.length++;
+    var sKey = key.toString();
+
+    this.keys.push(sKey);
+    this.elements[sKey] = val;
 };
 Queue.prototype.erase = function(key){
-    if(this.exist(key)){
-        this.keys.splice(this.keys.indexOf(key), 1);
-        this.elements[key] = undefined;
-        this.length--;
+    var sKey = key.toString();
+    if(this.exist(sKey)){
+        this.keys.splice(this.keys.indexOf(sKey), 1);
+        this.elements[sKey] = undefined;
     }
 
 };
-Queue.prototype.get = function(key){
-    return this.elements[key];
+Queue.prototype.len = function(){
+    return this.keys.length;
 };
-
+Queue.prototype.get = function(key){
+    var sKey = key.toString();
+    return this.elements[sKey];
+};
 Queue.prototype.exist = function(key){
-    return this.elements[key] !== undefined;
+    var sKey = key.toString();
+    return this.elements[sKey] !== undefined;
 };
 
 function Game() {
@@ -39,6 +44,7 @@ function Game() {
     this.player1 = null;
     this.player2 = null;
     this.field = ['t','e','s','t']; // todo: need to define field structure
+    this.currentTurn = null;
 }
 
 Game.prototype.generateField = function(word, size) {
@@ -84,13 +90,13 @@ GamePool.prototype.createGame = function(player1) {
 };
 
 GamePool.prototype.joinGame = function(player2) {
-    if( this.waitingQueue.length === 0 ) return null;
+    if( this.waitingQueue.len() === 0 ) return null;
 
-    var game = this.waitingQueue.get(0);
+    var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game.player2 = player2;
-    player2.game = game;
+    game['player2'] = player2;
+    player2['game'] = game;
 
     this.runningQueue.push(game._id, game);
 

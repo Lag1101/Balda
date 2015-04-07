@@ -22,32 +22,61 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             console.log(user.username + ' connected');
 
+            function clear(){
+                user.game.emit('disconnected', user.username);
+                gamePool.deleteGame(user.game._id);
+                user.game = undefined;
+            }
+
             socket
                 .on('CreateGame', function(wordSize, fieldSize){
-                    if(user.game)
-                        gamePool.deleteGame(user.game._id);
-
+                    if(user.game){
+                        clear();
+                    }
                     gamePool.createGame(user);
                     user.game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
                     user.game.emit('waiting');
+                    console.log("Created game " + user.game._id);
                 })
                 .on('JoinGame', function(){
-                    if(gamePool.joinGame(user))
+                    if(user.game){
+                        clear();
+                    }
+                    if(gamePool.joinGame(user)) {
                         user.game.emit('ready');
+                        console.log("Joined to game " + user.game._id);
+                    }
                 })
                 .on('message', function(text, cb) {
                     room.emit('message', text);
                     cb && cb();
                 })
-                .on('field', function(field){
-                    if(field)
-                        user.game.field = field;
+                .on('field', function(field) {
+                    if (field) {
+                        if(user.game.currentTurn === null){
+                            user.game.currentTurn = user;
+                        }
+                        if(user.is(user.game.currentTurn)) {
+                            user.game.field = field;
+                        }
+                        var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+                        var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+
+                        user.game.currentTurn = currentPlayer;
+                        currentPlayer.socket.emit('turn', "true");
+                        secondPlayer.socket.emit('turn', "false");
+                    }
                     user.game.emit('field', user.game.field);
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
-                    user.game.emit('disconnected', user.username);
-                    gamePool.deleteGame(user.game._id);
+                    if(user.game) {
+                        console.log("Deleted game " + user.game._id);
+                        clear();
+                    }
+                })
+                .on('turn', function() {
+                    socket.emit('turn', user.is(user.game.currentTurn) ? "true" : "false");
                 });
 
 
