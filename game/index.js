@@ -4,6 +4,35 @@
 
 var _id = 0;
 
+function Queue(){
+    this.length = 0;
+    this.elements = {};
+    this.keys = [];
+}
+
+Queue.prototype.push = function(key, val){
+    if(val === undefined) return null;
+
+    this.keys.push(key);
+    this.elements[key] = val;
+    this.length++;
+};
+Queue.prototype.erase = function(key){
+    if(this.exist(key)){
+        this.keys.splice(this.keys.indexOf(key), 1);
+        this.elements[key] = undefined;
+        this.length--;
+    }
+
+};
+Queue.prototype.get = function(key){
+    return this.elements[key];
+};
+
+Queue.prototype.exist = function(key){
+    return this.elements[key] !== undefined;
+};
+
 function Game() {
     this._id = _id;
     _id ++;
@@ -13,15 +42,14 @@ function Game() {
 }
 
 Game.prototype.generateField = function(word, size) {
-    var length = size;
     var field = [];
 
-    var n = length;
-    for(var i = 0; i < length / 2; i++) {
-        n += (length - (i+1)) * 2;
+    var n = size;
+    for(var i = 0; i < size / 2 - 1; i++) {
+        n += (size - (i+1)) * 2;
     }
     for(var i = 0; i < n; i++) {
-        field.push(' ');
+        field.push('');
     }
     var shift = (n-word.length)/2;
     for( var i = 0; i < word.length; i++ ) {
@@ -41,8 +69,9 @@ Game.prototype.ready = function() {
 };
 
 function GamePool(){
-    this.waitingQueue = [];
-    this.runningQueue = [];
+    this.waitingQueue = new Queue();
+
+    this.runningQueue = new Queue();
 }
 
 GamePool.prototype.createGame = function(player1) {
@@ -51,37 +80,26 @@ GamePool.prototype.createGame = function(player1) {
     game.player1 = player1;
     player1.game = game;
 
-    this.waitingQueue.push(game);
+    this.waitingQueue.push(game._id, game);
 };
 
 GamePool.prototype.joinGame = function(player2) {
     if( this.waitingQueue.length === 0 ) return null;
 
-    var game = this.waitingQueue[0];
-    this.waitingQueue.splice(0, 1);
+    var game = this.waitingQueue.get(0);
+    this.waitingQueue.erase(0);
+
     game.player2 = player2;
     player2.game = game;
 
-    this.runningQueue.push(game);
+    this.runningQueue.push(game._id, game);
 
     return game;
 };
 
 GamePool.prototype.deleteGame = function(id) {
-    for(var i = 0; i < this.waitingQueue.length; i++) {
-        if( this.waitingQueue[i]._id === id){
-            delete this.waitingQueue[i];
-            this.waitingQueue.splice(i, 1);
-            break;
-        }
-    }
-    for(var i = 0; i < this.runningQueue.length; i++) {
-        if( this.runningQueue[i]._id === id){
-            delete this.runningQueue[i];
-            this.runningQueue.splice(i, 1);
-            break;
-        }
-    }
+    this.waitingQueue.erase(id);
+    this.runningQueue.erase(id);
 };
 
 module.exports.gamePool = module.exports.gamePool || new GamePool();
