@@ -50,7 +50,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                         clear();
                     }
                     if(gamePool.joinGame(user)) {
-                        user.game.emit('ready');
+                        user.game.emit('ready', user.game.player1.username, user.game.player2.username);
                         console.log("Joined to game " + user.game._id);
                     }
                 })
@@ -73,10 +73,6 @@ module.exports = function(server, sessionStore, cookieParser) {
                         }
 
                     }
-                    user.game.emit('state', {
-                        field: user.game.field,
-                        turn: turn()
-                    });
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
@@ -86,7 +82,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                     }
                 })
                 .on('state', function() {
-                    user.game.emit('state', {
+                    socket.emit('state', {
                         field: user.game.field,
                         turn: turn()
                     });
