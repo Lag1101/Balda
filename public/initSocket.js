@@ -6,9 +6,10 @@ function initSocket() {
 
     socket.on('connect', function(){
         socket.emit('GiveMeWord', 5);
-        });
+    });
 
-    socket.on('GiveMeWord', function (letters) {
+    socket.on('field', function (letters) {
+        console.log(letters);
         initialize(letters);
     });
 

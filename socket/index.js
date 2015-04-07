@@ -2,8 +2,8 @@ var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
 var gamePool = require('../game').gamePool;
-
 var WordTree = require('../lib/WordTree');
+var Room = require('./room');
 
 var wordTree = new WordTree('./Words.txt');
 
@@ -19,38 +19,36 @@ module.exports = function(server, sessionStore, cookieParser) {
                 return console.error(err);
 
             var user = socket.handshake.user || {};
+            user.socket = socket;
 
-            if( user.username ) user.socket = socket;
+            if(gamePool.joinGame(user)) {
+                user.game.player2.socket.emit('field', user.game.field);
+            } else {
+                gamePool.createGame(user);
+                user.game.player1.socket.emit('field', user.game.field);
+            }
+
+            var room = new Room(user.game);
 
             console.log(user.username + ' connected');
 
-            socket.on('message', function(text, cb) {
-                user.game.player1.socket.emit('message', user.username, text);
-                if(user.game.player2)
-                    user.game.player2.socket.emit('message', user.username, text);
-                cb && cb();
-            });
-            socket.on('disconnect', function () {
-                console.log(user.username + ' disconnected');
-            });
-            socket.on('New Game', function(cb) {
+            socket
+                .on('message', function(text, cb) {
+                    room.emit('message', text);
+                    cb && cb();
+                })
+                .on('disconnect', function () {
+                    room.emit('disconnected', user.username);
+                    console.log(user.username + ' disconnected');
+                })
+                .on('field', function(){
+                    room.emit('field', room.game.field);
+                });
 
-                if(!gamePool.joinGame(user))
-                    gamePool.createGame(user);
 
-                socket.emit('field', user.game.field);
-                if(user.game.player2)
-                    user.game.player2.socket.emit('field', user.game.field);
-                cb && cb();
-            });
             socket.on('checkWord', function(word, cb) {
                 var ans = wordTree.exist(word) ? "true" : "false";
                 socket.emit('checkWord', ans);
-                cb && cb();
-            });
-            socket.on('GiveMeWord', function(letters_num, cb) {
-                var letters = ['в', 'а', 'с', 'ё', 'к'];
-                socket.emit('GiveMeWord', letters);
                 cb && cb();
             });
         });

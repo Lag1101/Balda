@@ -10,4 +10,5 @@ module.exports = function(app) {
     app.use('/game', checkAuth, require('./game'));
 
     app.use('/testWords', require('./testWords'));
+    app.use('/test_page', checkAuth, require('./test_page'));
 };
