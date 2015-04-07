@@ -63,6 +63,7 @@ Game.prototype.generateField = function(word, size) {
     }
     this.field = field;
 };
+
 Game.prototype.emit = function(key, val1, val2) {
     if( this.player1 && this.player1.socket )
         this.player1.socket.emit(key, val1, val2);

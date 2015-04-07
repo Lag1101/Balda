@@ -21,7 +21,7 @@ function initSocket() {
             printState(p1 + " vs " + p2);
             socket.emit('field');
         })
-        .on('field', function (letters) {
+        .on('state', function (state) {
             console.log(letters);
             initialize(letters);
         })
@@ -33,6 +33,13 @@ function initSocket() {
         })
         .on('disconnected', function(username) {
             printState(username + " disconnected");
+        })
+
+        .on('turn', function(turn){
+            if(turn === "true")
+            {}
+            else
+            {}
         });
 
     function printState(state) {

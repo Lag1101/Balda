@@ -4,6 +4,7 @@ function initialize(letters) {
     var needed_action = ACTION_GET_PLACE;
 
     var i, j;
+    var counter = 0;
     var _area = $('#area');
     var hex_obj;
     var struct = {ret_act: needed_action, ret_word: ''};
@@ -28,14 +29,24 @@ function initialize(letters) {
                 struct = what_it_mean($(this), struct );
                 needed_action = struct.ret_act;
             });
+            hex_obj.find('span').text(letters[counter]);
+            if(! letters[counter] == '')
+            {
+                hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
+            }
+            counter++;
         }
+
     }
 
+    /*
     for (j = 1; j < 6; j++) {
         hex_obj = $('#hex3' + j);
         hex_obj.find('span').text(letters[j - 1]);
         hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
     }
+    */
+
 
     /* //вывод ID
     for (i = 0; i < 7; i++) {
