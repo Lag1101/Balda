@@ -41,7 +41,9 @@ module.exports = function(server, sessionStore, cookieParser) {
                     room.emit('disconnected', user.username);
                     console.log(user.username + ' disconnected');
                 })
-                .on('field', function(){
+                .on('field', function(field){
+                    if(field)
+                        room.game.field = field;
                     room.emit('field', room.game.field);
                 });
 
