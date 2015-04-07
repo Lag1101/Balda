@@ -59,19 +59,16 @@ module.exports = function(server, sessionStore, cookieParser) {
                     cb && cb();
                 })
                 .on('field', function(field) {
-                    if (field) {
-                        if(user.game.currentTurn === null){
-                            user.game.currentTurn = user;
-                        }
-                        if(user.is(user.game.currentTurn)) {
-                            user.game.field = field;
+                    if(user.game.currentTurn === null){
+                        user.game.currentTurn = user;
+                    }
+                    if(user.is(user.game.currentTurn)) {
+                        user.game.field = field;
 
-                            var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
-                            var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+                        var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+                        var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
 
-                            user.game.currentTurn = currentPlayer;
-                        }
-
+                        user.game.currentTurn = currentPlayer;
                     }
                 })
                 .on('disconnect', function() {
