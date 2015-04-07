@@ -5,7 +5,7 @@ function initSocket() {
     });
 
     socket.on('connect', function(){
-        socket.emit('GiveMeWord', 5);
+        socket.emit('field');
     });
 
     socket.on('field', function (letters) {
