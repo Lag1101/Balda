@@ -1,4 +1,4 @@
-function what_it_mean(hex_obj, struct) {
+function clicked_action(hex_obj, struct) {
 
     if (struct.ret_act == ACTION_GET_PLACE)
     {
@@ -27,13 +27,12 @@ function what_it_mean(hex_obj, struct) {
             struct.ret_word = struct.ret_word + hex_obj.find('span').text();
             $('.hex_act_ww').removeClass("hex_act_ww").addClass("hex_dis_ww");
             hex_obj.removeClass("hex_dis_ww").addClass("hex_picked");
-            console.log(hex_obj.attr("class"));
             get_next_letter(hex_obj);
         }
         if(hex_obj.is(".hex_send"))
         {
 
-            //socket.emit('checkWord',struct.ret_word);
+            socket.emit('checkWord',struct.ret_word);
             // отсылка
             struct.ret_word = '';
             hex_obj.removeClass("hex_send").addClass("hex_not_send");

@@ -19,14 +19,18 @@ function initSocket() {
         })
         .on('ready',function(p1, p2){
             printState(p1 + " vs " + p2);
-            socket.emit('field');
+            socket.emit('state');
         })
         .on('state', function (state) {
-            console.log(state);
+            creating();
             initialize(state);
         })
         .on('checkWord', function(answer){
             if(answer === "true")
+            {
+
+            }
+            else
             {
 
             }
