@@ -24,7 +24,7 @@ module.exports = function(server, sessionStore, cookieParser) {
             if(gamePool.joinGame(user)) {
                 user.game.player2.socket.emit('field', user.game.field);
             } else {
-                gamePool.createGame(user);
+                gamePool.createGame(user, "деревня");
                 user.game.player1.socket.emit('field', user.game.field);
             }
 
