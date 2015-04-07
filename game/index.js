@@ -2,7 +2,11 @@
  * Created by vasiliy.lomanov on 06.04.2015.
  */
 
+var _id = 0;
+
 function Game() {
+    this._id = _id;
+    _id ++;
     this.player1 = null;
     this.player2 = null;
     this.field = ['t','e','s','t']; // todo: need to define field structure
@@ -24,6 +28,10 @@ Game.prototype.generateField = function(word) {
         field[i+shift] = word[i];
     }
     this.field = field;
+};
+
+Game.prototype.ready = function() {
+    return !!(this.player1 != null && this.player2 != null);
 };
 
 function GamePool(){
@@ -54,6 +62,22 @@ GamePool.prototype.joinGame = function(player2) {
     return game;
 };
 
+GamePool.prototype.deleteGame = function(id) {
+    for(var i = 0; i < this.waitingQueue.length; i++) {
+        if( this.waitingQueue[i]._id === id){
+            delete this.waitingQueue[i];
+            this.waitingQueue.splice(i, 1);
+            break;
+        }
+    }
+    for(var i = 0; i < this.runningQueue.length; i++) {
+        if( this.runningQueue[i]._id === id){
+            delete this.runningQueue[i];
+            this.runningQueue.splice(i, 1);
+            break;
+        }
+    }
+};
 
 module.exports.gamePool = module.exports.gamePool || new GamePool();
 

@@ -22,13 +22,16 @@ module.exports = function(server, sessionStore, cookieParser) {
             user.socket = socket;
 
             if(gamePool.joinGame(user)) {
-                user.game.player2.socket.emit('field', user.game.field);
+
             } else {
                 gamePool.createGame(user, "рачье");
-                user.game.player1.socket.emit('field', user.game.field);
+                user.game.player1.socket.emit('waiting');
             }
 
             var room = new Room(user.game);
+
+            if( room.game.ready() )
+                room.emit('ready', room.game.player1.username, room.game.player2.username);
 
             console.log(user.username + ' connected');
 
@@ -37,14 +40,15 @@ module.exports = function(server, sessionStore, cookieParser) {
                     room.emit('message', text);
                     cb && cb();
                 })
-                .on('disconnect', function () {
-                    room.emit('disconnected', user.username);
-                    console.log(user.username + ' disconnected');
-                })
                 .on('field', function(field){
                     if(field)
                         room.game.field = field;
                     room.emit('field', room.game.field);
+                })
+                .on('disconnect', function() {
+                    console.log(user.username + ' disconnected');
+                    room.emit('disconnected', user.username);
+                    gamePool.deleteGame(room.game._id);
                 });
 
 
