@@ -22,8 +22,8 @@ function initSocket() {
             socket.emit('field');
         })
         .on('state', function (state) {
-            console.log(letters);
-            initialize(letters);
+            console.log(state);
+            initialize(state);
         })
         .on('checkWord', function(answer){
             if(answer === "true")

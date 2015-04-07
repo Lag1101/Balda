@@ -1,4 +1,4 @@
-function initialize(letters) {
+function initialize(state) {
 
     var player = ACTIVE_PLAYER;
     var needed_action = ACTION_GET_PLACE;
@@ -29,8 +29,8 @@ function initialize(letters) {
                 struct = what_it_mean($(this), struct );
                 needed_action = struct.ret_act;
             });
-            hex_obj.find('span').text(letters[counter]);
-            if(! letters[counter] == '')
+            hex_obj.find('span').text(state.field[counter]);
+            if(! state.field[counter] == '')
             {
                 hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
             }
