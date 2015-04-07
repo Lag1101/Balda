@@ -69,7 +69,18 @@ module.exports = function(server, sessionStore, cookieParser) {
                         var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
 
                         user.game.currentTurn = currentPlayer;
+
+                        currentPlayer.socket.emit('state', {
+                            field: user.game.field,
+                            turn: "true"
+                        });
+                        secondPlayer.socket.emit('state', {
+                            field: user.game.field,
+                            turn: "false"
+                        });
                     }
+
+
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
