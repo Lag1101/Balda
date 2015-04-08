@@ -22,10 +22,12 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             console.log(user.username + ' connected');
 
-            function clear(){
-                gamePool.get(user.gameId).emit('disconnected', user.username);
-                gamePool.deleteGame(user.gameId);
-                user.gameId = null;
+            function clear(gameId){
+                var game = gamePool.get(gameId);
+                if(game) {
+                    console.log("Deleted game " + gameId);
+                    gamePool.deleteGame(gameId);
+                }
             }
 
             function turn() {
@@ -38,19 +40,18 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             socket
                 .on('CreateGame', function(wordSize, fieldSize){
-                    if(user.gameId){
-                        clear();
-                    }
+                    clear(user.gameId);
+
                     var game = gamePool.createGame(user._id);
 
                     game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
                     game.emit('waiting');
                     console.log("Created game " + user.gameId);
+                    console.log("Games count " + gamePool.len());
                 })
                 .on('JoinGame', function(){
-                    if(user.gameId){
-                        clear();
-                    }
+                    clear(user.gameId);
+
                     var game = gamePool.joinGame(user._id);
                     if(game) {
                         var player1 = users.get(game.hostId);
@@ -65,18 +66,20 @@ module.exports = function(server, sessionStore, cookieParser) {
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
-                    if(user.gameId) {
-                        console.log("Deleted game " + user.gameId);
-                        clear();
-                    }
+
+                    clear(user.gameId);
                 })
                 .on('state', function() {
+                    console.log('state event');
                     socket.emit('state', {
                         field: gamePool.get(user.gameId).field,
                         turn: turn()
                     });
                 })
                 .on('checkAndCommit', function(word, field){
+
+                    console.log('checkAndCommit event', word, field);
+
                     var game = gamePool.get(user.gameId);
                     if(wordTree.exist(word)) {
                         if(game.currentTurn === null){
@@ -108,6 +111,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                     }
                 })
                 .on('checkWord', function(word, cb) {
+                    console.log('checkWord event', word);
                     var ans = wordTree.exist(word) ? "true" : "false";
                     socket.emit('checkWord', ans);
                     cb && cb();

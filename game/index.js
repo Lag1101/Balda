@@ -77,12 +77,26 @@ GamePool.prototype.joinGame = function(player2) {
 };
 
 GamePool.prototype.deleteGame = function(id) {
+    var game = this.get(id);
+    if(!game) return false;
+
+    var host =  users.get(game.hostId);
+    if(host) host.gameId = null;
+    var opponent =  users.get(game.opponentId);
+    if(opponent) opponent.gameId = null;
+
     this.waitingQueue.erase(id);
     this.runningQueue.erase(id);
+
+    return true;
 };
 
 GamePool.prototype.get = function(_id) {
     return this.runningQueue.get(_id) || this.waitingQueue.get(_id);
+};
+
+GamePool.prototype.len = function() {
+    return this.runningQueue.len() || this.waitingQueue.len();
 };
 
 module.exports.gamePool = module.exports.gamePool || new GamePool();
