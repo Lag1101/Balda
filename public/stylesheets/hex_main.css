@@ -40,26 +40,27 @@
 .hex_main .shadowSpan {
     display: block;
     position: absolute;
+    text-align: center;
     top:2.8867513459481286px;
     left: 0;
     width:90px;
     height:46px;
     z-index: 2;
     background: inherit;
-    text-align: center;
-    font-size: 40px;
-    vertical-align: middle;
-    font-family: 'Comic Sans MS', cursive;
-    font-weight: bolder;
 }
 
 .hex_main .fieldForLetter {
-    margin: 0;
+    margin: -25px 0;
+    font-size: 40px;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bolder;
     z-index: 3;
 }
 
 .hex_main .fieldForPoints{
     margin: 0;
     font-size: 10px;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bolder;
     z-index: 3;
 }

@@ -1,9 +1,16 @@
 function creating()
 {
     var _area = $('#area');
+    var send_hex = $('<div></div>')
+        .attr('id', "send")
+        .addClass('hex_main')
+        .addClass('hex_not_send');
 
-    _area.append('<div id = "send" class="hex_main hex_not_send"><span></span></div>');
-    $('#send').offset({top: 50, left: 20 });
+    var send_span = $('<span></span>').addClass('shadowSpan');
+
+    send_hex.append(send_span);
+    _area.append(send_hex);
+    send_hex.offset({top: 50, left: 20 });
 
     for (var i = 0; i < 7; i++) {
         for (var j = 0; j < 7 - Math.abs(3 - i); j++) {
@@ -26,7 +33,7 @@ function creating()
 
 
             hex_obj.append(span);
-            _area.append(hex_obj );
+            _area.append(hex_obj);
 
             hex_obj.offset({top: 50 + 85 * i, left: 50 + 105 * j + 52.5 * Math.abs(3 - i)});
         }
