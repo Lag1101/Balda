@@ -57,32 +57,8 @@ module.exports = function(server, sessionStore, cookieParser) {
                     }
                 })
                 .on('message', function(text, cb) {
-                    room.emit('message', text);
+                    user.game.emit('message', text);
                     cb && cb();
-                })
-                .on('field', function(field) {
-                    if(user.game.currentTurn === null){
-                        user.game.currentTurn = user;
-                    }
-                    if(user.is(user.game.currentTurn)) {
-                        user.game.field = field;
-
-                        var currentPlayer = user.game.player1Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
-                        var secondPlayer = user.game.player2Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
-
-                        user.game.currentTurn = currentPlayer;
-
-                        users.get(currentPlayer).socket.emit('state', {
-                            field: user.game.field,
-                            turn: "true"
-                        });
-                        users.get(secondPlayer).socket.emit('state', {
-                            field: user.game.field,
-                            turn: "false"
-                        });
-                    }
-
-
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
@@ -96,14 +72,42 @@ module.exports = function(server, sessionStore, cookieParser) {
                         field: user.game.field,
                         turn: turn()
                     });
+                })
+                .on('checkAndCommit', function(word, field){
+                    if(wordTree.exist(word)) {
+                        if(user.game.currentTurn === null){
+                            user.game.currentTurn = user;
+                        }
+                        if(user.is(user.game.currentTurn)) {
+                            user.game.field = field;
+
+                            var currentPlayer = user.game.player1Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
+                            var secondPlayer = user.game.player2Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
+
+                            user.game.currentTurn = currentPlayer;
+
+                            users.get(currentPlayer).socket.emit('state', {
+                                field: user.game.field,
+                                turn: "true"
+                            });
+                            users.get(secondPlayer).socket.emit('state', {
+                                field: user.game.field,
+                                turn: "false"
+                            });
+                        }
+                    }
+                    else {
+                        socket.emit('state', {
+                            field: user.game.field,
+                            turn: "true"
+                        });
+                    }
+                })
+                .on('checkWord', function(word, cb) {
+                    var ans = wordTree.exist(word) ? "true" : "false";
+                    socket.emit('checkWord', ans);
+                    cb && cb();
                 });
-
-
-            socket.on('checkWord', function(word, cb) {
-                var ans = wordTree.exist(word) ? "true" : "false";
-                socket.emit('checkWord', ans);
-                cb && cb();
-            });
         });
 
     });
