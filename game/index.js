@@ -15,21 +15,41 @@ function Game() {
     this.currentTurn = null;
 }
 
+function Cell(cell){
+    this.letter = cell.letter || '';
+    this.points = cell.points || 0;
+}
+
 Game.prototype.generateField = function(word, size) {
     var field = [];
 
-    var n = size;
-    for(var i = 0; i < size / 2 - 1; i++) {
-        n += (size - (i+1)) * 2;
+    var mainLineIndex = Math.floor(size/2);
+    for(var i = 0; i < size; i++){
+        var line = [];
+        var distance = Math.abs(mainLineIndex - i);
+        var count = size - distance;
+        for(var k = 0; k < count; k++) {
+            line.push(new Cell({
+                letter: '',
+                points: distance
+            }));
+        }
+        field.push(line);
     }
-    for(var i = 0; i < n; i++) {
-        field.push('');
-    }
-    var shift = (n-word.length)/2;
+
+    var mainLine = field[mainLineIndex];
+
+    var shift = Math.floor(0.5*(mainLine.length-word.length));
     for( var i = 0; i < word.length; i++ ) {
-        field[i+shift] = word[i];
+        mainLine[i+shift].letter = word[i];
     }
-    this.field = field;
+
+    for(var i = 0; i < field.length; i++){
+        var line = field[i];
+        for(var k = 0; k < line.length; k++){
+            this.field.push(line[k]);
+        }
+    }
 };
 
 Game.prototype.emit = function(key, val1, val2) {
