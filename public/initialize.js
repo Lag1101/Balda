@@ -16,9 +16,11 @@ function creating()
     }
 }
 
-function initialize(state) {
+function initialize(state, sendCallback) {
 
     var player, needed_action;
+
+    alert(state.turn);
 
     if(state.turn === "true") {
         player = ACTIVE_PLAYER;
@@ -32,10 +34,10 @@ function initialize(state) {
     var i, j;
     var counter = 0;
     var hex_obj;
-    var struct = {ret_act: needed_action, ret_word: ''};
+    var struct = {ret_act: needed_action, ret_word: '', ret_field: state.field};
 
     $('#send').click(function () {
-        struct = clicked_action($(this), struct);
+        struct = clicked_action($(this), struct, sendCallback);
         needed_action = struct.ret_act;
     });
 
@@ -45,7 +47,7 @@ function initialize(state) {
             hex_obj = $('#hex' + i + k);
 
             hex_obj.click(function () {
-                struct = clicked_action($(this), struct);
+                struct = clicked_action($(this), struct, sendCallback);
                 needed_action = struct.ret_act;
             });
             hex_obj.find('span').text(state.field[counter]);

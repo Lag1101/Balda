@@ -23,28 +23,14 @@ function initSocket() {
         })
         .on('state', function (state) {
             creating();
-            initialize(state);
-        })
-        .on('checkWord', function(answer){
-            if(answer === "true")
+            initialize(state, function(word,field)
             {
-
-            }
-            else
-            {
-
-            }
+                socket.emit('checkAndCommit', word, field)
+            });
         })
         .on('disconnected', function(username) {
             printState(username + " disconnected");
         })
-
-        .on('turn', function(turn){
-            if(turn === "true")
-            {}
-            else
-            {}
-        });
 
     function printState(state) {
         $('#state').text(state);
