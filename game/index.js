@@ -2,14 +2,15 @@
  * Created by vasiliy.lomanov on 06.04.2015.
  */
 
+var users = require('../models/UserModel').users;
 var Queue = require('../lib/Utils').Queue;
 
 var _id = 0;
 function Game() {
     this._id = _id;
     _id ++;
-    this.player1 = null;
-    this.player2 = null;
+    this.player1Id = null;
+    this.player2Id = null;
     this.field = ['t','e','s','t']; // todo: need to define field structure
     this.currentTurn = null;
 }
@@ -32,14 +33,16 @@ Game.prototype.generateField = function(word, size) {
 };
 
 Game.prototype.emit = function(key, val1, val2) {
-    if( this.player1 && this.player1.socket )
-        this.player1.socket.emit(key, val1, val2);
+    var user1 = users.get(this.player1Id);
+    if( user1 && user1.socket )
+        user1.socket.emit(key, val1, val2);
 
-    if( this.player2 && this.player2.socket )
-        this.player2.socket.emit(key, val1, val2);
+    var user2 = users.get(this.player2Id);
+    if( user2 && user2.socket )
+        user2.socket.emit(key, val1, val2);
 };
 Game.prototype.ready = function() {
-    return !!(this.player1 != null && this.player2 != null);
+    return !!(this.player1Id != null && this.player2Id != null);
 };
 
 function GamePool(){
@@ -51,8 +54,8 @@ function GamePool(){
 GamePool.prototype.createGame = function(player1) {
     var game  = new Game();
 
-    game.player1 = player1;
-    player1.game = game;
+    game.player1Id = player1;
+    users.get(player1).game = game;
 
     this.waitingQueue.push(game._id, game);
 };
@@ -63,8 +66,8 @@ GamePool.prototype.joinGame = function(player2) {
     var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game['player2'] = player2;
-    player2['game'] = game;
+    game['player2Id'] = player2;
+    users.get(player2)['game'] = game;
 
     this.runningQueue.push(game._id, game);
 

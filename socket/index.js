@@ -40,7 +40,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                     if(user.game){
                         clear();
                     }
-                    gamePool.createGame(user);
+                    gamePool.createGame(user._id);
                     user.game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
                     user.game.emit('waiting');
                     console.log("Created game " + user.game._id);
@@ -49,8 +49,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                     if(user.game){
                         clear();
                     }
-                    if(gamePool.joinGame(user)) {
-                        user.game.emit('ready', user.game.player1.username, user.game.player2.username);
+                    if(gamePool.joinGame(user._id)) {
+                        var player1 = users.get(user.game.player1Id);
+                        var player2 = users.get(user.game.player2Id);
+                        user.game.emit('ready', player1.username, player2.username);
                         console.log("Joined to game " + user.game._id);
                     }
                 })
@@ -65,16 +67,16 @@ module.exports = function(server, sessionStore, cookieParser) {
                     if(user.is(user.game.currentTurn)) {
                         user.game.field = field;
 
-                        var currentPlayer = user.game.player1.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
-                        var secondPlayer = user.game.player2.is(user.game.currentTurn) ? user.game.player2 : user.game.player1;
+                        var currentPlayer = user.game.player1Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
+                        var secondPlayer = user.game.player2Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
 
                         user.game.currentTurn = currentPlayer;
 
-                        currentPlayer.socket.emit('state', {
+                        users.get(currentPlayer).socket.emit('state', {
                             field: user.game.field,
                             turn: "true"
                         });
-                        secondPlayer.socket.emit('state', {
+                        users.get(secondPlayer).socket.emit('state', {
                             field: user.game.field,
                             turn: "false"
                         });
@@ -106,7 +108,3 @@ module.exports = function(server, sessionStore, cookieParser) {
 
     });
 };
-
-
-
-
