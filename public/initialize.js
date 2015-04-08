@@ -20,8 +20,6 @@ function initialize(state, sendCallback) {
 
     var player, needed_action;
 
-    console.log(state.turn);
-
     if(state.turn === "true") {
         player = ACTIVE_PLAYER;
         needed_action = ACTION_GET_PLACE;
@@ -33,9 +31,11 @@ function initialize(state, sendCallback) {
 
     var i, j;
     var counter = 0;
-    var hex_obj;
-    var struct = {ret_act: needed_action, ret_word: '', ret_field: state.field};
+    var hex_obj, struct;
+    struct = {ret_act: needed_action, ret_word: '', ret_field: state.field};
+    console.log('получено : ' + struct.ret_field);
 
+    $('#send').off("click");
     $('#send').click(function () {
         struct = clicked_action($(this), struct, sendCallback);
         needed_action = struct.ret_act;
@@ -45,7 +45,7 @@ function initialize(state, sendCallback) {
         for (j = 0; j < 7 - Math.abs(3 - i); j++) {
             var k = i>3?i-3+j:j;
             hex_obj = $('#hex' + i + k);
-
+            hex_obj.off("click");
             hex_obj.click(function () {
                 struct = clicked_action($(this), struct, sendCallback);
                 needed_action = struct.ret_act;
@@ -53,7 +53,12 @@ function initialize(state, sendCallback) {
             hex_obj.find('span').text(state.field[counter]);
             if(! state.field[counter] == '')
             {
-                hex_obj.removeClass("hex_dis_nw").addClass("hex_dis_ww");
+                if(hex_obj.is(".hex_dis_nw")) {
+                    hex_obj.removeClass("hex_dis_nw").addClass("hex_dis_ww");
+                }
+                else if(hex_obj.is(".hex_act_nw")){
+                    hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
+                }
             }
             counter++;
         }

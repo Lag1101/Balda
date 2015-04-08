@@ -2,6 +2,7 @@ function clicked_action(hex_obj, struct, sendCallback) {
 
     if (struct.ret_act == ACTION_GET_PLACE)
     {
+        console.log('передано в слик экшн : ' + struct.ret_field);
         if(hex_obj.is(".hex_act_nw")) {
             $('.hex_act_nw').removeClass("hex_act_nw").addClass("hex_dis_nw");
             $('.hex_dis_ww').removeClass("hex_dis_ww").addClass("hex_act_ww");
@@ -22,6 +23,8 @@ function clicked_action(hex_obj, struct, sendCallback) {
             hex_obj.removeClass("hex_new");
             $('.hex_not_send').removeClass("hex_not_send").addClass("hex_send");
             struct = changeField(struct, hex_obj);
+
+            console.log('изменено в чендж филде : ' + struct.ret_field);
             //активировать отправку
         }
         if(hex_obj.is(".hex_act_ww")) {
@@ -33,8 +36,7 @@ function clicked_action(hex_obj, struct, sendCallback) {
         if(hex_obj.is(".hex_send"))
         {
             sendCallback(struct.ret_word, struct.ret_field);
-            console.log(struct.ret_word);
-            struct.ret_word = '';
+            console.log('отослано на сервер : ' + struct.ret_field);
             $('.hex_picked').removeClass("hex_picked").addClass("hex_dis_ww");
             $('.hex_act_ww').removeClass("hex_act_ww").addClass("hex_dis_ww");
             $('.hex_send').removeClass("hex_send").addClass("hex_not_send");
