@@ -60,6 +60,10 @@ function initialize(state, sendCallback) {
                     hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
                 }
             }
+            else if( state.field[counter] == '' && hex_obj.is(".hex_dis_ww"))
+            {
+                hex_obj.removeClass("hex_dis_ww").addClass("hex_dis_nw");
+            }
             counter++;
         }
 
