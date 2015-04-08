@@ -1,16 +1,33 @@
 function creating()
 {
     var _area = $('#area');
-    var hex_obj;
 
     _area.append('<div id = "send" class="hex_main hex_not_send"><span></span></div>');
     $('#send').offset({top: 50, left: 20 });
 
-    for (i = 0; i < 7; i++) {
-        for (j = 0; j < 7 - Math.abs(3 - i); j++) {
+    for (var i = 0; i < 7; i++) {
+        for (var j = 0; j < 7 - Math.abs(3 - i); j++) {
             var k = i > 3 ? i - 3 + j : j;
-            _area.append('<div id = "hex' + i + k + '" class="hex_main hex_dis_nw"><span>');
-            hex_obj = $('#hex' + i + k);
+            //_area.append('<div id = "hex' + i + k + '" class="hex_main hex_dis_nw"><span>');
+            var hex_obj = $('<div></div>')
+                .attr('id', "hex"+i+k)
+                .addClass('hex_main')
+                .addClass('hex_dis_nw');
+
+            var span = $('<span></span>').addClass('shadowSpan');
+            span.append(
+                $('<p></p>')
+                    .addClass('fieldForPoints')
+                    .text('5')
+            );
+            span.append(
+                $('<p></p>').addClass('fieldForLetter')
+            );
+
+
+            hex_obj.append(span);
+            _area.append(hex_obj );
+
             hex_obj.offset({top: 50 + 85 * i, left: 50 + 105 * j + 52.5 * Math.abs(3 - i)});
         }
     }
@@ -50,7 +67,7 @@ function initialize(state, sendCallback) {
                 struct = clicked_action($(this), struct, sendCallback);
                 needed_action = struct.ret_act;
             });
-            hex_obj.find('span').text(state.field[counter]);
+            hex_obj.find('.fieldForLetter').text(state.field[counter]);
             if(! state.field[counter] == '')
             {
                 if(hex_obj.is(".hex_dis_nw")) {
