@@ -12,7 +12,7 @@ function User(user){
     this.username = user.username;
     this.password = user.password;
     this.socket = null;
-    this.game = null;
+    this.gameId = null;
 }
 
 function UsersCollection(filename){

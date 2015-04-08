@@ -23,82 +23,86 @@ module.exports = function(server, sessionStore, cookieParser) {
             console.log(user.username + ' connected');
 
             function clear(){
-                user.game.emit('disconnected', user.username);
-                gamePool.deleteGame(user.game._id);
-                user.game = undefined;
+                gamePool.get(user.gameId).emit('disconnected', user.username);
+                gamePool.deleteGame(user.gameId);
+                user.gameId = null;
             }
 
             function turn() {
-                if(user.game.currentTurn === null)
+                var game = gamePool.get(user.gameId);
+                if(game.currentTurn === null)
                     return "true";
                 else
-                    return user.is(user.game.currentTurn) ? "true" : "false";
+                    return user.is(game.currentTurn) ? "true" : "false";
             }
 
             socket
                 .on('CreateGame', function(wordSize, fieldSize){
-                    if(user.game){
+                    if(user.gameId){
                         clear();
                     }
-                    gamePool.createGame(user._id);
-                    user.game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
-                    user.game.emit('waiting');
-                    console.log("Created game " + user.game._id);
+                    var game = gamePool.createGame(user._id);
+
+                    game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
+                    game.emit('waiting');
+                    console.log("Created game " + user.gameId);
                 })
                 .on('JoinGame', function(){
-                    if(user.game){
+                    if(user.gameId){
                         clear();
                     }
-                    if(gamePool.joinGame(user._id)) {
-                        var player1 = users.get(user.game.player1Id);
-                        var player2 = users.get(user.game.player2Id);
-                        user.game.emit('ready', player1.username, player2.username);
-                        console.log("Joined to game " + user.game._id);
+                    var game = gamePool.joinGame(user._id);
+                    if(game) {
+                        var player1 = users.get(game.hostId);
+                        var player2 = users.get(game.opponentId);
+                        game.emit('ready', player1.username, player2.username);
+                        console.log("Joined to game " + user.gameId);
                     }
                 })
                 .on('message', function(text, cb) {
-                    user.game.emit('message', text);
+                    gamePool.get(user.gameId).emit('message', text);
                     cb && cb();
                 })
                 .on('disconnect', function() {
                     console.log(user.username + ' disconnected');
-                    if(user.game) {
-                        console.log("Deleted game " + user.game._id);
+                    if(user.gameId) {
+                        console.log("Deleted game " + user.gameId);
                         clear();
                     }
                 })
                 .on('state', function() {
                     socket.emit('state', {
-                        field: user.game.field,
+                        field: gamePool.get(user.gameId).field,
                         turn: turn()
                     });
                 })
                 .on('checkAndCommit', function(word, field){
+                    var game = gamePool.get(user.gameId);
                     if(wordTree.exist(word)) {
-                        if(user.game.currentTurn === null){
-                            user.game.currentTurn = user;
+                        if(game.currentTurn === null){
+                            game.currentTurn = user;
                         }
-                        if(user.is(user.game.currentTurn)) {
-                            user.game.field = field;
+                        if(user.is(game.currentTurn)) {
+                            game.field = field;
 
-                            var currentPlayer = user.game.player1Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
-                            var secondPlayer = user.game.player2Id.is(user.game.currentTurn) ? user.game.player2Id : user.game.player1Id;
+                            var currentPlayerId = game.hostId.is(game.currentTurn) ? game.opponentId : game.hostId;
+                            var secondPlayerId = game.opponentId.is(game.currentTurn) ? game.opponentId : game.hostId;
 
-                            user.game.currentTurn = currentPlayer;
+                            game.currentTurn = currentPlayerId;
 
-                            users.get(currentPlayer).socket.emit('state', {
-                                field: user.game.field,
+                            users.get(currentPlayerId).socket.emit('state', {
+                                field: game.field,
                                 turn: "true"
                             });
-                            users.get(secondPlayer).socket.emit('state', {
-                                field: user.game.field,
+                            users.get(secondPlayerId).socket.emit('state', {
+                                field: game.field,
                                 turn: "false"
                             });
                         }
                     }
                     else {
                         socket.emit('state', {
-                            field: user.game.field,
+                            field: game.field,
                             turn: "true"
                         });
                     }

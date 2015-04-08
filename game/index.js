@@ -9,8 +9,8 @@ var _id = 0;
 function Game() {
     this._id = _id;
     _id ++;
-    this.player1Id = null;
-    this.player2Id = null;
+    this.hostId = null;
+    this.opponentId = null;
     this.field = ['t','e','s','t']; // todo: need to define field structure
     this.currentTurn = null;
 }
@@ -33,16 +33,16 @@ Game.prototype.generateField = function(word, size) {
 };
 
 Game.prototype.emit = function(key, val1, val2) {
-    var user1 = users.get(this.player1Id);
+    var user1 = users.get(this.hostId);
     if( user1 && user1.socket )
         user1.socket.emit(key, val1, val2);
 
-    var user2 = users.get(this.player2Id);
+    var user2 = users.get(this.opponentId);
     if( user2 && user2.socket )
         user2.socket.emit(key, val1, val2);
 };
 Game.prototype.ready = function() {
-    return !!(this.player1Id != null && this.player2Id != null);
+    return !!(this.hostId != null && this.opponentId != null);
 };
 
 function GamePool(){
@@ -54,10 +54,12 @@ function GamePool(){
 GamePool.prototype.createGame = function(player1) {
     var game  = new Game();
 
-    game.player1Id = player1;
-    users.get(player1).game = game;
+    game.hostId = player1;
+    users.get(player1).gameId = game._id;
 
     this.waitingQueue.push(game._id, game);
+
+    return game;
 };
 
 GamePool.prototype.joinGame = function(player2) {
@@ -66,8 +68,8 @@ GamePool.prototype.joinGame = function(player2) {
     var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game['player2Id'] = player2;
-    users.get(player2)['game'] = game;
+    game.opponentId = player2;
+    users.get(player2).gameId = game._id;
 
     this.runningQueue.push(game._id, game);
 
@@ -77,6 +79,10 @@ GamePool.prototype.joinGame = function(player2) {
 GamePool.prototype.deleteGame = function(id) {
     this.waitingQueue.erase(id);
     this.runningQueue.erase(id);
+};
+
+GamePool.prototype.get = function(_id) {
+    return this.runningQueue.get(_id) || this.waitingQueue.get(_id);
 };
 
 module.exports.gamePool = module.exports.gamePool || new GamePool();
