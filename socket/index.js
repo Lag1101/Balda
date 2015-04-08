@@ -86,7 +86,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                     var game = gamePool.get(user.gameId);
                     if(wordTree.exist(word)) {
                         if(game.currentTurn === null){
-                            game.currentTurn = user;
+                            game.currentTurn = user._id;
                         }
                         if(user._id === game.currentTurn) {
                             game.field = field;
