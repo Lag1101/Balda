@@ -71,10 +71,13 @@ module.exports = function(server, sessionStore, cookieParser) {
                 })
                 .on('state', function() {
                     console.log('state event');
-                    socket.emit('state', {
+
+                    var state = {
                         field: gamePool.get(user.gameId).field,
                         turn: turn()
-                    });
+                    };
+                    console.log('emited to', user.username, state);
+                    socket.emit('state', state);
                 })
                 .on('checkAndCommit', function(word, field){
 
@@ -92,22 +95,31 @@ module.exports = function(server, sessionStore, cookieParser) {
                             var secondPlayerId = game.opponentId.is(game.currentTurn) ? game.opponentId : game.hostId;
 
                             game.currentTurn = currentPlayerId;
-
-                            users.get(currentPlayerId).socket.emit('state', {
-                                field: game.field,
-                                turn: "true"
-                            });
-                            users.get(secondPlayerId).socket.emit('state', {
-                                field: game.field,
-                                turn: "false"
-                            });
+                            {
+                                var state = {
+                                    field: game.field,
+                                    turn: "true"
+                                };
+                                console.log('emited to', users.get(currentPlayerId).username, state);
+                                users.get(currentPlayerId).socket.emit('state', state);
+                            }
+                            {
+                                var state = {
+                                    field: game.field,
+                                    turn: "false"
+                                };
+                                console.log('emited to', users.get(secondPlayerId).username, state);
+                                users.get(secondPlayerId).socket.emit('state', state);
+                            }
                         }
                     }
                     else {
-                        socket.emit('state', {
+                        var state = {
                             field: game.field,
                             turn: "true"
-                        });
+                        };
+                        console.log('emited to', user.username, state);
+                        socket.emit('state', state);
                     }
                 })
                 .on('checkWord', function(word, cb) {
