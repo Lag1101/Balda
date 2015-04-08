@@ -44,7 +44,7 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     var game = gamePool.createGame(user._id);
 
-                    game.generateField("рачье", fieldSize); // todo: replace "рачье" with searching word in database
+                    game.generateField(wordTree.getRandomWordByLettersCount(wordSize), fieldSize);
                     game.emit('waiting');
                     console.log("Created game " + user.gameId);
                     console.log("Games count " + gamePool.len());
