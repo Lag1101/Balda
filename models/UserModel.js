@@ -3,6 +3,7 @@
  */
 var fs = require('fs');
 var util = require('util');
+var Queue = require('../lib/Utils').Queue;
 
 var _id = 0;
 
@@ -16,31 +17,27 @@ function User(user){
 
 function UsersCollection(filename){
 
-    this.users = [];
+    this.users = new Queue();
     this.filename = filename || "./users.data";
 
     if(fs.existsSync(this.filename)) {
         var rawUsers = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
-        for(var i = 0; i < rawUsers.length; i++) {
-            this.add(rawUsers[i]);
-        }
+        var _this = this;
+        rawUsers.map(function(rawUser){_this.add(rawUser)});
     } else {
-        this.users = [];
         this.save();
     }
-
 }
 
 UsersCollection.prototype.add = function(user) {
     _id ++;
-    this.users.push(new User(user));
-    return this.users[this.users.length-1];
+    this.users.push(_id, new User(user));
+    return this.users.get(user._id);
 };
 
 UsersCollection.prototype.authorize = function(username, password, callback){
     var exist = false;
-    for(var i = 0; i < this.users.length; i++) {
-        var user = this.users[i];
+    this.users.For(function(index, id, user){
         if( user.username === username ) {
             if (user.password === password) {
                 callback(null, user);
@@ -49,9 +46,9 @@ UsersCollection.prototype.authorize = function(username, password, callback){
                 callback(new AuthError("Пароль неверен"));
             }
             exist = true;
-            break;
+            return false;
         }
-    }
+    });
     if(!exist) {
         var newUser = this.add({username:username, password:password});
         this.save();
@@ -60,16 +57,17 @@ UsersCollection.prototype.authorize = function(username, password, callback){
 };
 
 UsersCollection.prototype.save = function() {
-    var rawUsers = JSON.stringify(this.users);
-    fs.writeFileSync(this.filename, rawUsers, 'utf8');
+    var rawUsers = [];
+    this.users.For(function(index, key, user){
+        rawUsers.push(user);
+    });
+    fs.writeFileSync(this.filename, JSON.stringify(rawUsers), 'utf8');
 };
 
 UsersCollection.prototype.get = function(_id) {
 
-    for(var i = 0; i < this.users.length; i++) {
-        if(_id === this.users[i]._id)
-            return this.users[i];
-    }
+    if(this.users.exist(_id))
+        return this.users.get(_id);
     return null;
 };
 
@@ -79,8 +77,6 @@ function AuthError(message) {
 
     this.message = message;
 }
-
-
 
 util.inherits(AuthError, Error);
 
