@@ -20,7 +20,7 @@ function initialize(state, sendCallback) {
 
     var player, needed_action;
 
-    alert(state.turn);
+    console.log(state.turn);
 
     if(state.turn === "true") {
         player = ACTIVE_PLAYER;

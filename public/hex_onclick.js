@@ -33,7 +33,11 @@ function clicked_action(hex_obj, struct, sendCallback) {
         if(hex_obj.is(".hex_send"))
         {
             sendCallback(struct.ret_word, struct.ret_field);
-            alert(struct.ret_word);
+            console.log(struct.ret_word);
+            struct.ret_word = '';
+            $('.hex_picked').removeClass("hex_picked").addClass("hex_dis_ww");
+            $('.hex_act_ww').removeClass("hex_act_ww").addClass("hex_dis_ww");
+            $('.hex_send').removeClass("hex_send").addClass("hex_not_send");
         }
     }
     return struct;
@@ -47,9 +51,8 @@ function changeField(struct, hex_obj) {
         for (j = 0; j < 7 - Math.abs(3 - i); j++) {
             var k = i > 3 ? i - 3 + j : j;
 
-            if (hex_obj === $('#hex' + i + k)) {
+            if (hex_obj.attr("id") == $('#hex' + i + k).attr("id")) {
                 struct.ret_field[counter] = hex_obj.find('span').text();
-                alert(hex_obj.find('span').text());
             }
             counter++;
         }
