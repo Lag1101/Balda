@@ -88,11 +88,11 @@ module.exports = function(server, sessionStore, cookieParser) {
                         if(game.currentTurn === null){
                             game.currentTurn = user;
                         }
-                        if(user.is(game.currentTurn)) {
+                        if(user._id === game.currentTurn) {
                             game.field = field;
 
-                            var currentPlayerId = game.hostId.is(game.currentTurn) ? game.opponentId : game.hostId;
-                            var secondPlayerId = game.opponentId.is(game.currentTurn) ? game.opponentId : game.hostId;
+                            var currentPlayerId = game.hostId === game.currentTurn ? game.opponentId : game.hostId;
+                            var secondPlayerId = game.opponentId === game.currentTurn ? game.opponentId : game.hostId;
 
                             game.currentTurn = currentPlayerId;
                             {
