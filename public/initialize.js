@@ -77,6 +77,7 @@ function initialize(state, sendCallback) {
             hex_obj.find('.fieldForLetter').text(state.field[counter]);
             if(! state.field[counter] == '')
             {
+                console.log('пишем : ' + hex_obj.attr("id") + ' ' + state.field[counter]);
                 if(hex_obj.is(".hex_dis_nw")) {
                     hex_obj.removeClass("hex_dis_nw").addClass("hex_dis_ww");
                 }
