@@ -88,15 +88,17 @@ module.exports = function(server, sessionStore, cookieParser) {
                         if(user._id === game.currentTurn) {
                             game.setField(field);
 
-                            game.players.get(user._id).addWord(word);
+                            game.currentTurn = (game.firstPlayer()._id === user._id) ? game.secondPlayer()._id : game.firstPlayer()._id;
 
+                            game.players.get(user._id).addWord(word);
                             game.players.keys.map(function(key){
-                                var state = game.createState((game.currentTurn === game.firstPlayer()._id) ? "true" : "false");
                                 var player = game.players.get(key);
-                                var user =  users.get(player._id);
-                                console.log('emited to', user.username, state);
-                                user.socket.emit('state', state);
+                                var curUser =  users.get(player._id);
+                                var state = game.createState((game.currentTurn === player._id) ? "true" : "false");
+                                console.log('emited to', curUser.username, state);
+                                curUser.socket.emit('state', state);
                             });
+
                         }
                     }
                     else {
