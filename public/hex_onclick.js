@@ -32,10 +32,7 @@ function clicked_action(hex_obj, struct, sendCallback) {
         if(hex_obj.is(".hex_send"))
         {
             sendCallback(struct.ret_word, struct.ret_field);
-            // обнулить прошлые изменения
-            $('.hex_picked').removeClass("hex_picked").addClass("hex_dis_ww");
-            $('.hex_act_ww').removeClass("hex_act_ww").addClass("hex_dis_ww");
-            $('.hex_send').removeClass("hex_send").addClass("hex_not_send");
+
         }
     }
     return struct;

@@ -61,6 +61,11 @@ function initialize(state, sendCallback) {
     struct = {ret_act: needed_action, ret_word: '', ret_field: state.field};
     console.log('получено : ' + struct.ret_field);
 
+    // обнулить прошлые изменения
+    $('.hex_picked').removeClass("hex_picked").addClass("hex_dis_ww");
+    $('.hex_act_ww').removeClass("hex_act_ww").addClass("hex_dis_ww");
+    $('.hex_send').removeClass("hex_send").addClass("hex_not_send");
+
     $('#send').off("click");
     $('#send').click(function () {
         struct = clicked_action($(this), struct, sendCallback);
