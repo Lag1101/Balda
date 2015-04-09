@@ -54,8 +54,8 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     var game = gamePool.joinGame(user._id);
                     if(game) {
-                        var player1 = users.get(game.hostId);
-                        var player2 = users.get(game.opponentId);
+                        var player1 = users.get(game.host._id);
+                        var player2 = users.get(game.opponent._id);
                         game.emit('ready', player1.username, player2.username);
                         console.log("Joined to game " + user.gameId);
                     }
@@ -91,8 +91,8 @@ module.exports = function(server, sessionStore, cookieParser) {
                         if(user._id === game.currentTurn) {
                             game.field = field;
 
-                            var currentPlayerId = game.hostId === game.currentTurn ? game.opponentId : game.hostId;
-                            var secondPlayerId = game.opponentId === game.currentTurn ? game.opponentId : game.hostId;
+                            var currentPlayerId = game.host._id === game.currentTurn ? game.opponent._id : game.host._id;
+                            var secondPlayerId = game.opponent._id === game.currentTurn ? game.opponent._id : game.host._id;
 
                             game.currentTurn = currentPlayerId;
                             {
