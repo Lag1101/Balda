@@ -5,13 +5,10 @@ var fs = require('fs');
 var util = require('util');
 var Queue = require('../lib/Utils').Queue;
 
-var _id = 0;
-
 function User(user){
-    this._id = user._id || _id;
+    this._id = user._id || 0;
     this.username = user.username;
     this.password = user.password;
-    this.socket = null;
     this.gameId = null;
 }
 
@@ -27,40 +24,45 @@ function UsersCollection(filename){
     } else {
         this.save();
     }
+
+    console.log(this.users);
 }
 
 UsersCollection.prototype.add = function(user) {
-    _id ++;
-    this.users.push(_id, new User(user));
+    var id = 1;
+    if(user._id)
+        id = user._id;
+    else if(this.users.len() > 0)
+        id = this.users.get(this.users.keys[this.users.len()-1])._id + 1;
+    user._id = id;
+    this.users.push(id , new User(user));
     return this.users.get(user._id);
 };
 
 UsersCollection.prototype.authorize = function(username, password, callback){
-    var exist = false;
-    this.users.For(function(index, id, user){
+    for(var i = 0; i < this.users.len(); i++) {
+        var user = this.users.get(this.users.keys[i]);
         if( user.username === username ) {
             if (user.password === password) {
-                callback(null, user);
+                return callback(null, user);
             }
             else {
-                callback(new AuthError("Пароль неверен"));
+                return callback(new AuthError("Пароль неверен"));
             }
-            exist = true;
-            return false;
         }
-    });
-    if(!exist) {
-        var newUser = this.add({username:username, password:password});
-        this.save();
-        callback(null, newUser);
     }
+
+    var newUser = this.add({username:username, password:password});
+    this.save();
+    return callback(null, newUser);
 };
 
 UsersCollection.prototype.save = function() {
     var rawUsers = [];
-    this.users.For(function(index, key, user){
-        rawUsers.push(user);
-    });
+    for(var i = 0; i < this.users.len(); i++) {
+        var user = this.users.get(this.users.keys[i]);
+        rawUsers.push(new User(user));
+    }
     fs.writeFileSync(this.filename, JSON.stringify(rawUsers), 'utf8');
 };
 
