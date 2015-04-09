@@ -9,17 +9,24 @@ var _id = 0;
 function Game() {
     this._id = _id;
     _id ++;
-    this.host = null;
-    this.opponent = null;
+
+    this.startWord = '';
+    this.players = new Queue();
     this.field = []; // todo: need to define field structure
     this.currentTurn = null;
-
 }
 
 Game.Player = function(player) {
     this._id = player._id || 0;
     this.points = player.points || 0;
     this.words = player.words || [];
+};
+Game.Player.prototype.addWord = function(word) {
+    if(word)
+        this.words.push(word);
+};
+Game.Player.prototype.getWords = function() {
+    return this.words;
 };
 
 function Cell(cell){
@@ -28,6 +35,8 @@ function Cell(cell){
 }
 
 Game.prototype.generateField = function(word, size) {
+    this.startWord = word;
+
     var field = [];
 
     var mainLineIndex = Math.floor(size/2);
@@ -59,16 +68,45 @@ Game.prototype.generateField = function(word, size) {
 };
 
 Game.prototype.emit = function(key, val1, val2) {
-    var user1 = users.get(this.host && this.host._id);
-    if( user1 && user1.socket )
-        user1.socket.emit(key, val1, val2);
-
-    var user2 = users.get(this.opponent && this.opponent._id);
-    if( user2 && user2.socket )
-        user2.socket.emit(key, val1, val2);
+    var players = this.players;
+    this.players.keys.map(function(k){
+        var user = users.get(players.get(k)._id);
+        if( user && user.socket )
+            user.socket.emit(key, val1, val2);
+    });
 };
 Game.prototype.ready = function() {
-    return !!(this.host != null && this.opponent != null);
+    return this.players.len() >= 2;
+};
+
+Game.prototype.firstPlayer = function() {
+    return this.players.get(this.players.keys[0]);
+};
+Game.prototype.secondPlayer = function() {
+    return this.players.get(this.players.keys[1]);
+};
+Game.prototype.getUsedWords = function() {
+    var usedWords = [this.startWord];
+    this.firstPlayer().getWords().map(function(word){
+        usedWords.push(word);
+    });
+    this.secondPlayer().getWords().map(function(word){
+        usedWords.push(word);
+    });
+    return usedWords;
+};
+Game.prototype.setField = function(field) {
+    this.field = field;
+};
+Game.prototype.getField = function(field) {
+    return this.field;
+};
+Game.prototype.createState = function(turn) {
+    return {
+        field: this.getField(),
+        usedWords: this.getUsedWords(),
+        turn: turn
+    }
 };
 
 function GamePool(){
@@ -80,9 +118,10 @@ function GamePool(){
 GamePool.prototype.createGame = function(player1) {
     var game  = new Game();
 
-    game.host = new Game.Player({
+    game.players.push(player1, new Game.Player({
         _id: player1
-    });
+    }));
+
     users.get(player1).gameId = game._id;
 
     this.waitingQueue.push(game._id, game);
@@ -96,9 +135,10 @@ GamePool.prototype.joinGame = function(player2) {
     var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game.opponent = new Game.Player({
+    game.players.push(player2, new Game.Player({
         _id: player2
-    });
+    }));
+
     users.get(player2).gameId = game._id;
 
     this.runningQueue.push(game._id, game);
@@ -110,14 +150,11 @@ GamePool.prototype.deleteGame = function(id) {
     var game = this.get(id);
     if(!game) return false;
 
-    if(game.host) {
-        var host = users.get(game.host._id);
-        if (host) host.gameId = null;
-    }
-    if(game.opponent) {
-        var opponent = users.get(game.opponent._id);
-        if (opponent) opponent.gameId = null;
-    }
+    if(this.players && this.players.keys)
+    this.players.keys.map(function(key){
+        var user = users.get(game.players.get(key)._id);
+        if (user) user.gameId = null;
+    });
 
     this.waitingQueue.erase(id);
     this.runningQueue.erase(id);

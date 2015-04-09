@@ -54,8 +54,8 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     var game = gamePool.joinGame(user._id);
                     if(game) {
-                        var player1 = users.get(game.host._id);
-                        var player2 = users.get(game.opponent._id);
+                        var player1 = users.get(game.firstPlayer()._id);
+                        var player2 = users.get(game.secondPlayer()._id);
                         game.emit('ready', player1.username, player2.username);
                         console.log("Joined to game " + user.gameId);
                     }
@@ -72,10 +72,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                 .on('state', function() {
                     console.log('state event');
 
-                    var state = {
-                        field: gamePool.get(user.gameId).field,
-                        turn: turn()
-                    };
+                    var state = gamePool.get(user.gameId).createState(turn());
                     console.log('emited to', user.username, state);
                     socket.emit('state', state);
                 })
@@ -89,35 +86,21 @@ module.exports = function(server, sessionStore, cookieParser) {
                             game.currentTurn = user._id;
                         }
                         if(user._id === game.currentTurn) {
-                            game.field = field;
+                            game.setField(field);
 
-                            var currentPlayerId = game.host._id === game.currentTurn ? game.opponent._id : game.host._id;
-                            var secondPlayerId = game.opponent._id === game.currentTurn ? game.opponent._id : game.host._id;
+                            game.players.get(user._id).addWord(word);
 
-                            game.currentTurn = currentPlayerId;
-                            {
-                                var state = {
-                                    field: game.field,
-                                    turn: "true"
-                                };
-                                console.log('emited to', users.get(currentPlayerId).username, state);
-                                users.get(currentPlayerId).socket.emit('state', state);
-                            }
-                            {
-                                var state = {
-                                    field: game.field,
-                                    turn: "false"
-                                };
-                                console.log('emited to', users.get(secondPlayerId).username, state);
-                                users.get(secondPlayerId).socket.emit('state', state);
-                            }
+                            game.players.keys.map(function(key){
+                                var state = game.createState((game.currentTurn === game.firstPlayer()._id) ? "true" : "false");
+                                var player = game.players.get(key);
+                                var user =  users.get(player._id);
+                                console.log('emited to', user.username, state);
+                                user.socket.emit('state', state);
+                            });
                         }
                     }
                     else {
-                        var state = {
-                            field: game.field,
-                            turn: "true"
-                        };
+                        var state = game.createState("true");
                         console.log('emited to', user.username, state);
                         socket.emit('state', state);
                     }
