@@ -25,10 +25,12 @@ function creating()
             span.append(
                 $('<p></p>')
                     .addClass('fieldForPoints')
-                    .text('5')
+                    .text("")
             );
             span.append(
-                $('<p></p>').addClass('fieldForLetter')
+                $('<p></p>')
+                    .addClass('fieldForLetter')
+                    .text("")
             );
 
 
@@ -77,7 +79,8 @@ function initialize(state, sendCallback) {
             hex_obj.find('.fieldForLetter').text(state.field[counter].letter);
             if(! state.field[counter].letter == '')
             {
-                console.log('пишем : ' + hex_obj.attr("id") + ' ' + state.field[counter].letter);
+                hex_obj.find('.fieldForPoints').text("");
+
                 if(hex_obj.is(".hex_dis_nw")) {
                     hex_obj.removeClass("hex_dis_nw").addClass("hex_dis_ww");
                 }
@@ -85,9 +88,12 @@ function initialize(state, sendCallback) {
                     hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
                 }
             }
-            else if( state.field[counter].letter == '' && hex_obj.is(".hex_dis_ww"))
-            {
-                hex_obj.removeClass("hex_dis_ww").addClass("hex_dis_nw");
+            else {
+                hex_obj.find('.fieldForPoints').text(state.field[counter].points);
+
+                if (state.field[counter].letter == '' && hex_obj.is(".hex_dis_ww")) {
+                    hex_obj.removeClass("hex_dis_ww").addClass("hex_dis_nw");
+                }
             }
             counter++;
         }
