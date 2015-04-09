@@ -11,7 +11,7 @@ function Game() {
     _id ++;
     this.hostId = null;
     this.opponentId = null;
-    this.field = ['t','e','s','t']; // todo: need to define field structure
+    this.field = []; // todo: need to define field structure
     this.currentTurn = null;
 }
 
