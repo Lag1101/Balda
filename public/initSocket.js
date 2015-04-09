@@ -19,10 +19,10 @@ function initSocket() {
         })
         .on('ready',function(p1, p2){
             printState(p1 + " vs " + p2);
+            creating();
             socket.emit('state');
         })
         .on('state', function (state) {
-            creating();
             initialize(state, function(word,field)
             {
                 socket.emit('checkAndCommit', word, field)

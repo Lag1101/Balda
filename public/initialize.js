@@ -74,10 +74,10 @@ function initialize(state, sendCallback) {
                 struct = clicked_action($(this), struct, sendCallback);
                 needed_action = struct.ret_act;
             });
-            hex_obj.find('.fieldForLetter').text(state.field[counter]);
-            if(! state.field[counter] == '')
+            hex_obj.find('.fieldForLetter').text(state.field[counter].letter);
+            if(! state.field[counter].letter == '')
             {
-                console.log('пишем : ' + hex_obj.attr("id") + ' ' + state.field[counter]);
+                console.log('пишем : ' + hex_obj.attr("id") + ' ' + state.field[counter].letter);
                 if(hex_obj.is(".hex_dis_nw")) {
                     hex_obj.removeClass("hex_dis_nw").addClass("hex_dis_ww");
                 }
@@ -85,7 +85,7 @@ function initialize(state, sendCallback) {
                     hex_obj.removeClass("hex_act_nw").addClass("hex_dis_ww");
                 }
             }
-            else if( state.field[counter] == '' && hex_obj.is(".hex_dis_ww"))
+            else if( state.field[counter].letter == '' && hex_obj.is(".hex_dis_ww"))
             {
                 hex_obj.removeClass("hex_dis_ww").addClass("hex_dis_nw");
             }

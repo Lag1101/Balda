@@ -42,7 +42,7 @@ function get_near_hexes(field)
         {
             var k = i>3?i-3+j:j;
 
-            if(! field[counter] == '')
+            if(! field[counter].letter == '')
             {
 
                 var i1 = i - 1, i2 = i + 1, k1 = k - 1, k2 = k + 1; // угроза

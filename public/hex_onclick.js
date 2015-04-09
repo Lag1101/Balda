@@ -50,7 +50,7 @@ function changeField(struct, hex_obj) {
             var k = i > 3 ? i - 3 + j : j;
 
             if (hex_obj.attr("id") == $('#hex' + i + k).attr("id")) {
-                struct.ret_field[counter] = hex_obj.find('.fieldForLetter').text();
+                struct.ret_field[counter].letter = hex_obj.find('.fieldForLetter').text();
             }
             counter++;
         }
