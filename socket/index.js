@@ -49,7 +49,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                     game.fillBonusLetters();
 
                     game.emit('waiting');
-                    game.emit('bonusLetters', game.getBonusLetters());
+
                     console.log("Created game " + user.gameId);
                     console.log("Games count " + gamePool.len());
                 })
@@ -60,6 +60,9 @@ module.exports = function(server, sessionStore, cookieParser) {
                     if(game) {
                         var player1 = users.get(game.firstPlayer()._id);
                         var player2 = users.get(game.secondPlayer()._id);
+
+                        game.emit('bonusLetters', game.getBonusLetters());
+                        game.emit('points', {me:0, opponent:0});
                         game.emit('ready', player1.username, player2.username);
                         console.log("Joined to game " + user.gameId);
                     }
@@ -100,11 +103,11 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                             users.get(firstPlayerId).socket.emit('points', {
                                 me: players.get(firstPlayerId).getPoints(),
-                                enemy: players.get(secondPlayerId).getPoints()
+                                opponent: players.get(secondPlayerId).getPoints()
                             });
                             users.get(secondPlayerId).socket.emit('points', {
                                 me: players.get(secondPlayerId).getPoints(),
-                                enemy: players.get(firstPlayerId).getPoints()
+                                opponent: players.get(firstPlayerId).getPoints()
                             });
 
                             players.get(user._id).addWord(word);

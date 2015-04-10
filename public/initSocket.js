@@ -23,6 +23,7 @@ function initSocket() {
             socket.emit('state');
         })
         .on('state', function (state) {
+            statsController.setWords(state.usedWords);
             initialize(state, function(word,field)
             {
                 socket.emit('checkAndCommit', word, field)
@@ -31,6 +32,14 @@ function initSocket() {
         .on('disconnected', function(username) {
             printState(username + " disconnected");
         })
+        .on('points', function(points){
+            statsController.setPoints(points.me, points.opponent);
+        })
+        .on('bonusLetters', function(bonusLetters){
+            statsController.setBonusLetters(bonusLetters);
+        });
+
+
 
     function printState(state) {
         $('#state').text(state);

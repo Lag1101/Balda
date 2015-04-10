@@ -12,6 +12,9 @@
     <script language="JavaScript" src="initialize.js"></script>
     <script language="JavaScript" src="neigh_hex.js"></script>
     <script language="JavaScript" src="initSocket.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css"/>
+    <script src="javascripts/StatsController.js"></script>
 </head>
 <body>
 
@@ -22,11 +25,25 @@
         <button id="Join">Join</button>
     </div>
 
+    <div id="stats" class="stats">
+        <div class="points">
+            <p>My points: </p><p class="me"></p>
+            <p>Opponent's points: </p><p class="opponent"></p>
+        </div>
+        <div>
+            <h2>Bonus letters</h2>
+            <ul class="bonusLetters"></ul>
+        </div>
+        <div>
+            <h2>Used words</h2>
+            <ul class="words"></ul>
+        </div>
+    </div>
 
-<script>
-    initSocket();
-
-    //initialize();
-</script>
+    <script>
+        var statsController = new StatsController("stats");
+        initSocket();
+        //initialize();
+    </script>
 </body>
 </html>

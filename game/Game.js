@@ -95,7 +95,7 @@ Game.prototype.secondPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
 Game.prototype.getUsedWords = function() {
-    var usedWords = [this.startWord];
+    var usedWords = [];
     this.firstPlayer().getWords().map(function(word){
         usedWords.push(word);
     });
