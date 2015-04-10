@@ -1,15 +1,28 @@
 /**
- * Created by vasiliy.lomanov on 10.04.2015.
+ * Created by luckybug on 11.04.15.
  */
-
 var StatsController = (function(){
     function StatsController(containerId){
-        this.container = $("#"+containerId);
-        this.myPointsEl = this.container.find(".me");
-        this.opponentPointsEl = this.container.find(".opponent");
-        this.bonusLettersEl = this.container.find(".bonusLetters");
-        this.myWordsEl = this.container.find(".myWords");
-        this.opponentWordsEl = this.container.find(".opponentWords");
+        var container = $("#"+containerId);
+
+        var _this = this;
+        container.load("/views/stats/index.html", function(){
+
+            _this.statsEl = container.find(".stats");
+
+            var pointsEl = _this.statsEl.find(".points");
+
+            _this.myPointsEl = pointsEl.find(".me");
+            _this.opponentPointsEl = pointsEl.find(".opponent");
+
+            var bonusLettersContainerEl = _this.statsEl.find(".bonusLettersContainer");
+
+            _this.bonusLettersEl = bonusLettersContainerEl.find(".bonusLetters");
+
+            var wordsEl = _this.statsEl.find(".words");
+            _this.myWordsEl = wordsEl.find(".myWords");
+            _this.opponentWordsEl = wordsEl.find(".opponentWords");
+        });
     }
 
     StatsController.prototype.setPoints = function(myPoints, opponentPoints) {
