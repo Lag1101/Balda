@@ -2,19 +2,26 @@
  * Created by vasiliy.lomanov on 10.04.2015.
  */
 
-const Events = {
-    checkWord:              1,
-    checkAndCommit:         2,
-    state:                  3,
-    message:                4,
-    joinGame:               5,
-    createGame:             6,
-    points:                 7,
-    usedWords:              8,
-    waiting:                9,
-    ready:                  10,
-    bonusLetters:           11
-};
+const Events = (function(){
+    var _id = 0;
+    function getId(){
+        _id++;
+        return _id;
+    }
+    return {
+        checkWord: getId(),
+        checkAndCommit: getId(),
+        state: getId(),
+        message: getId(),
+        joinGame: getId(),
+        createGame: getId(),
+        points: getId(),
+        usedWords: getId(),
+        waiting: getId(),
+        ready: getId(),
+        bonusLetters: getId()
+    };
+})();
 
 try{
     module.exports = Events;
