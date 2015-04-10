@@ -4,6 +4,7 @@ var users = require('../models/UserModel').users;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
 var WordTree = require('../lib/WordTree');
+var Events = require('../shared/Events');
 
 var wordTree = new WordTree('./Words.txt');
 
@@ -40,7 +41,7 @@ module.exports = function(server, sessionStore, cookieParser) {
             }
 
             socket
-                .on('CreateGame', function(wordSize, fieldSize){
+                .on(Events.createGame, function(wordSize, fieldSize){
                     clear(user.gameId);
 
                     var game = gamePool.createGame(user._id);
@@ -48,12 +49,12 @@ module.exports = function(server, sessionStore, cookieParser) {
                     game.generateField(wordTree.getRandomWordByLettersCount(wordSize), fieldSize);
                     game.fillBonusLetters();
 
-                    game.emit('waiting');
+                    game.emit(Events.waiting);
 
                     console.log("Created game " + user.gameId);
                     console.log("Games count " + gamePool.len());
                 })
-                .on('JoinGame', function(){
+                .on(Events.joinGame, function(){
                     clear(user.gameId);
 
                     var game = gamePool.joinGame(user._id);
@@ -61,14 +62,14 @@ module.exports = function(server, sessionStore, cookieParser) {
                         var player1 = users.get(game.firstPlayer()._id);
                         var player2 = users.get(game.secondPlayer()._id);
 
-                        game.emit('bonusLetters', game.getBonusLetters());
-                        game.emit('points', {me:0, opponent:0});
-                        game.emit('ready', player1.username, player2.username);
+                        game.emit(Events.bonusLetters, game.getBonusLetters());
+                        game.emit(Events.points, {me:0, opponent:0});
+                        game.emit(Events.ready, player1.username, player2.username);
                         console.log("Joined to game " + user.gameId);
                     }
                 })
-                .on('message', function(text, cb) {
-                    gamePool.get(user.gameId).emit('message', text);
+                .on(Events.message, function(text, cb) {
+                    gamePool.get(user.gameId).emit(Events.message, text);
                     cb && cb();
                 })
                 .on('disconnect', function() {
@@ -76,14 +77,14 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     clear(user.gameId);
                 })
-                .on('state', function() {
+                .on(Events.state, function() {
                     console.log('state event');
 
                     var state = gamePool.get(user.gameId).createState(turn());
                     console.log('emited to', user.username, state);
-                    socket.emit('state', state);
+                    socket.emit(Events.state, state);
                 })
-                .on('checkAndCommit', function(word, field){
+                .on(Events.checkAndCommit, function(word, field){
 
                     console.log('checkAndCommit event', word, field);
 
@@ -108,20 +109,20 @@ module.exports = function(server, sessionStore, cookieParser) {
                             game.currentTurn = (firstPlayerId === user._id) ? secondPlayerId : firstPlayerId;
 
 
-                            firstUser.socket.emit('points', {
+                            firstUser.socket.emit(Events.points, {
                                 me: firstPlayer.getPoints(),
                                 opponent: secondPlayer.getPoints()
                             });
-                            secondUser.socket.emit('points', {
+                            secondUser.socket.emit(Events.points, {
                                 me: secondPlayer.getPoints(),
                                 opponent: firstPlayer.getPoints()
                             });
 
-                            firstUser.socket.emit('usedWords', {
+                            firstUser.socket.emit(Events.usedWords, {
                                 me: firstPlayer.getWords(),
                                 opponent: secondPlayer.getWords()
                             });
-                            secondUser.socket.emit('usedWords', {
+                            secondUser.socket.emit(Events.usedWords, {
                                 me: secondPlayer.getWords(),
                                 opponent: firstPlayer.getWords()
                             });
@@ -132,7 +133,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                                 var curUser =  users.get(player._id);
                                 var state = game.createState((game.currentTurn === player._id) ? "true" : "false");
                                 console.log('emited to', curUser.username, state);
-                                curUser.socket.emit('state', state);
+                                curUser.socket.emit(Events.state, state);
                             });
 
                         }
@@ -140,13 +141,13 @@ module.exports = function(server, sessionStore, cookieParser) {
                     else {
                         var state = game.createState("true");
                         console.log('emited to', user.username, state);
-                        socket.emit('state', state);
+                        socket.emit(Events.state, state);
                     }
                 })
-                .on('checkWord', function(word, cb) {
+                .on(Events.checkWord, function(word, cb) {
                     console.log('checkWord event', word);
                     var ans = wordTree.exist(word) ? "true" : "false";
-                    socket.emit('checkWord', ans);
+                    socket.emit(Events.checkWord, ans);
                     cb && cb();
                 });
         });

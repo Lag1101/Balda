@@ -37,6 +37,7 @@ app.use(session({
 
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'shared')));
 
 require('./routes')(app);
 
