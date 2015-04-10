@@ -87,14 +87,27 @@ module.exports = function(server, sessionStore, cookieParser) {
                             game.currentTurn = user._id;
                         }
                         if(user._id === game.currentTurn) {
-                            game.players.get(user._id).addPoints(Game.calcPointsByNewField(game.getField(), field));
+                            var players = game.players;
+                            var firstPlayerId = game.firstPlayer()._id;
+                            var secondPlayerId = game.secondPlayer()._id;
+                            players.get(user._id).addPoints(Game.calcPointsByNewField(game.getField(), field));
                             game.setField(field);
 
-                            game.currentTurn = (game.firstPlayer()._id === user._id) ? game.secondPlayer()._id : game.firstPlayer()._id;
+                            game.currentTurn = (firstPlayerId === user._id) ? secondPlayerId : firstPlayerId;
 
-                            game.players.get(user._id).addWord(word);
-                            game.players.keys.map(function(key){
-                                var player = game.players.get(key);
+                            users.get(firstPlayerId).socket.emit('points', {
+                                me: players.get(firstPlayerId).getPoints(),
+                                enemy: players.get(secondPlayerId).getPoints()
+                            });
+                            users.get(secondPlayerId).socket.emit('points', {
+                                me: players.get(secondPlayerId).getPoints(),
+                                enemy: players.get(firstPlayerId).getPoints()
+                            });
+
+                            players.get(user._id).addWord(word);
+
+                            players.keys.map(function(key){
+                                var player = players.get(key);
                                 var curUser =  users.get(player._id);
                                 var state = game.createState((game.currentTurn === player._id) ? "true" : "false");
                                 console.log('emited to', curUser.username, state);

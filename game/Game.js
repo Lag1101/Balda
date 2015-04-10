@@ -124,18 +124,6 @@ Game.prototype.createState = function(turn) {
         usedWords: this.getUsedWords(),
         turn: turn
     };
-
-    var players = {};
-    var _this = this;
-    this.players.keys.map(function(key){
-        var player = _this.players.get(key);
-        players[users.get(player._id).username] = {
-            points: player.getPoints()
-        };
-    });
-
-    state.players = players;
-
     return state;
 };
 
