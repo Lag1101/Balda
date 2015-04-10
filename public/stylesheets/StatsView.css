@@ -1,7 +1,1 @@
-.stats {
-  width: 300px;
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 4;
-}
+.stats{width:300px;position:fixed;top:0;right:0;z-index:4}

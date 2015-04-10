@@ -8,7 +8,8 @@ var StatsController = (function(){
         this.myPointsEl = this.container.find(".me");
         this.opponentPointsEl = this.container.find(".opponent");
         this.bonusLettersEl = this.container.find(".bonusLetters");
-        this.wordsEl = this.container.find(".words");
+        this.myWordsEl = this.container.find(".myWords");
+        this.opponentWordsEl = this.container.find(".opponentWords");
     }
 
     StatsController.prototype.setPoints = function(myPoints, opponentPoints) {
@@ -24,11 +25,16 @@ var StatsController = (function(){
         });
     };
 
-    StatsController.prototype.setWords = function(words) {
-        this.wordsEl.empty();
-        var wordsEl = this.wordsEl;
-        words.map(function(word){
-            $('<li>').text(word).appendTo(wordsEl);
+    StatsController.prototype.setWords = function(myWords, opponentWords) {
+        this.myWordsEl.empty();
+        var myWordsEl = this.myWordsEl;
+        myWords.map(function(word){
+            $('<li>').text(word).appendTo(myWordsEl);
+        });
+        this.opponentWordsEl.empty();
+        var opponentWordsEl = this.opponentWordsEl;
+        opponentWords.map(function(word){
+            $('<li>').text(word).appendTo(opponentWordsEl);
         });
     };
 

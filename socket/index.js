@@ -96,21 +96,36 @@ module.exports = function(server, sessionStore, cookieParser) {
                             var players = game.players;
                             var firstPlayerId = game.firstPlayer()._id;
                             var secondPlayerId = game.secondPlayer()._id;
+                            var firstPlayer = players.get(firstPlayerId);
+                            var secondPlayer = players.get(secondPlayerId);
+                            var firstUser = users.get(firstPlayerId);
+                            var secondUser = users.get(secondPlayerId);
+
+                            players.get(user._id).addWord(word);
                             players.get(user._id).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
                             game.currentTurn = (firstPlayerId === user._id) ? secondPlayerId : firstPlayerId;
 
-                            users.get(firstPlayerId).socket.emit('points', {
-                                me: players.get(firstPlayerId).getPoints(),
-                                opponent: players.get(secondPlayerId).getPoints()
+
+                            firstUser.socket.emit('points', {
+                                me: firstPlayer.getPoints(),
+                                opponent: secondPlayer.getPoints()
                             });
-                            users.get(secondPlayerId).socket.emit('points', {
-                                me: players.get(secondPlayerId).getPoints(),
-                                opponent: players.get(firstPlayerId).getPoints()
+                            secondUser.socket.emit('points', {
+                                me: secondPlayer.getPoints(),
+                                opponent: firstPlayer.getPoints()
                             });
 
-                            players.get(user._id).addWord(word);
+                            firstUser.socket.emit('usedWords', {
+                                me: firstPlayer.getWords(),
+                                opponent: secondPlayer.getWords()
+                            });
+                            secondUser.socket.emit('usedWords', {
+                                me: secondPlayer.getWords(),
+                                opponent: firstPlayer.getWords()
+                            });
+
 
                             players.keys.map(function(key){
                                 var player = players.get(key);

@@ -23,7 +23,6 @@ function initSocket() {
             socket.emit('state');
         })
         .on('state', function (state) {
-            statsController.setWords(state.usedWords);
             initialize(state, function(word,field)
             {
                 socket.emit('checkAndCommit', word, field)
@@ -37,6 +36,9 @@ function initSocket() {
         })
         .on('bonusLetters', function(bonusLetters){
             statsController.setBonusLetters(bonusLetters);
+        })
+        .on('usedWords', function(words){
+            statsController.setWords(words.me, words.opponent);
         });
 
 

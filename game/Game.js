@@ -94,16 +94,6 @@ Game.prototype.firstPlayer = function() {
 Game.prototype.secondPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
-Game.prototype.getUsedWords = function() {
-    var usedWords = [];
-    this.firstPlayer().getWords().map(function(word){
-        usedWords.push(word);
-    });
-    this.secondPlayer().getWords().map(function(word){
-        usedWords.push(word);
-    });
-    return usedWords;
-};
 Game.prototype.calcPointsByNewField = function(newField) {
     var points = 0;
     var currentField = this.field;
@@ -129,7 +119,6 @@ Game.prototype.getField = function() {
 Game.prototype.createState = function(turn) {
     var state = {
         field: this.getField(),
-        usedWords: this.getUsedWords(),
         turn: turn
     };
     return state;
