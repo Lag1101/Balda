@@ -1,6 +1,7 @@
 var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
 var users = require('../models/UserModel').users;
+var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
 var WordTree = require('../lib/WordTree');
 
@@ -86,6 +87,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                             game.currentTurn = user._id;
                         }
                         if(user._id === game.currentTurn) {
+                            game.players.get(user._id).addPoints(Game.calcPointsByNewField(game.getField(), field));
                             game.setField(field);
 
                             game.currentTurn = (game.firstPlayer()._id === user._id) ? game.secondPlayer()._id : game.firstPlayer()._id;

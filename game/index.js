@@ -3,7 +3,8 @@
  */
 
 var users = require('../models/UserModel').users;
-var Queue = require('../lib/Utils').Queue;
+var Utils = require('../lib/Utils');
+var Queue = Utils.Queue;
 
 var _id = 0;
 function Game() {
@@ -20,6 +21,12 @@ Game.Player = function(player) {
     this._id = player._id || 0;
     this.points = player.points || 0;
     this.words = player.words || [];
+};
+Game.Player.prototype.addPoints = function(points){
+    this.points += points;
+};
+Game.Player.prototype.getPoints = function(){
+    return this.points;
 };
 Game.Player.prototype.addWord = function(word) {
     if(word)
@@ -95,18 +102,41 @@ Game.prototype.getUsedWords = function() {
     });
     return usedWords;
 };
+Game.calcPointsByNewField = function(currentField, newField) {
+    var points = 0;
+
+    Utils.xRange({end: currentField.length}).map(function(i) {
+        if(newField[i].letter !== currentField[i].letter)
+            points += currentField[i].points;
+    });
+
+    return points;
+};
 Game.prototype.setField = function(field) {
     this.field = field;
 };
-Game.prototype.getField = function(field) {
+Game.prototype.getField = function() {
     return this.field;
 };
 Game.prototype.createState = function(turn) {
-    return {
+    var state = {
         field: this.getField(),
         usedWords: this.getUsedWords(),
         turn: turn
-    }
+    };
+
+    var players = {};
+    var _this = this;
+    this.players.keys.map(function(key){
+        var player = _this.players.get(key);
+        players[users.get(player._id).username] = {
+            points: player.getPoints()
+        };
+    });
+
+    state.players = players;
+
+    return state;
 };
 
 function GamePool(){
@@ -172,4 +202,5 @@ GamePool.prototype.len = function() {
 
 module.exports.gamePool = module.exports.gamePool || new GamePool();
 
+module.exports.Game = Game;
 module.exports.GamePool = GamePool;
