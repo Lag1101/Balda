@@ -15,6 +15,8 @@ function Game() {
     this.players = new Queue();
     this.field = []; // todo: need to define field structure
     this.currentTurn = null;
+
+    this.bonusLetters = new Queue();
 }
 
 Game.Player = function(player) {
@@ -102,12 +104,18 @@ Game.prototype.getUsedWords = function() {
     });
     return usedWords;
 };
-Game.calcPointsByNewField = function(currentField, newField) {
+Game.prototype.calcPointsByNewField = function(newField) {
     var points = 0;
+    var currentField = this.field;
+    var bonusLetters = this.bonusLetters;
 
     Utils.xRange({end: currentField.length}).map(function(i) {
-        if(newField[i].letter !== currentField[i].letter)
+        var newLetter = newField[i].letter;
+        if(newLetter !== currentField[i].letter){
             points += currentField[i].points;
+            if(bonusLetters.exist(newLetter))
+                points += bonusLetters.get(newLetter);
+        }
     });
 
     return points;
@@ -126,5 +134,26 @@ Game.prototype.createState = function(turn) {
     };
     return state;
 };
+
+Game.prototype.fillBonusLetters = function(){
+    this.bonusLetters.push('е', 2);
+    this.bonusLetters.push('р', 3);
+    this.bonusLetters.push('я', 5);
+};
+
+Game.prototype.getBonusLetters = function(){
+    var bonusLettersCells = [];
+    var bonusLetters = this.bonusLetters;
+
+    bonusLetters.keys.map(function(letter){
+        bonusLettersCells.push(new Cell({
+            letter: letter,
+            points: bonusLetters.get(letter)
+        }));
+    });
+
+    return bonusLettersCells;
+};
+
 
 module.exports = Game;

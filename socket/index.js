@@ -46,7 +46,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                     var game = gamePool.createGame(user._id);
 
                     game.generateField(wordTree.getRandomWordByLettersCount(wordSize), fieldSize);
+                    game.fillBonusLetters();
+
                     game.emit('waiting');
+                    game.emit('bonusLetters', game.getBonusLetters());
                     console.log("Created game " + user.gameId);
                     console.log("Games count " + gamePool.len());
                 })
@@ -90,7 +93,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                             var players = game.players;
                             var firstPlayerId = game.firstPlayer()._id;
                             var secondPlayerId = game.secondPlayer()._id;
-                            players.get(user._id).addPoints(Game.calcPointsByNewField(game.getField(), field));
+                            players.get(user._id).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
                             game.currentTurn = (firstPlayerId === user._id) ? secondPlayerId : firstPlayerId;
