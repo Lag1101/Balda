@@ -22,6 +22,10 @@ var schema = new Schema({
     created: {
         type: Date,
         default: Date.now
+    },
+    gameId: {
+        type: number,
+        default: 0
     }
 });
 
