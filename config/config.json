@@ -9,5 +9,8 @@
       "httpOnly": true,
       "maxAge": null
     }
+  },
+  "mongoose": {
+    "uri": "mongodb://91.219.165.141:3001/users"
   }
 }
