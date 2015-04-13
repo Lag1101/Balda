@@ -14,7 +14,7 @@ function Game() {
 
     this.players = new Queue();
     this.field = []; // todo: need to define field structure
-    this.currentTurn = null;
+    this.currentPlayerUsername = null;
 
     this.bonusLetters = new Queue();
 }
@@ -23,7 +23,13 @@ Game.Player = function(player) {
     this.user = player.user;
     this.points = player.points || 0;
     this.words = player.words || [];
+
 };
+Object.defineProperty(Game.Player.prototype, "id", { get: function () {
+    return this.user.username;
+}});
+
+
 Game.Player.prototype.addPoints = function(points){
     this.points += points;
 };

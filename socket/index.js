@@ -33,10 +33,10 @@ module.exports = function(server, sessionStore, cookieParser) {
 
             function turn() {
                 var game = gamePool.get(user.gameId);
-                if(game.currentTurn === null)
+                if(game.currentPlayerUsername === null)
                     return "true";
                 else
-                    return user.is(game.currentTurn) ? "true" : "false";
+                    return user.is(game.currentPlayerUsername) ? "true" : "false";
             }
 
             socket
@@ -89,23 +89,21 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     var game = gamePool.get(user.gameId);
                     if(wordTree.exist(word)) {
-                        if(game.currentTurn === null){
-                            game.currentTurn = user._id;
+                        if(game.currentPlayerUsername === null){
+                            game.currentPlayerUsername = user.username;
                         }
-                        if(user._id === game.currentTurn) {
+                        if(game.currentPlayerUsername === user.username) {
                             var players = game.players;
-                            var firstPlayerId = game.firstPlayer()._id;
-                            var secondPlayerId = game.secondPlayer()._id;
-                            var firstPlayer = players.get(firstPlayerId);
-                            var secondPlayer = players.get(secondPlayerId);
-                            var firstUser = game.firstPlayer().user;
-                            var secondUser = game.secondPlayer().user;
+                            var firstPlayer = game.firstPlayer();
+                            var secondPlayer = game.secondPlayer();
+                            var firstUser = firstPlayer.user;
+                            var secondUser = secondPlayer.user;
 
-                            players.get(user._id).addWord(word);
-                            players.get(user._id).addPoints(game.calcPointsByNewField(field));
+                            players.get(user.username).addWord(word);
+                            players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
-                            game.currentTurn = (firstPlayerId === user._id) ? secondPlayerId : firstPlayerId;
+                            game.currentPlayerUsername = (firstPlayer.id === user.username) ? secondPlayer.id : firstPlayer.id;
 
 
                             firstUser.socket.emit(Events.points, {
@@ -130,7 +128,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                             players.keys.map(function(key){
                                 var player = players.get(key);
                                 var curUser =  player.user;
-                                var state = game.createState((game.currentTurn === player._id) ? "true" : "false");
+                                var state = game.createState((game.currentPlayerUsername === curUser.username) ? "true" : "false");
                                 console.log('emited to', curUser.username, state);
                                 curUser.socket.emit(Events.state, state);
                             });

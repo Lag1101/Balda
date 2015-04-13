@@ -14,7 +14,7 @@ function GamePool(){
 GamePool.prototype.createGame = function(user1) {
     var game  = new Game();
 
-    game.players.push(user1._id, new Game.Player({
+    game.players.push(user1.username, new Game.Player({
         user: user1
     }));
 
@@ -31,7 +31,7 @@ GamePool.prototype.joinGame = function(user2) {
     var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game.players.push(user2, new Game.Player({
+    game.players.push(user2.username, new Game.Player({
         user: user2
     }));
 

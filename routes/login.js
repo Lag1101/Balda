@@ -26,7 +26,7 @@ router.route('/')
             }
 
             req.session.user = user._id;
-            res.send({});
+            res.end();
         });
     } );
 
