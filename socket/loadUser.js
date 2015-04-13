@@ -75,4 +75,4 @@ module.exports = function(sessionStore, cookieParser, socket) {
 
 
     return fullLoadUser;
-}
+};

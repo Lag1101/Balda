@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 
         res.render('frontpage', {
             title: config.get('title'),
-            user: user.username
+            user: user && user.username
         });
     });
 });

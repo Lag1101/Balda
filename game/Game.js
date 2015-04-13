@@ -123,11 +123,10 @@ Game.prototype.getField = function() {
     return this.field;
 };
 Game.prototype.createState = function(turn) {
-    var state = {
+    return {
         field: this.getField(),
         turn: turn
     };
-    return state;
 };
 
 Game.prototype.fillBonusLetters = function(){

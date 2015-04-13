@@ -1,0 +1,61 @@
+@border: 10px;
+@a: 100px;
+
+@scale: sqrt(2);
+
+.hexagon {
+  position: relative;
+  width: sqrt(3)*@a;
+  height: @a;
+  align-content: center;
+
+  border-left: solid @border/sqrt(2) #333333;
+  border-right: solid @border/sqrt(2) #333333;
+
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+
+.hexagon:before,
+.hexagon:after {
+  content: "";
+  z-index: 1;
+  position: absolute;
+  width: @a*sqrt(3/2);
+  height: @a*sqrt(3/2);
+
+  left: @a*(0.5*sqrt(3) - 0.5*sqrt(3/2))-@border/2;
+
+  transform: scaleY(1/sqrt(3)) rotate(-45deg);
+
+  background-color: inherit;
+
+
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+
+.hexagon:before{
+  top: -0.5*@a*sqrt(3.0/2.0)- @border/2;
+  border-top: solid @border #333333;
+  border-right: solid @border #333333;
+}
+.hexagon:after{
+  bottom: -0.5*@a*sqrt(3.0/2.0) - @border/2;
+  border-bottom: solid @border #333333;
+  border-left: solid @border #333333;
+}
+
+.hexagon .shadowSpan {
+
+  width: sqrt(3)*@a - @border*sqrt(2);
+  height: @a;
+  display: block;
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+  background: inherit;
+
+  left: -@border*sqrt(2)/2;
+
+  border-left: solid @border*sqrt(2) #333333;
+  border-right: solid @border*sqrt(2) #333333;
+}
