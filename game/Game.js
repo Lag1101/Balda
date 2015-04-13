@@ -4,7 +4,6 @@
 
 var Utils = require('../lib/Utils');
 var Queue = Utils.Queue;
-var users = require('../models/UserModel').users;
 
 var _id = 0;
 function Game() {
@@ -12,6 +11,7 @@ function Game() {
     _id ++;
 
     this.startWord = '';
+
     this.players = new Queue();
     this.field = []; // todo: need to define field structure
     this.currentTurn = null;
@@ -20,7 +20,7 @@ function Game() {
 }
 
 Game.Player = function(player) {
-    this._id = player._id || 0;
+    this.user = player.user;
     this.points = player.points || 0;
     this.words = player.words || [];
 };
@@ -79,7 +79,7 @@ Game.prototype.generateField = function(word, size) {
 Game.prototype.emit = function(key, val1, val2) {
     var players = this.players;
     this.players.keys.map(function(k){
-        var user = users.get(players.get(k)._id);
+        var user = players.get(k).user;
         if( user && user.socket )
             user.socket.emit(key, val1, val2);
     });

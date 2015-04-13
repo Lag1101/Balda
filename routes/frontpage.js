@@ -4,13 +4,18 @@
 var express = require('express');
 var router = express.Router();
 var config = require('../config');
-var users = require('../models/UserModel').users;
+var User = require('../models/user').User;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('frontpage', {
-        title: config.get('title'),
-        user: users.get(req.session.user)
+    User.findById(req.session.user, function(err, user){
+
+        if(err) throw err;
+
+        res.render('frontpage', {
+            title: config.get('title'),
+            user: user.username
+        });
     });
 });
 

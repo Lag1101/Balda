@@ -3,7 +3,7 @@
  */
 
 var HttpError = require('../error').HttpError;
-var users = require('../models/UserModel').users;
+var User = require('../models/user').User;
 var config = require('../config');
 var async = require('async');
 
@@ -31,8 +31,11 @@ module.exports = function(sessionStore, cookieParser, socket) {
 
         console.log("retrieving user ", session.user);
 
-        callback(null, users.get(session.user));
+        User.findById(session.user, function(err, user){
+            if(err) throw err;
 
+            callback(null, user);
+        });
     }
     function loadUserBySid(sid, callback) {
         async.waterfall([

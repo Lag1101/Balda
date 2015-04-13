@@ -3,12 +3,17 @@
  */
 var express = require('express');
 var router = express.Router();
-var users = require('../models/UserModel').users;
+var User = require('../models/user').User;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('game', {
-        user: users.get(req.session.user)
+    User.findById(req.session.user, function(err, user){
+
+        if(err) throw err;
+
+        res.render('game', {
+            user: user
+        });
     });
 });
 

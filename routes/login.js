@@ -4,29 +4,30 @@
 var express = require('express');
 var router = express.Router();
 var HttpError = require('../error').HttpError;
-var AuthError = require('../models/UserModel').AuthError;
-var users = require('../models/UserModel').users;
+var AuthError = require('../models/user').AuthError;
+var User = require('../models/user').User;
 
 /* GET home page. */
 router.route('/')
     .get(function(req, res, next) {
-        res.render('login', {
-            user: users.get(req.session.user)
-        });
+        res.render('login');
     })
     .post(function(req, res, next) {
         var username = req.body.username;
         var password = req.body.password;
 
-        users.authorize(username, password, function(err, user) {
+        User.authorize(username, password, function(err, user) {
             if (err) {
-                return next(err);
+                if (err instanceof AuthError) {
+                    return next(new HttpError(403, err.message));
+                } else {
+                    return next(err);
+                }
             }
 
             req.session.user = user._id;
-            res.end();
+            res.send({});
         });
-
     } );
 
 module.exports = router;

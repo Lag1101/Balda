@@ -5,10 +5,10 @@ var logger = require('morgan');
 var CookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var HttpError = require('./models/UserModel').HttpError;
+var HttpError = require('./error/').HttpError;
 var http = require('http');
 var config = require('./config');
-var AuthError = require('./models/UserModel').AuthError;
+var AuthError = require('./models/user').AuthError;
 
 
 var cookieParser = CookieParser;

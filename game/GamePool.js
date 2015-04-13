@@ -2,7 +2,6 @@
  * Created by vasiliy.lomanov on 10.04.2015.
  */
 
-var users = require('../models/UserModel').users;
 var Queue = require('../lib/Utils').Queue;
 var Game = require('./Game');
 
@@ -12,31 +11,31 @@ function GamePool(){
     this.runningQueue = new Queue();
 }
 
-GamePool.prototype.createGame = function(player1) {
+GamePool.prototype.createGame = function(user1) {
     var game  = new Game();
 
-    game.players.push(player1, new Game.Player({
-        _id: player1
+    game.players.push(user1._id, new Game.Player({
+        user: user1
     }));
 
-    users.get(player1).gameId = game._id;
+    user1.gameId = game._id;
 
     this.waitingQueue.push(game._id, game);
 
     return game;
 };
 
-GamePool.prototype.joinGame = function(player2) {
+GamePool.prototype.joinGame = function(user2) {
     if( this.waitingQueue.len() === 0 ) return null;
 
     var game = this.waitingQueue.get(this.waitingQueue.keys[0]);
     this.waitingQueue.erase(0);
 
-    game.players.push(player2, new Game.Player({
-        _id: player2
+    game.players.push(user2, new Game.Player({
+        user: user2
     }));
 
-    users.get(player2).gameId = game._id;
+    user2.gameId = game._id;
 
     this.runningQueue.push(game._id, game);
 
@@ -49,7 +48,7 @@ GamePool.prototype.deleteGame = function(id) {
 
     if(this.players && this.players.keys)
         this.players.keys.map(function(key){
-            var user = users.get(game.players.get(key)._id);
+            var user = game.players.get(key).user;
             if (user) user.gameId = null;
         });
 

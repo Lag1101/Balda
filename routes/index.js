@@ -11,4 +11,6 @@ module.exports = function(app) {
 
     app.use('/testWords', require('./testWords'));
     app.use('/test_page', checkAuth, require('./test_page'));
+
+    app.use('/users', require('./users'));
 };

@@ -1,6 +1,5 @@
 var log = require('../lib/log')(module);
 var HttpError = require('../error').HttpError;
-var users = require('../models/UserModel').users;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
 var WordTree = require('../lib/WordTree');
@@ -44,7 +43,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                 .on(Events.createGame, function(wordSize, fieldSize){
                     clear(user.gameId);
 
-                    var game = gamePool.createGame(user._id);
+                    var game = gamePool.createGame(user);
 
                     game.generateField(wordTree.getRandomWordByLettersCount(wordSize), fieldSize);
                     game.fillBonusLetters();
@@ -57,10 +56,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                 .on(Events.joinGame, function(){
                     clear(user.gameId);
 
-                    var game = gamePool.joinGame(user._id);
+                    var game = gamePool.joinGame(user);
                     if(game) {
-                        var player1 = users.get(game.firstPlayer()._id);
-                        var player2 = users.get(game.secondPlayer()._id);
+                        var player1 = game.firstPlayer().user;
+                        var player2 = game.secondPlayer().user;
 
                         game.emit(Events.bonusLetters, game.getBonusLetters());
                         game.emit(Events.points, {me:0, opponent:0});
@@ -99,8 +98,8 @@ module.exports = function(server, sessionStore, cookieParser) {
                             var secondPlayerId = game.secondPlayer()._id;
                             var firstPlayer = players.get(firstPlayerId);
                             var secondPlayer = players.get(secondPlayerId);
-                            var firstUser = users.get(firstPlayerId);
-                            var secondUser = users.get(secondPlayerId);
+                            var firstUser = game.firstPlayer().user;
+                            var secondUser = game.secondPlayer().user;
 
                             players.get(user._id).addWord(word);
                             players.get(user._id).addPoints(game.calcPointsByNewField(field));
@@ -130,7 +129,7 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                             players.keys.map(function(key){
                                 var player = players.get(key);
-                                var curUser =  users.get(player._id);
+                                var curUser =  player.user;
                                 var state = game.createState((game.currentTurn === player._id) ? "true" : "false");
                                 console.log('emited to', curUser.username, state);
                                 curUser.socket.emit(Events.state, state);
