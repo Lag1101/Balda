@@ -24,7 +24,7 @@ var schema = new Schema({
         default: Date.now
     },
     gameId: {
-        type: number,
+        type: Number,
         default: 0
     }
 });
