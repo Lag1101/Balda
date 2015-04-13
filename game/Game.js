@@ -5,7 +5,7 @@
 var Utils = require('../lib/Utils');
 var Queue = Utils.Queue;
 
-var _id = 0;
+var _id = 1;
 function Game() {
     this._id = _id;
     _id ++;

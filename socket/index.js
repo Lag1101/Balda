@@ -31,14 +31,6 @@ module.exports = function(server, sessionStore, cookieParser) {
                 }
             }
 
-            function turn() {
-                var game = gamePool.get(user.gameId);
-                if(game.currentPlayerUsername === null)
-                    return "true";
-                else
-                    return user.is(game.currentPlayerUsername) ? "true" : "false";
-            }
-
             socket
                 .on(Events.createGame, function(wordSize, fieldSize){
                     clear(user.gameId);
@@ -79,7 +71,15 @@ module.exports = function(server, sessionStore, cookieParser) {
                 .on(Events.state, function() {
                     console.log('state event');
 
-                    var state = gamePool.get(user.gameId).createState(turn());
+                    var game = gamePool.get(user.gameId);
+
+                    var turn = "true";
+                    if(game.currentPlayerUsername === null)
+                        turn = "true";
+                    else
+                        turn = user.is(game.currentPlayerUsername) ? "true" : "false";
+
+                    var state = game.createState(turn);
                     console.log('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
