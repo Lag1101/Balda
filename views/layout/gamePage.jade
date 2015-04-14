@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+        title= title
+        link( rel="stylesheet" href="/stylesheets/hexagon.css")
+        link( rel="stylesheet" href="/stylesheets/hex_types.css")
+        link( rel="stylesheet" href="/vendor/bower_components/bootstrap/dist/css/bootstrap.css")
+        script( src="/vendor/bower_components/jquery/dist/jquery.js")
+        script( src="/vendor/bower_components/bootstrap/dist/js/bootstrap.js")
+    body
+        section( class="container")
+            include ../partials/topNavigation
+            block content

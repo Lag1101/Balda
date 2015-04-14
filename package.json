@@ -22,7 +22,6 @@
     "async": "*",
     "session.socket.io-express4": "*",
     "winston": "*",
-    "mongoose": "4.0.1",
-    "crypto": "*"
+    "mongoose": "4.0.1"
   }
 }

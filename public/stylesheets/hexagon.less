@@ -1,5 +1,5 @@
 @border: 5px;
-@a: 300px;
+@a: 50px;
 
 @scale: sqrt(2);
 
@@ -9,8 +9,8 @@
   height: @a;
   align-content: center;
 
-  border-left: solid @border/sqrt(2) #333333;
-  border-right: solid @border/sqrt(2) #333333;
+  border-left: solid @border #333333;
+  border-right: solid @border #333333;
 
   box-shadow: 0 0 20px rgba(0,0,0,0.6);
 }
@@ -20,12 +20,12 @@
   content: "";
   z-index: 1;
   position: absolute;
-  width: @a*sqrt(3/2);
-  height: @a*sqrt(3/2);
+  width: @a*sqrt(3);
+  height: @a*sqrt(3);
 
-  left: @a*(0.5*sqrt(3) - 0.5*sqrt(3/2))-@border/2;
+  left: -@border;
 
-  transform: scaleY(1/sqrt(3)) rotate(-45deg);
+  transform: scaleY(1/sqrt(6)) scaleX(1/sqrt(2)) rotate(-45deg);
 
   background-color: inherit;
 
@@ -34,28 +34,28 @@
 }
 
 .hexagon:before{
-  top: -0.5*@a*sqrt(3.0/2.0)- @border/2;
-  border-top: solid @border #333333;
-  border-right: solid @border #333333;
+  top: -@a * sqrt(3)/2;
+  border-top: solid @border*2 #333333;
+  border-right: solid @border*2 #333333;
 }
 .hexagon:after{
-  bottom: -0.5*@a*sqrt(3.0/2.0) - @border/2;
-  border-bottom: solid @border #333333;
-  border-left: solid @border #333333;
+  bottom: -@a * sqrt(3)/2;
+  border-bottom: solid @border*2 #333333;
+  border-left: solid @border*2 #333333;
 }
 
 .hexagon .shadowSpan {
 
-  width: sqrt(3)*@a - @border*sqrt(2);
-  height: @a;
+  width: sqrt(3)*@a - @border*2;
+  height: @a - 2*@border/sqrt(3);
   display: block;
   position: absolute;
   text-align: center;
   z-index: 2;
   background: inherit;
 
-  left: -@border*sqrt(2)/2;
+  top: @border/sqrt(3);
+  left: 0;
 
-  border-left: solid @border*sqrt(2) #333333;
-  border-right: solid @border*sqrt(2) #333333;
+  //left: @border;
 }

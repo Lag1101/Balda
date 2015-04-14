@@ -13,4 +13,6 @@ module.exports = function(app) {
     app.use('/test_page', checkAuth, require('./test_page'));
 
     app.use('/users', require('./users'));
+
+    app.use('/testHex', require('./testHex'));
 };
