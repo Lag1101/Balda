@@ -1,7 +1,7 @@
 @border: 5px;
 @a: 50px;
-
-@scale: sqrt(2);
+@borderColor: #333333;
+@shadowSize: 20px;
 
 .hexagon {
   position: relative;
@@ -9,10 +9,10 @@
   height: @a;
   align-content: center;
 
-  border-left: solid @border #333333;
-  border-right: solid @border #333333;
+  border-left: solid @border @borderColor;
+  border-right: solid @border @borderColor;
 
-  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  box-shadow: 0 0 @shadowSize rgba(0,0,0,0.6);
 }
 
 .hexagon:before,
@@ -30,18 +30,18 @@
   background-color: inherit;
 
 
-  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  box-shadow: 0 0 @shadowSize rgba(0,0,0,0.6);
 }
 
 .hexagon:before{
   top: -@a * sqrt(3)/2;
-  border-top: solid @border*2 #333333;
-  border-right: solid @border*2 #333333;
+  border-top: solid @border*2 @borderColor;
+  border-right: solid @border*2 @borderColor;
 }
 .hexagon:after{
   bottom: -@a * sqrt(3)/2;
-  border-bottom: solid @border*2 #333333;
-  border-left: solid @border*2 #333333;
+  border-bottom: solid @border*2 @borderColor;
+  border-left: solid @border*2 @borderColor;
 }
 
 .hexagon .shadowSpan {
