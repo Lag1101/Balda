@@ -2,7 +2,7 @@
  * Created by vasiliy.lomanov on 10.04.2015.
  */
 
-const Events = (function(){
+var Events = (function(){
     var _id = 0;
     function getId(){
         _id++;
