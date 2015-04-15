@@ -30,9 +30,9 @@ block content
                 list.empty();
                 newGameList.keys.map(function(key){
                     var game = newGameList.elements[key];
-                    var li = $('<li></li>').attr('href', '#');
+                    var li = $('<li></li>');
 
-                    $('<a></a>').text(game.players.keys[0]).appendTo(li);
+                    $('<a></a>').attr('href', '#').text(game.players.keys[0]).appendTo(li);
 
                     li.appendTo(list);
                 });
