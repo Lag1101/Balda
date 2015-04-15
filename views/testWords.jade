@@ -15,13 +15,13 @@ block content
 
         input.on('input', function () {
             var text = input.val();
-            socket.emit('checkWord', text, function () {
+            socket.emit(Events.checkWord, text, function () {
                 console.log('sent ' + text);
             });
             return false;
         });
 
-        socket.on('checkWord', function(exist){
+        socket.on(Events.checkWord, function(exist){
             console.log('received ' + exist);
 
             input.css("background-color", exist == "true" ? "green" : "red");
