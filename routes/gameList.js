@@ -1,5 +1,5 @@
 /**
- * Created by vasiliy.lomanov on 07.04.2015.
+ * Created by vasiliy.lomanov on 15.04.2015.
  */
 var express = require('express');
 var router = express.Router();
@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 
         if(err) throw err;
 
-        res.render('gamePage', {
+        res.render('gameList', {
             title: config.get('title'),
             user: user
         });

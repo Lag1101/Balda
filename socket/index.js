@@ -146,6 +146,10 @@ module.exports = function(server, sessionStore, cookieParser) {
                     var ans = wordTree.exist(word) ? "true" : "false";
                     socket.emit(Events.checkWord, ans);
                     cb && cb();
+                })
+                .on(Events.gameList, function(){
+                    //console.log('gameList event');
+                    this.emit(Events.gameList, gamePool.waitingQueue);
                 });
         });
 

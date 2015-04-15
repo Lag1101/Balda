@@ -7,10 +7,12 @@ module.exports = function(app) {
     app.use('/login', require('./login'));
     app.use('/logout',checkAuth, require('./logout'));
 
-    app.use('/testWords', require('./testWords'));
+    app.use('/testWords', checkAuth, require('./testWords'));
     app.use('/gamePage', checkAuth, require('./gamePage'));
 
-    app.use('/users', require('./users'));
+    app.use('/users', checkAuth, require('./users'));
 
-    app.use('/testHex', require('./testHex'));
+    app.use('/testHex', checkAuth, require('./testHex'));
+
+    app.use('/gameList', checkAuth, require('./gameList'));
 };

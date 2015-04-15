@@ -19,7 +19,8 @@ const Events = (function(){
         usedWords: getId(),
         waiting: getId(),
         ready: getId(),
-        bonusLetters: getId()
+        bonusLetters: getId(),
+        gameList: getId()
     };
 })();
 
