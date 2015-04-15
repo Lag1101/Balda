@@ -1,4 +1,4 @@
-function update_field(state)
+function update_field()
 {
     var state_field = state.field;
     var state_player = state.turn === "true" ? ACTIVE_PLAYER : PASSIVE_PLAYER;

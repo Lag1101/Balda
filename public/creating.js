@@ -65,7 +65,7 @@ function initNear()
 function getNeaghbors(x,y) {
 
     var neighborsIndexies = [];
-    if( y < field.length/2 ) {
+    if( y < state.field.length/2 ) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -74,7 +74,7 @@ function getNeaghbors(x,y) {
             [1, 0],
             [1, 1]
         ];
-    } else if(y > field.length/2) {
+    } else if(y > state.field.length/2) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -98,10 +98,9 @@ function getNeaghbors(x,y) {
     for(var i = 0 ; i < neighborsIndexies.length; i++) {
         var X = neighborsIndexies[i][1];
         var Y = neighborsIndexies[i][0];
-        var neighbor = field[y+Y][x+X];
 
-        if(neighbor)
-            neighbors.push({x:X,y:Y});
+        if(state.field[y+Y] && state.field[y+Y][x+X])
+            neighbors.push({x:x+X,y:y+Y});
     }
     return neighbors;
 }
@@ -109,16 +108,16 @@ function getNeaghbors(x,y) {
 function initGame()
 {
     for (var i = 0; i < field_size; i++) {
-        for (var j = 0; j < field_size - Math.abs(field_size/2 - i); j++) {
-            if(field[i][j].letter !== '')
+        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
+            if(state.field[i][j].letter !== '')
             {
-                field[i][j].statement = PASSIVE_LETTER;
-                for(var k=0; k<near_list[i][j].length(); k++)
+                state.field[i][j].statement = PASSIVE_LETTER;
+                for(var k=0; k<near_list[i][j].length; k++)
                 {
                     var neaghbor = near_list[i][j][k];
-                    if(field[neaghbor.x][neaghbor.y].statement  !== PASSIVE_LETTER)
+                    if(state.field[neaghbor.y][neaghbor.x].statement  !== PASSIVE_LETTER)
                     {
-                        field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
+                        state.field[neaghbor.y][neaghbor.x].statement = ACTIVE_EMPTY;
                     }
                 }
             }

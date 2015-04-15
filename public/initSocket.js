@@ -22,8 +22,8 @@ function initSocket() {
             creating();
             socket.emit(Events.state);
         })
-        .on(Events.state, function (state) {
-            field = state.field;
+        .on(Events.state, function (newState) {
+            state = newState;
             initNear();
             initGame();
         })
