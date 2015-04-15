@@ -29,7 +29,7 @@ block content
                 statusCode: {
                     200: function() {
                         form.html("Вы вошли в сайт").addClass('alert-success');
-                        window.location.href = "/test_page";
+                        window.location.href = "/gamePage";
                     },
                     403: function(jqXHR) {
                         var error = JSON.parse(jqXHR.responseText);
