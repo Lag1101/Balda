@@ -44,10 +44,11 @@ Game.Player.prototype.getWords = function() {
     return this.words;
 };
 
-function Cell(cell){
+Game.Cell = function(cell){
     this.letter = cell.letter || '';
     this.points = cell.points || 0;
-}
+    this.statement = cell.statement || 0;
+};
 
 Game.prototype.generateField = function(word, size) {
     this.startWord = word;
@@ -60,7 +61,7 @@ Game.prototype.generateField = function(word, size) {
         var distance = Math.abs(mainLineIndex - i);
         var count = size - distance;
         for(var k = 0; k < count; k++) {
-            line.push(new Cell({
+            line.push(new Game.Cell({
                 points: distance
             }));
         }
