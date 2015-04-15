@@ -53,7 +53,7 @@ Game.Cell = function(cell){
 Game.prototype.generateField = function(word, size) {
     this.startWord = word;
 
-    var field = [];
+    this.field = [];
 
     var mainLineIndex = Math.floor(size/2);
     for(var i = 0; i < size; i++){
@@ -65,21 +65,14 @@ Game.prototype.generateField = function(word, size) {
                 points: distance
             }));
         }
-        field.push(line);
+        this.field.push(line);
     }
 
-    var mainLine = field[mainLineIndex];
+    var mainLine = this.field[mainLineIndex];
 
     var shift = Math.floor(0.5*(mainLine.length-word.length));
     for( var i = 0; i < word.length; i++ ) {
         mainLine[i+shift].letter = word[i];
-    }
-
-    for(var i = 0; i < field.length; i++){
-        var line = field[i];
-        for(var k = 0; k < line.length; k++){
-            this.field.push(line[k]);
-        }
     }
 };
 
@@ -107,16 +100,23 @@ Game.prototype.calcPointsByNewField = function(newField) {
     var bonusLetters = this.bonusLetters;
 
     Utils.xRange({end: currentField.length}).map(function(i) {
-        var newLetter = newField[i].letter;
-        if(newLetter !== currentField[i].letter){
-            points += currentField[i].points;
-            if(bonusLetters.exist(newLetter))
-                points += bonusLetters.get(newLetter);
-        }
+        var line = currentField[i];
+        var nLine = newField[i];
+        Utils.xRange({end: line.length}).map(function(k) {
+            var cell = line[k];
+            var nCell = nLine[k];
+            var newLetter = nCell.letter;
+            if (newLetter !== cell.letter) {
+                points += cell.points;
+                if (bonusLetters.exist(newLetter))
+                    points += bonusLetters.get(newLetter);
+            }
+        });
     });
 
     return points;
 };
+
 Game.prototype.setField = function(field) {
     this.field = field;
 };
@@ -141,7 +141,7 @@ Game.prototype.getBonusLetters = function(){
     var bonusLetters = this.bonusLetters;
 
     bonusLetters.keys.map(function(letter){
-        bonusLettersCells.push(new Cell({
+        bonusLettersCells.push(new Game.Cell({
             letter: letter,
             points: bonusLetters.get(letter)
         }));
