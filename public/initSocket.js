@@ -23,10 +23,9 @@ function initSocket() {
             socket.emit(Events.state);
         })
         .on(Events.state, function (state) {
-            initialize(state, function(word,field)
-            {
-                socket.emit(Events.checkAndCommit, word, field)
-            });
+            field = state.field;
+            initNear();
+            initGame();
         })
         .on(Events.points, function(points){
             statsController.setPoints(points.me, points.opponent);

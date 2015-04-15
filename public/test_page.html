@@ -9,10 +9,10 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/hex_types.css"/>
     <script language="JavaScript" src="hex_onclick.js"></script>
     <script language="JavaScript" src="constants.js"></script>
-    <script language="JavaScript" src="initialize.js"></script>
-    <script language="JavaScript" src="neigh_hex.js"></script>
+    <script language="JavaScript" src="creating.js"></script>
     <script language="JavaScript" src="initSocket.js"></script>
     <script language="JavaScript" src="Events.js"></script>
+    <script language="JavaScript" src="update_field.js"></script>
 
     <link rel="stylesheet" type="text/css" href="stylesheets/StatsView.css"/>
     <script src="views/stats/controller.js"></script>
@@ -29,8 +29,18 @@
     <div id="stats"></div>
 
     <script>
-        var statsController = new StatsController("stats");
+
+        var field;
+        var action = ACTION_GET_PLACE;
+        var hex_objects = [];
+        var near_list = [];
+
+        var field_size = 7;
+
         initSocket();
+
+        var statsController = new StatsController("stats");
+
         //initialize();
     </script>
 </body>

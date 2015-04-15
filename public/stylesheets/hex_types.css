@@ -1,24 +1,29 @@
-.hex_act_nw {
+.hex_active_empty {
     background-color: #21cc2c;
 }
-.hex_act_nw:hover {
+.hex_active_empty:hover {
     background-color: #fff800;
 }
 
-.hex_dis_nw {
+.hex_passive_empty {
     background-color: #14cc7d;
 }
 
-.hex_act_ww {
+.hex_active_letter {
     background-color: #75afcc;
 }
 
-.hex_dis_ww {
+.hex_passive_letter {
     background-color: #1148cd;
 }
 
-.hex_new .shadowSpan{
+.hex_new_letter .shadowSpan{
     color: white;
+}
+
+.hex_opponent_turn {
+    background-color: #747474;
+
 }
 
 .hex_picked {
