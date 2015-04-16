@@ -16,12 +16,35 @@ function clicked_action(i,j) {
             });
             update_field();
         }
+
     }
     else if(action == ACTION_LETTERS)
     {
         if(state.field[i][j].statement == ACTIVE_LETTER) {
 
             state.field[i][j].statement = CHANGED_LETTER;
+            new_word = new_word + state.field[i][j].letter;
+            changeField(2);
+
+            for(var k=0; k<near_list[i][j].length; k++)
+            {
+                var neaghbor = near_list[i][j][k];
+                if(state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
+                {
+                    state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
+                }
+                else if(state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
+                {
+                    state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
+                }
+            }
+            update_field();
+        }
+        if(state.field[i][j].statement == NEW_LETTER_ACTIVE) {
+
+            state.field[i][j].statement = CHANGED_LETTER;
+            new_word = new_word + state.field[i][j].letter;
+            ready_to_send = SEND_READY;
             changeField(2);
 
             for(var k=0; k<near_list[i][j].length; k++)
@@ -40,6 +63,11 @@ function clicked_action(i,j) {
         }
     }
 };
+
+function clicked_action_sending()
+{
+    socket.emit(Events.checkWord,new_word);
+}
 
 function changeField(parameter) {
 
@@ -69,6 +97,10 @@ function changeField(parameter) {
                     if(state.field[i][j].statement == ACTIVE_LETTER)
                     {
                         state.field[i][j].statement = PASSIVE_LETTER;
+                    }
+                    else if(state.field[i][j].statement == NEW_LETTER_ACTIVE)
+                    {
+                        state.field[i][j].statement = NEW_LETTER_PASSIVE;
                     }
                 }
             }

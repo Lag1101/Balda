@@ -32,9 +32,13 @@
     <script>
 
         var state;
+        var last_state;
         var action = ACTION_GET_PLACE;
         var hex_objects = [];
         var near_list = [];
+        var new_word = '';
+        var sending_hex;
+        var ready_to_send = SEND_NOT_READY;
 
         var field_size = 7;
 

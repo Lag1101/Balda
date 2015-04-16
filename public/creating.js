@@ -13,6 +13,8 @@ function creating()
     //send_hex.offset({top: 50, left: 20 });
     send_hex.css('top', 50);
     send_hex.css('left', 20);
+    send_hex.click(clicked_action_sending());
+    sending_hex = send_hex;
 
     for (var i = 0; i < field_size; i++) {
 

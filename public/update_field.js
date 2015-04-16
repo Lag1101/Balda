@@ -40,6 +40,14 @@ function update_field()
                     default:
                         break;
                 }
+                if(ready_to_send == SEND_READY)
+                {
+                    sending_hex.removeClass().addClass("hex_main").addClass("hex_send");
+                }
+                else if(ready_to_send == SEND_NOT_READY)
+                {
+                    sending_hex.removeClass().addClass("hex_main").addClass("hex_not_send");
+                }
             }
             else
             {

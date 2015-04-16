@@ -17,13 +17,26 @@ function initSocket() {
         .on(Events.waiting, function () {
             printState("waiting for an opponent");
         })
+        .on(Events.checkWord, function(answer){
+            if(answer == true)
+            {
+
+            }
+            else
+            {
+                state = last_state;
+                new_word = '';
+                update_field();
+            }
+        })
         .on(Events.ready, function(p1, p2){
             printState(p1 + " vs " + p2);
             creating();
             socket.emit(Events.state);
         })
         .on(Events.state, function (newState) {
-            state = newState;
+            last_state = newState;
+            state = last_state;
             initNear();
             initGame();
         })
