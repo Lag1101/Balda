@@ -18,10 +18,11 @@ function creating()
 
         hex_objects.push([]);
 
-        for (var j = 0; j < field_size - Math.abs(field_size/2 - i); j++) {
+        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
 
             var hex_obj = $('<div></div>')
-                .attr('id', "hex"+i+j);
+                .attr('id', "hex"+i+j)
+                .addClass('hex_main');
 
             var span = $('<span></span>').addClass('shadowSpan');
             span.append(
@@ -43,9 +44,7 @@ function creating()
             hex_obj.css('top', 50 + 85 * i);
             hex_obj.css('left', 50 + 105 * j + 52.5 * Math.abs(3 - i));
 
-            hex_obj.click(function () {
-                clicked_action.bind(undefined,i,j);
-            });
+            hex_obj.click(clicked_action.bind(undefined,i,j));
 
             hex_objects[i].push(hex_obj);
         }
@@ -56,7 +55,7 @@ function initNear()
 {
     for (var i = 0; i < field_size; i++) {
         near_list.push([]);
-        for (var j = 0; j < field_size - Math.abs(field_size / 2 - i); j++) {
+        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
             near_list[i].push(getNeaghbors(i,j));
         }
     }
@@ -65,7 +64,7 @@ function initNear()
 function getNeaghbors(x,y) {
 
     var neighborsIndexies = [];
-    if( y < state.field.length/2 ) {
+    if( x < Math.floor(state.field.length/2) ) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -74,7 +73,7 @@ function getNeaghbors(x,y) {
             [1, 0],
             [1, 1]
         ];
-    } else if(y > state.field.length/2) {
+    } else if(x > Math.floor(state.field.length/2)) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -96,11 +95,11 @@ function getNeaghbors(x,y) {
 
     var neighbors = [];
     for(var i = 0 ; i < neighborsIndexies.length; i++) {
-        var X = neighborsIndexies[i][1];
-        var Y = neighborsIndexies[i][0];
+        var X = neighborsIndexies[i][0];
+        var Y = neighborsIndexies[i][1];
 
-        if(state.field[y+Y] && state.field[y+Y][x+X])
-            neighbors.push({x:x+X,y:y+Y});
+        if(state.field[x+X] && state.field[x+X][y+Y])
+            neighbors.push({x:x+X, y:y+Y});
     }
     return neighbors;
 }
@@ -109,15 +108,15 @@ function initGame()
 {
     for (var i = 0; i < field_size; i++) {
         for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
-            if(state.field[i][j].letter !== '')
+            if(state.field[i][j].letter != '')
             {
                 state.field[i][j].statement = PASSIVE_LETTER;
                 for(var k=0; k<near_list[i][j].length; k++)
                 {
                     var neaghbor = near_list[i][j][k];
-                    if(state.field[neaghbor.y][neaghbor.x].statement  !== PASSIVE_LETTER)
+                    if(state.field[neaghbor.x][neaghbor.y].statement  != PASSIVE_LETTER)
                     {
-                        state.field[neaghbor.y][neaghbor.x].statement = ACTIVE_EMPTY;
+                        state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
                     }
                 }
             }

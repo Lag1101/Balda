@@ -2,18 +2,40 @@ function clicked_action(i,j) {
 
     if (action == ACTION_GET_PLACE)
     {
-        if(field[i][j].statement == ACTIVE_EMPTY) {
+        if(state.field[i][j].statement == ACTIVE_EMPTY) {
 
-            field[i][j].statement = PASSIVE_LETTER;
-            changeField(1);
+            state.field[i][j].statement = NEW_LETTER_ACTIVE;
 
             $('body').keypress(function(event){
-                field[i][j].letter = String.fromCharCode(event.which);
+                state.field[i][j].letter = String.fromCharCode(event.which);
                 $(this).off("keypress");
+
+                changeField(1);
                 action = ACTION_LETTERS;
-                field[i][j].statement = NEW_LETTER;
                 update_field();
             });
+            update_field();
+        }
+    }
+    else if(action == ACTION_LETTERS)
+    {
+        if(state.field[i][j].statement == ACTIVE_LETTER) {
+
+            state.field[i][j].statement = CHANGED_LETTER;
+            changeField(2);
+
+            for(var k=0; k<near_list[i][j].length; k++)
+            {
+                var neaghbor = near_list[i][j][k];
+                if(state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
+                {
+                    state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
+                }
+                else if(state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
+                {
+                    state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
+                }
+            }
             update_field();
         }
     }
@@ -24,13 +46,29 @@ function changeField(parameter) {
     switch (parameter)
     {
         case 1:
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < field_size; i++)
             {
-                for (var j = 0; j < 7 - Math.abs(3 - i); j++)
+                for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++)
                 {
-                    if(field[i][j].statement == PASSIVE_LETTER)
+                    if(state.field[i][j].statement == ACTIVE_EMPTY)
                     {
-                        field[i][j].statement == ACTIVE_LETTER;
+                        state.field[i][j].statement = PASSIVE_EMPTY;
+                    }
+                    else if(state.field[i][j].statement == PASSIVE_LETTER)
+                    {
+                        state.field[i][j].statement = ACTIVE_LETTER;
+                    }
+                }
+            }
+            break;
+        case 2:
+            for (var i = 0; i < field_size; i++)
+            {
+                for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++)
+                {
+                    if(state.field[i][j].statement == ACTIVE_LETTER)
+                    {
+                        state.field[i][j].statement = PASSIVE_LETTER;
                     }
                 }
             }
