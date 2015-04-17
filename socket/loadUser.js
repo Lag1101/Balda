@@ -24,14 +24,14 @@ module.exports = function(sessionStore, cookieParser, socket) {
     }
     function loadUser(session, callback) {
 
-        if (session.user === undefined) {
+        if (session.username === undefined) {
             console.log("Session %s is anonymous", session.id);
             return callback(null, null);
         }
 
         console.log("retrieving user ", session.user);
 
-        User.findById(session.user, function(err, user){
+        User.findOne({username: session.username}, function(err, user){
             if(err) throw err;
 
             callback(null, user);
@@ -67,12 +67,6 @@ module.exports = function(sessionStore, cookieParser, socket) {
                 callback(err, socket);
             });
     }
-    function fullLoadUser (socket, callback) {
-        var cookies = socket.handshake.cookies;
-        var sid = cookieParser.signedCookies(cookies, config.get('session:secret'));
-        loadUserBySid(sid, callback);
-    }
 
-
-    return fullLoadUser;
+    return loadUserBySid;
 };

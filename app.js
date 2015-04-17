@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('debug')('app:log');
+var logger = require('./lib/logger')(module);
 var CookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -69,7 +69,7 @@ app.use(function(err, req, res, next) {
 
 var server = http.createServer(app);
 server.listen(config.get('PORT'), function(){
-    logger('Listening on ' + config.get('PORT'));
+    logger.log('Listening on ' + config.get('PORT'));
 });
 
 require('./socket')(server, sessionStore, cookieParser);

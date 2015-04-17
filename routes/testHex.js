@@ -9,7 +9,7 @@ var User = require('../models/user').User;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    User.findById(req.session.user, function(err, user){
+    User.findOne({username: req.session.username}, function(err, user){
 
         if(err) throw err;
 

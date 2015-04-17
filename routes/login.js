@@ -19,7 +19,7 @@ router.route('/')
         User.authorize(username, password, function(err, user) {
             if (err) return next(err);
 
-            req.session.user = user._id;
+            req.session.username = user.username;
             res.end();
         });
     } );
