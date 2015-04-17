@@ -1,4 +1,6 @@
-var log = require('../lib/log')(module);
+var debug = require('debug'),
+    logger = debug('socket:log'),
+    error = debug('socket:error');
 var HttpError = require('../error').HttpError;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
@@ -15,13 +17,12 @@ module.exports = function(server, sessionStore, cookieParser) {
 
     sessionSockets.on('connection', function (err, socket, session) {
         require('./loadUser')(sessionStore, cookieParser, socket)(socket, function(err, socket){
-            if(err)
-                return console.error(err);
+            if(err) error(err);
 
             var user = socket.handshake.user || {};
             user.socket = socket;
 
-            console.log(user.username + ' connected');
+            logger(user.username + ' connected');
 
             function clear(gameId){
                 var game = gamePool.get(gameId);
@@ -42,8 +43,8 @@ module.exports = function(server, sessionStore, cookieParser) {
 
                     game.emit(Events.waiting);
 
-                    console.log("Created game " + user.gameId);
-                    console.log("Games count " + gamePool.len());
+                    logger("Created game " + user.gameId);
+                    logger("Games count " + gamePool.len());
                 })
                 .on(Events.joinGame, function(){
                     clear(user.gameId);
@@ -56,7 +57,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                         game.emit(Events.bonusLetters, game.getBonusLetters());
                         game.emit(Events.points, {me:0, opponent:0});
                         game.emit(Events.ready, player1.username, player2.username);
-                        console.log("Joined to game " + user.gameId);
+                        logger("Joined to game " + user.gameId);
                     }
                 })
                 .on(Events.message, function(text, cb) {
@@ -64,12 +65,12 @@ module.exports = function(server, sessionStore, cookieParser) {
                     cb && cb();
                 })
                 .on('disconnect', function() {
-                    console.log(user.username + ' disconnected');
+                    logger(user.username + ' disconnected');
 
                     clear(user.gameId);
                 })
                 .on(Events.state, function() {
-                    console.log('state event');
+                    logger('state event');
 
                     var game = gamePool.get(user.gameId);
 
@@ -80,12 +81,12 @@ module.exports = function(server, sessionStore, cookieParser) {
                         turn = user.is(game.currentPlayerUsername) ? "true" : "false";
 
                     var state = game.createState(turn);
-                    console.log('emited to', user.username, state);
+                    logger('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
                 .on(Events.checkAndCommit, function(word, field){
 
-                    console.log('checkAndCommit event', word, field);
+                    logger('checkAndCommit event', word, field);
 
                     var game = gamePool.get(user.gameId);
                     if(wordTree.exist(word)) {
@@ -129,7 +130,7 @@ module.exports = function(server, sessionStore, cookieParser) {
                                 var player = players.get(key);
                                 var curUser =  player.user;
                                 var state = game.createState((game.currentPlayerUsername === curUser.username) ? "true" : "false");
-                                console.log('emited to', curUser.username, state);
+                                logger('emited to', curUser.username, state);
                                 curUser.socket.emit(Events.state, state);
                             });
 
@@ -137,12 +138,12 @@ module.exports = function(server, sessionStore, cookieParser) {
                     }
                     else {
                         var state = game.createState("true");
-                        console.log('emited to', user.username, state);
+                        logger('emited to', user.username, state);
                         socket.emit(Events.state, state);
                     }
                 })
                 .on(Events.checkWord, function(word, cb) {
-                    console.log('checkWord event', word);
+                    logger('checkWord event', word);
                     var ans = wordTree.exist(word) ? "true" : "false";
                     socket.emit(Events.checkWord, ans);
                     cb && cb();

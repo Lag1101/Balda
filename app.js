@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var logger = require('debug')('app:log');
 var CookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -23,7 +23,7 @@ app.set('port', config.get('PORT'));
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.png'));
-app.use(logger('dev'));
+//app.use(debug);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -69,7 +69,7 @@ app.use(function(err, req, res, next) {
 
 var server = http.createServer(app);
 server.listen(config.get('PORT'), function(){
-    console.log('Listening on ' + config.get('PORT'));
+    logger('Listening on ' + config.get('PORT'));
 });
 
 require('./socket')(server, sessionStore, cookieParser);
