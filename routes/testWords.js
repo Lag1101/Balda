@@ -9,14 +9,8 @@ var config = require('../config');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    User.findById(req.session.user, function(err, user){
-
-        if(err) throw err;
-
-        res.render('testWords', {
-            title: config.get('title'),
-            user: user
-        });
+    res.render('testWords', {
+        title: config.get('title'),
     });
 });
 module.exports = router;
