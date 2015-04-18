@@ -9,12 +9,12 @@ var gamePool = require('../game').gamePool;
 var Game = require('../game').Game;
 
 var config = require('../config');
-var logger = require('../lib/logger')(module);
+var logger = require('debug')('gamePage');
 var HttpError = require('../error').HttpError;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    logger.log(req.query);
+    logger(req.query);
 
     var game = gamePool.get(req.query.id);
     if(!game) throw new HttpError(401, "Игра не найдена");

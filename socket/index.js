@@ -1,41 +1,38 @@
-var logger = require('../lib/logger')(module);
+var logger = require('debug')('socket');
 var HttpError = require('../error').HttpError;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
 var WordTree = require('../lib/WordTree');
 var Events = require('../shared/Events');
 var config = require('../config');
-var cookieParser = require('socket.io-cookie-parser');
+var loadUser = require('./loadUser');
+
+var socketCookieParser = require('socket.io-cookie-parser');
 
 var wordTree = new WordTree('./Words.txt');
 
-module.exports = function(server) {
+module.exports = function(server, sessionStore) {
 
     var io = require('socket.io').listen(server);
-    /*io.use(cookieParser());
-    io.use(authorization);
+    io.use(socketCookieParser());
+    //io.use(authorization);
 
-    function authorization(socket, next) {
-        // cookies are available in:
-        // 1. socket.request.cookies
-        // 2. socket.request.signedCookies (if using a secret)
+    function authorization(socket, cb) {
 
-        var cookies = socket.request.cookies;
-        //var sid = socket.request.signedCookies;///(cookies, config.get('session:secret'));
-        //socket.sid = socket.request.cookies.sid;
-    }*/
-    //var SessionSockets = require('session.socket.io-express4'),
-    //sessionSockets = new SessionSockets(io, sessionStore, cookieParser());
+        loadUser(sessionStore)(socket, function (err, s) {
+            if(err) logger(err);
+            else logger(socket.handshake.user.username + " loaded");
 
-    io.on('connection', function(socket){
-        logger.log(socket.id + " connected");
-        /*require('./loadUser')(socket.sid, function (err, socket) {
-            if(err) logger.error(err);
+            return cb(socket);
+        });
+    }
 
+    io.on('connection', function(s){
+        authorization(s, function(socket){
             var user = socket.handshake.user || {};
             user.socket = socket;
 
-            logger.log(user.username + ' connected');
+            logger(user.username + ' connected');
 
             function clear(gameId) {
                 var game = gamePool.get(gameId);
@@ -56,8 +53,8 @@ module.exports = function(server) {
 
                     game.emit(Events.waiting);
 
-                    logger.log("Created game " + user.gameId);
-                    logger.log("Games count " + gamePool.len());
+                    logger("Created game " + user.gameId);
+                    logger("Games count " + gamePool.len());
                 })
                 .on(Events.joinGame, function () {
                     //clear(user.gameId);
@@ -70,7 +67,7 @@ module.exports = function(server) {
                         game.emit(Events.bonusLetters, game.getBonusLetters());
                         game.emit(Events.points, {me: 0, opponent: 0});
                         game.emit(Events.ready, player1.username, player2.username);
-                        logger.log("Joined to game " + user.gameId);
+                        logger("Joined to game " + user.gameId);
                     }
                 })
                 .on(Events.message, function (text, cb) {
@@ -78,12 +75,12 @@ module.exports = function(server) {
                     cb && cb();
                 })
                 .on('disconnect', function () {
-                    logger.log(user.username + ' disconnected');
+                    logger(user.username + ' disconnected');
 
                     //clear(user.gameId);
                 })
                 .on(Events.state, function () {
-                    logger.log('state event');
+                    logger('state event');
 
                     var game = gamePool.get(user.gameId);
 
@@ -94,12 +91,12 @@ module.exports = function(server) {
                         turn = user.is(game.currentPlayerUsername) ? "true" : "false";
 
                     var state = game.createState(turn);
-                    logger.log('emited to', user.username, state);
+                    logger('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
                 .on(Events.checkAndCommit, function (word, field) {
 
-                    logger.log('checkAndCommit event', word, field);
+                    logger('checkAndCommit event', word, field);
 
                     var game = gamePool.get(user.gameId);
                     if (wordTree.exist(word)) {
@@ -143,7 +140,7 @@ module.exports = function(server) {
                                 var player = players.get(key);
                                 var curUser = player.user;
                                 var state = game.createState((game.currentPlayerUsername === curUser.username) ? "true" : "false");
-                                logger.log('emited to', curUser.username, state);
+                                logger('emited to', curUser.username, state);
                                 curUser.socket.emit(Events.state, state);
                             });
 
@@ -151,12 +148,12 @@ module.exports = function(server) {
                     }
                     else {
                         var state = game.createState("true");
-                        logger.log('emited to', user.username, state);
+                        logger('emited to', user.username, state);
                         socket.emit(Events.state, state);
                     }
                 })
                 .on(Events.checkWord, function (word, cb) {
-                    logger.log('checkWord event', word);
+                    logger('checkWord event', word);
                     var ans = wordTree.exist(word) ? "true" : "false";
                     socket.emit(Events.checkWord, ans);
                     cb && cb();
@@ -165,6 +162,7 @@ module.exports = function(server) {
                     //console.log('gameList event');
                     this.emit(Events.gameList, gamePool.waitingQueue);
                 });
-        });*/
+        });
+
     });
 };
