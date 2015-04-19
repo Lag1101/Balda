@@ -38,7 +38,7 @@ module.exports = function(sessionStore) {
 
                     return loadUserFromSession(session, callback)
                 },
-                function(user, callback) {
+                function(user, gameId, callback) {
                     if (!user) {
                         logger("Anonymous session may not connect");
                         callback(new HttpError(403, "Anonymous session may not connect"));
@@ -46,6 +46,7 @@ module.exports = function(sessionStore) {
 
                     logger("Loaded user " + user);
                     socket.handshake.user = user;
+                    socket.handshake.gameId = gameId;
 
                     return callback(null);
                 }
@@ -76,10 +77,12 @@ module.exports = function(sessionStore) {
             return callback(null, null);
         }
 
+
+
         User.findOne({username: session.username}, function(err, user){
             if(err) throw err;
 
-            callback(null, user);
+            callback(null, user, session.gameId);
         });
     }
     return loadUser;

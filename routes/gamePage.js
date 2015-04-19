@@ -30,6 +30,8 @@ router.get('/', function(req, res, next) {
             gamePool.joinGame(user, game._id);
         }
 
+        req.session.gameId = game._id;
+
         res.render('gamePage', {
             title: config.get('title'),
             user: user

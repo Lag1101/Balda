@@ -5,12 +5,12 @@ function initSocket() {
     });
 
     socket.on('connect', function(){
-        $('#Create').click(function(){
+        /*$('#Create').click(function(){
             socket.emit(Events.createGame, 5, 7);
         });
         $('#Join').click(function(){
             socket.emit(Events.joinGame);
-        });
+        });*/
     });
 
     socket

@@ -30,17 +30,17 @@ module.exports = function(server, sessionStore) {
     io.on('connection', function(s){
         authorization(s, function(socket){
             var user = socket.handshake.user || {};
+            var gameId = socket.handshake.gameId;
+            var game = gamePool.get(gameId);
             user.socket = socket;
+
+            if(game && game.firstPlayer() && game.secondPlayer()) {
+                logger(game.firstPlayer().username, game.secondPlayer().username, "in game");
+                game.emit(Events.ready, game.firstPlayer().username, game.secondPlayer().username);
+            }
 
             logger(user.username + ' connected');
 
-            function clear(gameId) {
-                var game = gamePool.get(gameId);
-                if (game) {
-                    console.log("Deleted game " + gameId);
-                    gamePool.deleteGame(gameId);
-                }
-            }
 
             socket
                 .on(Events.createGame, function (wordSize, fieldSize) {
@@ -66,12 +66,11 @@ module.exports = function(server, sessionStore) {
 
                         game.emit(Events.bonusLetters, game.getBonusLetters());
                         game.emit(Events.points, {me: 0, opponent: 0});
-                        game.emit(Events.ready, player1.username, player2.username);
                         logger("Joined to game " + user.gameId);
                     }
                 })
                 .on(Events.message, function (text, cb) {
-                    gamePool.get(user.gameId).emit(Events.message, text);
+                    game.emit(Events.message, text);
                     cb && cb();
                 })
                 .on('disconnect', function () {
@@ -82,7 +81,7 @@ module.exports = function(server, sessionStore) {
                 .on(Events.state, function () {
                     logger('state event');
 
-                    var game = gamePool.get(user.gameId);
+                    //var game = gamePool.get(user.gameId);
 
                     var turn = "true";
                     if (game.currentPlayerUsername === null)
@@ -98,7 +97,7 @@ module.exports = function(server, sessionStore) {
 
                     logger('checkAndCommit event', word, field);
 
-                    var game = gamePool.get(user.gameId);
+                    //var game = gamePool.get(user.gameId);
                     if (wordTree.exist(word)) {
                         if (game.currentPlayerUsername === null) {
                             game.currentPlayerUsername = user.username;
