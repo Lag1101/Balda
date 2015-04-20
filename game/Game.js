@@ -23,7 +23,7 @@ Game.Player = function(player) {
     this.user = player.user;
     this.points = player.points || 0;
     this.words = player.words || [];
-
+    this.socket = player.socket || null;
 };
 Object.defineProperty(Game.Player.prototype, "id", { get: function () {
     return this.user.username;
@@ -42,6 +42,9 @@ Game.Player.prototype.addWord = function(word) {
 };
 Game.Player.prototype.getWords = function() {
     return this.words;
+};
+Game.Player.prototype.setSocket = function(socket) {
+    this.socket = socket;
 };
 
 Game.Cell = function(cell){
@@ -77,11 +80,12 @@ Game.prototype.generateField = function(word, size) {
 };
 
 Game.prototype.emit = function(key, val1, val2) {
+
     var players = this.players;
     this.players.keys.map(function(k){
-        var user = players.get(k).user;
-        if( user && user.socket )
-            user.socket.emit(key, val1, val2);
+        var player = players.get(k);
+        if( player.socket )
+            player.socket.emit(key, val1, val2);
     });
 };
 Game.prototype.ready = function() {

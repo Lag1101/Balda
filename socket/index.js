@@ -2,20 +2,16 @@ var logger = require('debug')('socket');
 var HttpError = require('../error').HttpError;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
-var WordTree = require('../lib/WordTree');
 var Events = require('../shared/Events');
 var config = require('../config');
 var loadUser = require('./loadUser');
+var Queue = require('../lib/Utils').Queue;
 
-var socketCookieParser = require('socket.io-cookie-parser');
+var wordTree = require('../lib/WordTree').wordTree;
 
-var wordTree = new WordTree('./Words.txt');
+module.exports = function(sessionStore) {
 
-module.exports = function(server, sessionStore) {
-
-    var io = require('socket.io').listen(server);
-    io.use(socketCookieParser());
-    //io.use(authorization);
+    var io = require('../lib/io').io;
 
     function authorization(socket, cb) {
 
@@ -32,43 +28,13 @@ module.exports = function(server, sessionStore) {
             var user = socket.handshake.user || {};
             var gameId = socket.handshake.gameId;
             var game = gamePool.get(gameId);
-            user.socket = socket;
 
-            if(game && game.firstPlayer() && game.secondPlayer()) {
-                logger(game.firstPlayer().user.username, game.secondPlayer().user.username, "in game");
-                game.emit(Events.ready, game.firstPlayer().username, game.secondPlayer().username);
-            }
+            game.players.get(user.username).setSocket(socket);
 
             logger(user.username + ' connected');
 
 
             socket
-                .on(Events.createGame, function (wordSize, fieldSize) {
-                    //clear(user.gameId);
-
-                    var game = gamePool.createGame(user);
-
-                    game.generateField(wordTree.getRandomWordByLettersCount(wordSize), fieldSize);
-                    game.fillBonusLetters();
-
-                    game.emit(Events.waiting);
-
-                    logger("Created game " + user.gameId);
-                    logger("Games count " + gamePool.len());
-                })
-                .on(Events.joinGame, function () {
-                    //clear(user.gameId);
-
-                    var game = gamePool.joinGame(user);
-                    if (game) {
-                        var player1 = game.firstPlayer().user;
-                        var player2 = game.secondPlayer().user;
-
-                        game.emit(Events.bonusLetters, game.getBonusLetters());
-                        game.emit(Events.points, {me: 0, opponent: 0});
-                        logger("Joined to game " + user.gameId);
-                    }
-                })
                 .on(Events.message, function (text, cb) {
                     game.emit(Events.message, text);
                     cb && cb();
@@ -157,9 +123,15 @@ module.exports = function(server, sessionStore) {
                     socket.emit(Events.checkWord, ans);
                     cb && cb();
                 })
-                .on(Events.gameList, function () {
-                    //console.log('gameList event');
-                    this.emit(Events.gameList, gamePool.waitingQueue);
+                .on(Events.ready, function() {
+                    logger('Events.ready');
+                    if(game && game.firstPlayer() && game.secondPlayer()) {
+                        logger('Sent', 'ready');
+                        game.emit(Events.ready, game.firstPlayer().user.username, game.secondPlayer().user.username);
+                    } else {
+                        logger('Sent', 'waiting');
+                        game.emit(Events.waiting);
+                    }
                 });
         });
 

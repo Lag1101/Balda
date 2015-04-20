@@ -72,6 +72,7 @@ server.listen(config.get('PORT'), function(){
     logger('Listening on ' + config.get('PORT'));
 });
 
-require('./socket')(server, sessionStore);
+require('./lib/io')(server);
+require('./socket')(sessionStore);
 
 module.exports = app;
