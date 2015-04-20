@@ -35,7 +35,7 @@ module.exports = function(server, sessionStore) {
             user.socket = socket;
 
             if(game && game.firstPlayer() && game.secondPlayer()) {
-                logger(game.firstPlayer().username, game.secondPlayer().username, "in game");
+                logger(game.firstPlayer().user.username, game.secondPlayer().user.username, "in game");
                 game.emit(Events.ready, game.firstPlayer().username, game.secondPlayer().username);
             }
 

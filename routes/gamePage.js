@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
     User.findOne({username: req.session.username}, function(err, user){
         if(err || !user) throw new HttpError(401, "");
 
-        if(!game.secondPlayer()){
+        if(!game.secondPlayer() && game.firstPlayer().id !== req.session.username){
             gamePool.joinGame(user, game._id);
         }
 
