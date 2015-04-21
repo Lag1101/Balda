@@ -7,7 +7,7 @@ module.exports = function(app) {
     app.use('/login', require('./login'));
     app.use('/logout',checkAuth, require('./logout'));
 
-    app.use('/testWords', checkAuth, require('./testWords'));
+    app.use('/testWords', require('./testWords'));
     app.use('/gamePage', checkAuth, require('./gamePage'));
 
     app.use('/users', checkAuth, require('./users'));

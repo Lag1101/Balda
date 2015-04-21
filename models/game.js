@@ -1,59 +1,70 @@
 /**
- * Created by vasiliy.lomanov on 10.04.2015.
+ * Created by vasiliy.lomanov on 17.04.2015.
  */
 
-var Utils = require('../lib/Utils');
-var Queue = Utils.Queue;
+var mongoose = require('../lib/mongoose'),
+    Schema = mongoose.Schema;
 
-var _id = 1;
-function Game() {
-    this._id = _id;
-    _id ++;
+var Queue = require('../lib/Utils').Queue;
 
-    this.startWord = '';
+var schema = new Schema({
+    PlayersIds: {
+        type: Object,
+        default: new Queue()
+    },
+    field: {
+        type: Array,
+        default: []
+    },
+    startWord: {
+        type: String,
+        default: ''
+    },
+    bonusLetters: {
+        type: Object,
+        default: new Queue()
+    },
+    created: {
+        type: Date,
+        default: Date.now
+    }
+});
 
-    this.players = new Queue();
-    this.field = []; // todo: need to define field structure
-    this.currentPlayerUsername = null;
+schema.methods.Player = (function(){
+    function Player(player){
+        this.userId = player.userId;
+        this.points = player.points || 0;
+        this.words = player.words || [];
+    }
+    Object.defineProperty(Player.prototype, "id", { get: function () {
+        return this.userId;
+    }});
+    Player.prototype.addPoints = function(points){
+        this.points += points;
+    };
+    Player.prototype.getPoints = function(){
+        return this.points;
+    };
+    Player.prototype.addWord = function(word) {
+        if(word)
+            this.words.push(word);
+    };
+    Player.prototype.getWords = function() {
+        return this.words;
+    };
+    return Player;
+})();
 
-    this.bonusLetters = new Queue();
-}
+schema.methods.Cell = (function(){
+    function Cell(cell){
+        this.letter = cell.letter || '';
+        this.points = cell.points || 0;
+        this.statement = cell.statement || 0;
+    }
+    return Cell;
+})();
 
-Game.Player = function(player) {
-    this.user = player.user;
-    this.points = player.points || 0;
-    this.words = player.words || [];
-    this.socket = player.socket || null;
-};
-Object.defineProperty(Game.Player.prototype, "id", { get: function () {
-    return this.user.username;
-}});
-
-
-Game.Player.prototype.addPoints = function(points){
-    this.points += points;
-};
-Game.Player.prototype.getPoints = function(){
-    return this.points;
-};
-Game.Player.prototype.addWord = function(word) {
-    if(word)
-        this.words.push(word);
-};
-Game.Player.prototype.getWords = function() {
-    return this.words;
-};
-Game.Player.prototype.setSocket = function(socket) {
-    this.socket = socket;
-};
-
-Game.Cell = function(cell){
-    this.letter = cell.letter || '';
-    this.points = cell.points || 0;
-    this.statement = cell.statement || 0;
-};
-
-Game.prototype.generateField = function(word, size) {
+schema.methods.generateField = function(word, size) {
     this.startWord = word;
 
     this.field = [];
@@ -79,26 +90,19 @@ Game.prototype.generateField = function(word, size) {
     }
 };
 
-Game.prototype.emit = function(key, val1, val2) {
-
-    var players = this.players;
-    this.players.keys.map(function(k){
-        var player = players.get(k);
-        if( player.socket )
-            player.socket.emit(key, val1, val2);
-    });
-};
-Game.prototype.ready = function() {
+schema.methods.ready = function() {
     return this.players.len() >= 2;
 };
 
-Game.prototype.firstPlayer = function() {
+schema.methods.firstPlayer = function() {
     return this.players.get(this.players.keys[0]);
 };
-Game.prototype.secondPlayer = function() {
+
+schema.methods.secondPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
-Game.prototype.calcPointsByNewField = function(newField) {
+
+schema.methods.calcPointsByNewField = function(newField) {
     var points = 0;
     var currentField = this.field;
     var bonusLetters = this.bonusLetters;
@@ -121,26 +125,28 @@ Game.prototype.calcPointsByNewField = function(newField) {
     return points;
 };
 
-Game.prototype.setField = function(field) {
+schema.methods.setField = function(field) {
     this.field = field;
 };
-Game.prototype.getField = function() {
+
+schema.methods.getField = function() {
     return this.field;
 };
-Game.prototype.createState = function(turn) {
+
+schema.methods.createState = function(turn) {
     return {
         field: this.getField(),
         turn: turn
     };
 };
 
-Game.prototype.fillBonusLetters = function(){
+schema.methods.fillBonusLetters = function(){
     this.bonusLetters.push('е', 2);
     this.bonusLetters.push('р', 3);
     this.bonusLetters.push('я', 5);
 };
 
-Game.prototype.getBonusLetters = function(){
+schema.methods.getBonusLetters = function(){
     var bonusLettersCells = [];
     var bonusLetters = this.bonusLetters;
 
@@ -154,5 +160,4 @@ Game.prototype.getBonusLetters = function(){
     return bonusLettersCells;
 };
 
-
-module.exports = Game;
+exports.Game = mongoose.model('Game', schema);

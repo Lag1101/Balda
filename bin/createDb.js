@@ -7,7 +7,10 @@ async.series([
     requireModels,
     createUsers
 ], function(err) {
-    console.log(arguments);
+    if(err)
+        logger.error(err);
+    else
+        logger.log('db created')
     mongoose.disconnect();
     process.exit(err ? 255 : 0);
 });
@@ -23,6 +26,7 @@ function dropDatabase(callback) {
 
 function requireModels(callback) {
     require('../models/user');
+    require('../models/game');
 
     async.each(Object.keys(mongoose.models), function(modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
@@ -36,9 +40,23 @@ function createUsers(callback) {
         {username: 'test', password: 'test'},
 
     ];
+    var games = [];
+    async.series([
+        function(cb){
+            async.each(users, function(userData, cb) {
+                var user = new mongoose.models.User(userData);
+                user.save(cb);
+            }, cb);
+        },
+        function(cb) {
+            async.each(games, function (gameData, cb) {
+                var game = new mongoose.models.Game(gameData);
+                game.save(cb);
+            }, cb);
+        }
+    ], function(err){
+        return callback(err);
+    });
 
-    async.each(users, function(userData, callback) {
-        var user = new mongoose.models.User(userData);
-        user.save(callback);
-    }, callback);
+
 }

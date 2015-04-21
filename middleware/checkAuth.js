@@ -5,7 +5,7 @@
 var HttpError = require('../error').HttpError;
 
 module.exports = function(req, res, next) {
-    if (req.session.user === undefined) {
+    if (req.session.username === undefined) {
         return next(new HttpError(401, "Вы не авторизованы"));
     }
 

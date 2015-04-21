@@ -1,39 +1,49 @@
 extends layout/page
 block content
-    h1 Game list
-    ul(id='gameList')
+    button(id='createGame') Create game
+
+    h2 Game list
+        ul(id='gameList')
 
     script.
         var list = $('#gameList');
-        var socket = io.connect('', {
-            reconnect: true
-        });
 
-        var intervalId = null;
-        socket
-            .on('connect', function(){
-                    console.log('connected');
-                socket.emit(Events.gameList);
-                intervalId = setInterval(function(){
-                    socket.emit(Events.gameList);
-                }, 500);
-            })
-            .on('disconnect', function(){
-                    console.log('disconnected');
-                clearInterval(intervalId);
-                intervalId = null;
-            })
-            .on('error', function (err) {
-                console.error(err);
-            })
-            .on(Events.gameList, function (newGameList) {
-                list.empty();
-                newGameList.keys.map(function(key){
-                    var game = newGameList.elements[key];
-                    var li = $('<li></li>');
+        $('#createGame').click(createGame);
 
-                    $('<a></a>').attr('href', '#').text(game.players.keys[0]).appendTo(li);
-
-                    li.appendTo(list);
-                });
+        subscribe();
+        function subscribe() {
+            $.get(window.location.pathname + "/list", function (data) {
+                updateList(data);
+                setTimeout(subscribe, 500);
             });
+        }
+
+        function createGame(){
+            $.post(window.location.pathname + "/createGame");
+        }
+
+        function joinGame(id) {
+            $.post(window.location.pathname + "/joinGame", {gameId: id});
+        }
+
+        function updateList(newGameList) {
+            list.empty();
+            newGameList.keys.map(function(key){
+                var game = newGameList.elements[key];
+                var li = $('<li></li>');
+
+                $('<div></div>').attr('href', 'gamePage?id=' + game._id)
+                        .append($('<p></p>').text('user: ' + game.players.keys[0]))
+                        .append($('<p></p>').text('id: ' + game._id))
+                        .append($("<button></button>")
+                                .text("Join")
+                                .click(joinGame.bind(undefined, game._id))
+                                .appendTo(li))
+                        .appendTo(li);
+
+
+                li.appendTo(list);
+            });
+        }
+
+

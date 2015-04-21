@@ -20,7 +20,8 @@ var Events = (function(){
         waiting: getId(),
         ready: getId(),
         bonusLetters: getId(),
-        gameList: getId()
+        gameList: getId(),
+        myGamesList: getId()
     };
 })();
 
