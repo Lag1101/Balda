@@ -53,7 +53,14 @@ function update_field(mainParams, mainVars)
             }
             else
             {
-                mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_opponent_turn");
+                if(state_field[i][j].letter != '') {
+                    mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_opponent_turn");
+                }
+                else
+                {
+                    mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_opponent_turn_empty");
+                }
+
             }
         }
     }

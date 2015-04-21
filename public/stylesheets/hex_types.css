@@ -23,7 +23,10 @@
 
 .hex_opponent_turn {
     background-color: #747474;
+}
 
+.hex_opponent_turn_empty{
+    background-color: #626262;
 }
 
 .hex_picked {

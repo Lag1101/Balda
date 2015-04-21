@@ -38,7 +38,6 @@ function initSocket(mainParams, mainVars) {
             socket.emit(Events.state);
         })
         .on(Events.state, function (newState) {
-                console.log(newState);
             mainParams.state = newState;
             initNear(mainParams, mainVars);
             initGame(mainParams, mainVars);
