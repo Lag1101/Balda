@@ -53,7 +53,7 @@ module.exports = function(sessionStore) {
                     if (game.currentPlayerUsername === null)
                         turn = "true";
                     else
-                        turn = user.is(game.currentPlayerUsername) ? "true" : "false";
+                        turn = (user.username === game.currentPlayerUsername) ? "true" : "false";
 
                     var state = game.createState(turn);
                     logger('emited to', user.username, state);
