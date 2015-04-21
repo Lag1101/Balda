@@ -1,4 +1,4 @@
-function initSocket() {
+function initSocket(mainParams ,mainVars) {
 
     var socket = io.connect('', {
         reconnect: true
@@ -6,7 +6,7 @@ function initSocket() {
 
     socket.on('connect', function(){
         $('#Create').click(function(){
-            socket.emit(Events.createGame, 5, 7);
+            socket.emit(Events.createGame, 5, mainVars.field_size);
         });
         $('#Join').click(function(){
             socket.emit(Events.joinGame);
@@ -18,27 +18,32 @@ function initSocket() {
             printState("waiting for an opponent");
         })
         .on(Events.checkWord, function(answer){
-            if(answer == true)
+            console.log(answer);
+            if(answer === "true")
             {
-
+                redraw_field(mainParams ,mainVars);
+                mainParams.action = ACTION_USE_SPELL;
+                alert("naebni ka spell");
             }
             else
             {
-                state = last_state;
-                new_word = '';
-                update_field();
+                mainVars.new_word = '';
+                mainParams.action = ACTION_GET_PLACE;
+                mainParams.ready_to_send = SEND_NOT_READY;
+
+                socket.emit(Events.state);
             }
         })
         .on(Events.ready, function(p1, p2){
             printState(p1 + " vs " + p2);
-            creating();
+            creating(mainParams, mainVars, socket);
             socket.emit(Events.state);
         })
         .on(Events.state, function (newState) {
-            last_state = newState;
-            state = last_state;
-            initNear();
-            initGame();
+            console.log(newState);
+            mainParams.state = newState;
+            initNear(mainParams, mainVars);
+            initGame(mainParams, mainVars);
         })
         .on(Events.points, function(points){
             statsController.setPoints(points.me, points.opponent);

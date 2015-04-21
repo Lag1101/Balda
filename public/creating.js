@@ -1,30 +1,38 @@
-function creating()
+function creating(mainParams, mainVars, own_socket)
 {
     var _area = $('#area');
     var send_hex = $('<div></div>')
         .attr('id', "send")
         .addClass('hex_main')
         .addClass('hex_not_send');
-
     var send_span = $('<span></span>').addClass('shadowSpan');
-
     send_hex.append(send_span);
     _area.append(send_hex);
-    //send_hex.offset({top: 50, left: 20 });
     send_hex.css('top', 50);
     send_hex.css('left', 20);
-    send_hex.click(clicked_action_sending());
-    sending_hex = send_hex;
+    send_hex.click(function question() {
+        console.log(mainParams.ready_to_send);
+        if(mainParams.action == ACTION_LETTERS && mainParams.ready_to_send == SEND_READY)
+        {
+            own_socket.emit(Events.checkWord, mainVars.new_word);
+        }
+        else if(mainParams.action == ACTION_NONE && mainParams.ready_to_send == SEND_READY)
+        {
+            console.log(mainParams.state.field);
+            own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
+            mainParams.ready_to_send = SEND_NOT_READY;
+        }
+    });
+    mainVars.sending_hex = send_hex;
 
-    for (var i = 0; i < field_size; i++) {
+    for (var i = 0; i < mainVars.field_size; i++) {
 
-        hex_objects.push([]);
+        mainVars.hex_objects.push([]);
 
-        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
+        for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
 
             var hex_obj = $('<div></div>')
                 .attr('id', "hex"+i+j)
-                .addClass('hex_main');
 
             var span = $('<span></span>').addClass('shadowSpan');
             span.append(
@@ -41,32 +49,29 @@ function creating()
 
             hex_obj.append(span);
             _area.append(hex_obj);
-
-            //hex_obj.offset({top: 50 + 85 * i, left: 50 + 105 * j + 52.5 * Math.abs(3 - i)});
             hex_obj.css('top', 50 + 85 * i);
             hex_obj.css('left', 50 + 105 * j + 52.5 * Math.abs(3 - i));
+            hex_obj.click(clicked_action.bind(undefined, i, j, mainParams, mainVars));
 
-            hex_obj.click(clicked_action.bind(undefined,i,j));
-
-            hex_objects[i].push(hex_obj);
+            mainVars.hex_objects[i].push(hex_obj);
         }
     }
 }
 
-function initNear()
+function initNear(mainParams, mainVars)
 {
-    for (var i = 0; i < field_size; i++) {
-        near_list.push([]);
-        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
-            near_list[i].push(getNeaghbors(i,j));
+    for (var i = 0; i < mainVars.field_size; i++) {
+        mainVars.near_list.push([]);
+        for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
+            mainVars.near_list[i].push(getNeaghbors(i,j, mainParams));
         }
     }
 }
 
-function getNeaghbors(x,y) {
+function getNeaghbors(x,y, mainParams) {
 
     var neighborsIndexies = [];
-    if( x < Math.floor(state.field.length/2) ) {
+    if( x < Math.floor(mainParams.state.field.length/2) ) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -75,7 +80,7 @@ function getNeaghbors(x,y) {
             [1, 0],
             [1, 1]
         ];
-    } else if(x > Math.floor(state.field.length/2)) {
+    } else if(x > Math.floor(mainParams.state.field.length/2)) {
         neighborsIndexies = [
             [0,-1],
             [0,1],
@@ -100,31 +105,46 @@ function getNeaghbors(x,y) {
         var X = neighborsIndexies[i][0];
         var Y = neighborsIndexies[i][1];
 
-        if(state.field[x+X] && state.field[x+X][y+Y])
+        if(mainParams.state.field[x+X] && mainParams.state.field[x+X][y+Y])
             neighbors.push({x:x+X, y:y+Y});
     }
     return neighbors;
 }
 
-function initGame()
+function initGame(mainParams, mainVars)
 {
-    for (var i = 0; i < field_size; i++) {
-        for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++) {
-            if(state.field[i][j].letter != '')
+    for (var i = 0; i < mainVars.field_size; i++) {
+        for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
+            if(mainParams.state.field[i][j].letter != '')
             {
-                state.field[i][j].statement = PASSIVE_LETTER;
-                for(var k=0; k<near_list[i][j].length; k++)
+                if (mainParams.state.field[i][j].letter != FROZEN) mainParams.state.field[i][j].statement = PASSIVE_LETTER;
+
+                for(var k=0; k<mainVars.near_list[i][j].length; k++)
                 {
-                    var neaghbor = near_list[i][j][k];
-                    if(state.field[neaghbor.x][neaghbor.y].statement  != PASSIVE_LETTER)
+                    var neaghbor = mainVars.near_list[i][j][k];
+                    if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  != PASSIVE_LETTER )
                     {
-                        state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
+                        if (mainParams.state.field[neaghbor.x][neaghbor.y].statement != FROZEN) mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
                     }
                 }
             }
         }
     }
-    update_field();
+    update_field(mainParams, mainVars);
+}
+
+function redraw_field(mainParams ,mainVars)
+{
+    for (var i = 0; i < mainVars.field_size; i++) {
+        for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
+            var thisStatement = mainParams.state.field[i][j].statement;
+            if(thisStatement == ACTIVE_LETTER || thisStatement == CHANGED_LETTER)
+            {
+                mainParams.state.field[i][j].statement = PASSIVE_LETTER;
+            }
+        }
+    }
+    update_field(mainParams, mainVars);
 }
 
 

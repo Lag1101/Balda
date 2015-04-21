@@ -31,20 +31,16 @@
 
     <script>
 
-        var state;
-        var last_state;
-        var action = ACTION_GET_PLACE;
-        var hex_objects = [];
-        var near_list = [];
-        var new_word = '';
-        var sending_hex;
-        var ready_to_send = SEND_NOT_READY;
-
-        var field_size = 7;
-
-        initSocket();
-
         var statsController = new StatsController("stats");
+
+        function initVar()
+        {
+            var mainParams = {action: ACTION_GET_PLACE, state: null, ready_to_send: SEND_NOT_READY};
+            var mainVars = {hex_objects:[], near_list:[], new_word: '', sending_hex: null, field_size: 7};
+            initSocket(mainParams, mainVars);
+        }
+
+        initVar();
 
         //initialize();
     </script>

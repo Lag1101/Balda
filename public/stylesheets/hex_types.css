@@ -30,6 +30,10 @@
     background-color: #cc3d00;
 }
 
+.hex_frozen {
+    background-color: #ede7ec;
+}
+
 .hex_send {
     background-color: #28cc2b;
 }

@@ -1,106 +1,108 @@
-function clicked_action(i,j) {
+function clicked_action(i,j, mainParams, mainVars) {
 
-    if (action == ACTION_GET_PLACE)
+    if (mainParams.action == ACTION_GET_PLACE)
     {
-        if(state.field[i][j].statement == ACTIVE_EMPTY) {
+        if(mainParams.state.field[i][j].statement == ACTIVE_EMPTY) {
 
-            state.field[i][j].statement = NEW_LETTER_ACTIVE;
+            mainParams.state.field[i][j].statement = NEW_LETTER_ACTIVE;
 
             $('body').keypress(function(event){
-                state.field[i][j].letter = String.fromCharCode(event.which);
+                mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
                 $(this).off("keypress");
 
-                changeField(1);
-                action = ACTION_LETTERS;
-                update_field();
+                changeField(1, mainParams, mainVars);
+                mainParams.action = ACTION_LETTERS;
+                update_field(mainParams, mainVars);
             });
-            update_field();
+            update_field(mainParams, mainVars);
         }
 
     }
-    else if(action == ACTION_LETTERS)
+    else if(mainParams.action == ACTION_LETTERS)
     {
-        if(state.field[i][j].statement == ACTIVE_LETTER) {
+        if(mainParams.state.field[i][j].statement == ACTIVE_LETTER) {
 
-            state.field[i][j].statement = CHANGED_LETTER;
-            new_word = new_word + state.field[i][j].letter;
-            changeField(2);
+            mainParams.state.field[i][j].statement = CHANGED_LETTER;
+            mainVars.new_word = mainVars.new_word + mainParams.state.field[i][j].letter;
+            changeField(2, mainParams, mainVars);
 
-            for(var k=0; k<near_list[i][j].length; k++)
+            for(var k=0; k<mainVars.near_list[i][j].length; k++)
             {
-                var neaghbor = near_list[i][j][k];
-                if(state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
+                var neaghbor = mainVars.near_list[i][j][k];
+                if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
                 {
-                    state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
+                    mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
                 }
-                else if(state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
+                else if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
                 {
-                    state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
+                    mainParams.state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
                 }
             }
-            update_field();
+            update_field(mainParams, mainVars);
         }
-        if(state.field[i][j].statement == NEW_LETTER_ACTIVE) {
+        if(mainParams.state.field[i][j].statement == NEW_LETTER_ACTIVE) {
 
-            state.field[i][j].statement = CHANGED_LETTER;
-            new_word = new_word + state.field[i][j].letter;
-            ready_to_send = SEND_READY;
-            changeField(2);
+            mainParams.state.field[i][j].statement = CHANGED_LETTER;
+            mainVars.new_word = mainVars.new_word + mainParams.state.field[i][j].letter;
+            mainParams.ready_to_send = SEND_READY;
+            changeField(2, mainParams, mainVars);
 
-            for(var k=0; k<near_list[i][j].length; k++)
+            for(var k=0; k<mainVars.near_list[i][j].length; k++)
             {
-                var neaghbor = near_list[i][j][k];
-                if(state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
+                var neaghbor = mainVars.near_list[i][j][k];
+                if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  == PASSIVE_LETTER)
                 {
-                    state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
+                    mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_LETTER;
                 }
-                else if(state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
+                else if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  == NEW_LETTER_PASSIVE)
                 {
-                    state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
+                    mainParams.state.field[neaghbor.x][neaghbor.y].statement = NEW_LETTER_ACTIVE;
                 }
             }
-            update_field();
+            update_field(mainParams, mainVars);
         }
+    }
+    else if(mainParams.action == ACTION_USE_SPELL)
+    {
+        mainParams.state.field[i][j].statement = FROZEN;
+        mainParams.action = ACTION_NONE;
+
+        update_field(mainParams, mainVars);
     }
 };
 
-function clicked_action_sending()
-{
-    socket.emit(Events.checkWord,new_word);
-}
-
-function changeField(parameter) {
+function changeField(parameter, mainParams, mainVars) {
 
     switch (parameter)
     {
         case 1:
-            for (var i = 0; i < field_size; i++)
+            for (var i = 0; i < mainVars.field_size; i++)
             {
-                for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++)
+                for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++)
                 {
-                    if(state.field[i][j].statement == ACTIVE_EMPTY)
+                    if(mainParams.state.field[i][j].statement == ACTIVE_EMPTY)
                     {
-                        state.field[i][j].statement = PASSIVE_EMPTY;
+                        mainParams.state.field[i][j].statement = PASSIVE_EMPTY;
                     }
-                    else if(state.field[i][j].statement == PASSIVE_LETTER)
+                    else if(mainParams.state.field[i][j].statement == PASSIVE_LETTER)
                     {
-                        state.field[i][j].statement = ACTIVE_LETTER;
+                        mainParams.state.field[i][j].statement = ACTIVE_LETTER;
                     }
                 }
             }
             break;
         case 2:
-            for (var i = 0; i < field_size; i++)
+            for (var i = 0; i < mainVars.field_size; i++)
             {
-                for (var j = 0; j < field_size - Math.abs(Math.floor(field_size/2) - i); j++)
+                for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++)
                 {
-                    if(state.field[i][j].statement == ACTIVE_LETTER)
+                    if(mainParams.state.field[i][j].statement == ACTIVE_LETTER)
                     {
-                        state.field[i][j].statement = PASSIVE_LETTER;
+                        mainParams.state.field[i][j].statement = PASSIVE_LETTER;
                     }
-                    else if(state.field[i][j].statement == NEW_LETTER_ACTIVE)
+                    else if(mainParams.state.field[i][j].statement == NEW_LETTER_ACTIVE)
                     {
-                        state.field[i][j].statement = NEW_LETTER_PASSIVE;
+                        mainParams.state.field[i][j].statement = NEW_LETTER_PASSIVE;
                     }
                 }
             }

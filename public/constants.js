@@ -6,6 +6,7 @@ var PASSIVE_PLAYER = 0;
 var ACTION_NONE = 0;
 var ACTION_GET_PLACE = 1;
 var ACTION_LETTERS = 2;
+var ACTION_USE_SPELL = 3;
 
 //возможность отправки
 var SEND_READY = 1;
@@ -21,6 +22,8 @@ var PASSIVE_LETTER = 5;
 var NEW_LETTER_ACTIVE = 6;
 var NEW_LETTER_PASSIVE = 7;
 var CHANGED_LETTER = 8;
+
+var FROZEN = 9;
 
 
 
