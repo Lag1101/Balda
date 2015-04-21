@@ -64,10 +64,17 @@ function clicked_action(i,j, mainParams, mainVars) {
     }
     else if(mainParams.action == ACTION_USE_SPELL)
     {
-        mainParams.state.field[i][j].statement = FROZEN;
-        mainParams.action = ACTION_NONE;
 
-        update_field(mainParams, mainVars);
+        if(mainParams.state.field[i][j].statement == PASSIVE_LETTER) {
+            mainParams.state.field[i][j].statement = FROZEN;
+            mainParams.action = ACTION_NONE;
+
+            update_field(mainParams, mainVars);
+        }
+        else
+        {
+            alert("Ну букву выбери ёпта, чо как малой");
+        }
     }
 };
 

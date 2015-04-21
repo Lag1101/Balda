@@ -144,6 +144,10 @@ function redraw_field(mainParams ,mainVars)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
             }
+            else if (thisStatement == FROZEN)
+            {
+                mainParams.state.field[i][j].statement = PASSIVE_LETTER;
+            }
         }
     }
     update_field(mainParams, mainVars);
