@@ -72,8 +72,6 @@ module.exports = function(sessionStore) {
                             var players = game.players;
                             var firstPlayer = game.firstPlayer();
                             var secondPlayer = game.secondPlayer();
-                            var firstUser = firstPlayer.user;
-                            var secondUser = secondPlayer.user;
 
                             players.get(user.username).addWord(word);
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
@@ -82,20 +80,20 @@ module.exports = function(sessionStore) {
                             game.currentPlayerUsername = (firstPlayer.id === user.username) ? secondPlayer.id : firstPlayer.id;
 
 
-                            firstUser.socket.emit(Events.points, {
+                            firstPlayer.socket.emit(Events.points, {
                                 me: firstPlayer.getPoints(),
                                 opponent: secondPlayer.getPoints()
                             });
-                            secondUser.socket.emit(Events.points, {
+                            secondPlayer.socket.emit(Events.points, {
                                 me: secondPlayer.getPoints(),
                                 opponent: firstPlayer.getPoints()
                             });
 
-                            firstUser.socket.emit(Events.usedWords, {
+                            firstPlayer.socket.emit(Events.usedWords, {
                                 me: firstPlayer.getWords(),
                                 opponent: secondPlayer.getWords()
                             });
-                            secondUser.socket.emit(Events.usedWords, {
+                            secondPlayer.socket.emit(Events.usedWords, {
                                 me: secondPlayer.getWords(),
                                 opponent: firstPlayer.getWords()
                             });
@@ -106,7 +104,7 @@ module.exports = function(sessionStore) {
                                 var curUser = player.user;
                                 var state = game.createState((game.currentPlayerUsername === curUser.username) ? "true" : "false");
                                 logger('emited to', curUser.username, state);
-                                curUser.socket.emit(Events.state, state);
+                                player.socket.emit(Events.state, state);
                             });
 
                         }

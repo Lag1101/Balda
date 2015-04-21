@@ -1,16 +1,14 @@
-function initSocket(mainParams ,mainVars) {
+function initSocket(mainParams, mainVars) {
 
     var socket = io.connect('', {
         reconnect: true
     });
 
     socket.on('connect', function(){
-        $('#Create').click(function(){
-            socket.emit(Events.createGame, 5, mainVars.field_size);
-        });
-        $('#Join').click(function(){
-            socket.emit(Events.joinGame);
-        });
+        console.log("connected");
+        setTimeout(function(){
+            socket.emit(Events.ready);
+        }, 500);
     });
 
     socket
