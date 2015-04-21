@@ -21,6 +21,7 @@ function creating(mainParams, mainVars, own_socket)
             console.log(mainParams.state.field);
             own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
             mainParams.ready_to_send = SEND_NOT_READY;
+            mainParams.action = ACTION_GET_PLACE;
             update_field(mainParams, mainVars);
         }
     });
@@ -116,9 +117,9 @@ function initGame(mainParams, mainVars)
 {
     for (var i = 0; i < mainVars.field_size; i++) {
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
-            if(mainParams.state.field[i][j].letter != '')
+            if(mainParams.state.field[i][j].letter != '' && mainParams.state.field[i][j].statement != FROZEN)
             {
-                if (mainParams.state.field[i][j].statement != FROZEN) mainParams.state.field[i][j].statement = PASSIVE_LETTER;
+                mainParams.state.field[i][j].statement = PASSIVE_LETTER;
 
                 for(var k=0; k<mainVars.near_list[i][j].length; k++)
                 {
