@@ -21,7 +21,7 @@ function initSocket(mainParams, mainVars) {
             {
                 redraw_field(mainParams ,mainVars);
                 mainParams.action = ACTION_USE_SPELL;
-                alert("naebni ka spell");
+                alert("кастуй как никогда не кастовал");
             }
             else
             {
@@ -38,7 +38,7 @@ function initSocket(mainParams, mainVars) {
             socket.emit(Events.state);
         })
         .on(Events.state, function (newState) {
-            console.log(newState);
+                console.log(newState);
             mainParams.state = newState;
             initNear(mainParams, mainVars);
             initGame(mainParams, mainVars);
