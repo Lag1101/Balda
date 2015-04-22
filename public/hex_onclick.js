@@ -66,7 +66,7 @@ function clicked_action(i,j, mainParams, mainVars) {
         }
         mainVars.status.text("Нажав на гекс слева вверху, вы можете отослать слово: " + mainVars.new_word);
     }
-    else if(mainParams.action == ACTION_USE_SPELL)
+    else if(mainParams.action == ACTION_FREEZ_LETTER)
     {
         if(mainParams.state.field[i][j].statement == PASSIVE_LETTER) {
             mainParams.state.field[i][j].statement = FROZEN_LETTER;
@@ -74,9 +74,14 @@ function clicked_action(i,j, mainParams, mainVars) {
 
             update_field(mainParams, mainVars);
         }
-        else
-        {
-            alert("Ну букву выбери ёпта, чо как малой");
+    }
+    else if(mainParams.action == ACTION_FREEZ_EMPTY)
+    {
+        if(mainParams.state.field[i][j].statement == PASSIVE_EMPTY) {
+            mainParams.state.field[i][j].statement = FROZEN_EMPTY;
+            mainParams.action = ACTION_NONE;
+
+            update_field(mainParams, mainVars);
         }
     }
 };

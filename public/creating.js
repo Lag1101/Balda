@@ -14,10 +14,12 @@ function creating(mainParams, mainVars, own_socket) {
             own_socket.emit(Events.checkWord, mainVars.new_word);
         }
         else if (mainParams.action == ACTION_NONE && mainParams.ready_to_send == SEND_READY) {
+
             own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
+
             mainParams.ready_to_send = SEND_NOT_READY;
             mainVars.new_word = '';
-            mainParams.state.turn == "false";
+            mainParams.state.turn = "false";
             update_field(mainParams, mainVars);
         }
     });
@@ -52,7 +54,6 @@ function creating(mainParams, mainVars, own_socket) {
                     .addClass('fieldForLetter')
                     .text("")
             );
-
 
             hex_obj.append(span);
             _area.append(hex_obj);
@@ -122,16 +123,18 @@ function initGame(mainParams, mainVars)
 {
     for (var i = 0; i < mainVars.field_size; i++) {
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
-            if(mainParams.state.field[i][j].letter != '' && mainParams.state.field[i][j].statement != FROZEN_LETTER)
+            var _statement = mainParams.state.field[i][j].statement;
+            if(mainParams.state.field[i][j].letter != '' && _statement != FROZEN_LETTER)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
 
                 for(var k=0; k<mainVars.near_list[i][j].length; k++)
                 {
                     var neaghbor = mainVars.near_list[i][j][k];
-                    if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  != PASSIVE_LETTER )
+                    var _neaghbor_state = mainParams.state.field[neaghbor.x][neaghbor.y].statement;
+                    if(_neaghbor_state  != PASSIVE_LETTER )
                     {
-                        if (mainParams.state.field[neaghbor.x][neaghbor.y].statement != FROZEN_LETTER) mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
+                        if (_neaghbor_state != FROZEN_LETTER && _neaghbor_state != FROZEN_EMPTY) mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
                     }
                 }
             }
@@ -145,13 +148,13 @@ function redraw_field(mainParams ,mainVars)
     for (var i = 0; i < mainVars.field_size; i++) {
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
             var thisStatement = mainParams.state.field[i][j].statement;
-            if(thisStatement == ACTIVE_LETTER || thisStatement == PICKED_LETTER)
+            if(thisStatement == ACTIVE_LETTER || thisStatement == PICKED_LETTER || thisStatement == FROZEN_LETTER)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
             }
-            else if (thisStatement == FROZEN_LETTER)
+            else if (thisStatement == FROZEN_EMPTY)
             {
-                mainParams.state.field[i][j].statement = PASSIVE_LETTER;
+                mainParams.state.field[i][j].statement = PASSIVE_EMPTY;
             }
         }
     }
