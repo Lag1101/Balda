@@ -43,6 +43,7 @@ function update_field(mainParams, mainVars)
                         break;
                     case FROZEN_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_frozen");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text("");
                         break;
                     default:
                         break;
