@@ -19,8 +19,8 @@ function creating(mainParams, mainVars, own_socket)
         {
             own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
             mainParams.ready_to_send = SEND_NOT_READY;
-            mainParams.action = ACTION_GET_PLACE;
             mainVars.new_word = '';
+            mainParams.state.turn == "false";
             update_field(mainParams, mainVars);
         }
     });
@@ -116,7 +116,7 @@ function initGame(mainParams, mainVars)
 {
     for (var i = 0; i < mainVars.field_size; i++) {
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
-            if(mainParams.state.field[i][j].letter != '' && mainParams.state.field[i][j].statement != FROZEN)
+            if(mainParams.state.field[i][j].letter != '' && mainParams.state.field[i][j].statement != FROZEN_LETTER)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
 
@@ -125,7 +125,7 @@ function initGame(mainParams, mainVars)
                     var neaghbor = mainVars.near_list[i][j][k];
                     if(mainParams.state.field[neaghbor.x][neaghbor.y].statement  != PASSIVE_LETTER )
                     {
-                        if (mainParams.state.field[neaghbor.x][neaghbor.y].statement != FROZEN) mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
+                        if (mainParams.state.field[neaghbor.x][neaghbor.y].statement != FROZEN_LETTER) mainParams.state.field[neaghbor.x][neaghbor.y].statement = ACTIVE_EMPTY;
                     }
                 }
             }
@@ -139,11 +139,11 @@ function redraw_field(mainParams ,mainVars)
     for (var i = 0; i < mainVars.field_size; i++) {
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
             var thisStatement = mainParams.state.field[i][j].statement;
-            if(thisStatement == ACTIVE_LETTER || thisStatement == CHANGED_LETTER)
+            if(thisStatement == ACTIVE_LETTER || thisStatement == PICKED_LETTER)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
             }
-            else if (thisStatement == FROZEN)
+            else if (thisStatement == FROZEN_LETTER)
             {
                 mainParams.state.field[i][j].statement = PASSIVE_LETTER;
             }

@@ -23,12 +23,10 @@ function initSocket(mainParams, mainVars) {
             {
                 redraw_field(mainParams ,mainVars);
                 mainParams.action = ACTION_USE_SPELL;
-                alert("кастуй как никогда не кастовал");
             }
             else
             {
                 mainVars.new_word = '';
-                mainParams.action = ACTION_GET_PLACE;
                 mainParams.ready_to_send = SEND_NOT_READY;
 
                 socket.emit(Events.state);
@@ -41,6 +39,14 @@ function initSocket(mainParams, mainVars) {
         })
         .on(Events.state, function (newState) {
             mainParams.state = newState;
+            if(newState.turn == "true")
+            {
+                mainParams.action = ACTION_GET_PLACE;
+            }
+            else
+            {
+                mainParams.action = ACTION_WAITING;
+            }
             initNear(mainParams, mainVars);
             initGame(mainParams, mainVars);
         })
