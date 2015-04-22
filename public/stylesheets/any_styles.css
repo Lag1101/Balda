@@ -7,3 +7,7 @@
     border: solid 1px black;
     float: left;
 }
+
+.area{
+    position: relative;
+}
