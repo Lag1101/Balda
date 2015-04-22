@@ -5,7 +5,6 @@ var gamePool = require('../game').gamePool;
 var Events = require('../shared/Events');
 var config = require('../config');
 var loadUser = require('./loadUser');
-var Queue = require('../lib/Utils').Queue;
 
 var wordTree = require('../lib/WordTree').wordTree;
 

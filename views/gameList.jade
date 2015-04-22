@@ -4,9 +4,12 @@ block content
 
     h2 Game list
         ul(id='gameList')
+    h2 My games
+        ul(id='myGameList')
 
     script.
         var list = $('#gameList');
+        var myList = $('#myGameList');
 
         $('#createGame').click(createGame);
 
@@ -26,24 +29,38 @@ block content
             $.post(window.location.pathname + "/joinGame", {gameId: id});
         }
 
-        function updateList(newGameList) {
+        function updateList(games) {
             list.empty();
-            newGameList.keys.map(function(key){
-                var game = newGameList.elements[key];
+            for(var i = 0; i < games.all.length; i++){
+                var gameId = games.all[i].gameId;
+                var username = games.all[i].username;
                 var li = $('<li></li>');
 
-                $('<div></div>').attr('href', 'gamePage?id=' + game._id)
-                        .append($('<p></p>').text('user: ' + game.players.keys[0]))
-                        .append($('<p></p>').text('id: ' + game._id))
+                $('<div></div>').attr('href', 'gamePage?id=' + gameId)
+                        .append($('<p></p>').text('user: ' + username))
+                        .append($('<p></p>').text('id: ' + gameId))
                         .append($("<button></button>")
                                 .text("Join")
-                                .click(joinGame.bind(undefined, game._id))
-                                .appendTo(li))
+                                .click(joinGame.bind(undefined, gameId)))
                         .appendTo(li);
 
 
                 li.appendTo(list);
-            });
+            }
+
+            myList.empty();
+            for (var i = 0; i < games.my.length; i++) {
+                var gameId = games.my[i].gameId;
+
+                var li = $('<li></li>');
+
+                $('<a></a>').attr('href', 'gamePage?id=' + gameId)
+                        .append($('<p></p>').text('id: ' + gameId))
+                        .appendTo(li);
+
+
+                li.appendTo(myList);
+            }
         }
 
 

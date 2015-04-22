@@ -26,8 +26,6 @@ router.get('/', function(req, res, next) {
     User.findOne({username: req.session.username}, function(err, user){
         if(err || !user) throw new HttpError(401, "");
 
-        req.session.gameId = game._id;
-
         res.render('gamePage', {
             title: config.get('title'),
             user: user
