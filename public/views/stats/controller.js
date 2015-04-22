@@ -20,8 +20,8 @@ var StatsController = (function(){
             _this.bonusLettersEl = bonusLettersContainerEl.find(".bonusLetters");
 
             var wordsEl = _this.statsEl.find(".words");
-            _this.myWordsEl = wordsEl.find(".myWords").find("ul");
-            _this.opponentWordsEl = wordsEl.find(".opponentWords").find("ul");
+            _this.myWordsEl = wordsEl.find(".myWords");
+            _this.opponentWordsEl = wordsEl.find(".opponentWords");
         });
     }
 
