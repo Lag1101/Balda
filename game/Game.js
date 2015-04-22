@@ -53,6 +53,15 @@ Game.Cell = function(cell){
     this.statement = cell.statement || 0;
 };
 
+Game.calcPoints = function(distance){
+    var max = 4, min = 1;
+
+    var constPart = distance + min;
+    var dynamicPart = Math.floor((max - min)*Math.random());
+
+    return constPart + dynamicPart;
+};
+
 Game.prototype.generateField = function(word, size) {
     this.startWord = word;
 
@@ -65,7 +74,7 @@ Game.prototype.generateField = function(word, size) {
         var count = size - distance;
         for(var k = 0; k < count; k++) {
             line.push(new Game.Cell({
-                points: distance
+                points: Game.calcPoints(distance)
             }));
         }
         this.field.push(line);
