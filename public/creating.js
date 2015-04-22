@@ -8,7 +8,7 @@ function creating(mainParams, mainVars, own_socket)
     var send_span = $('<span></span>').addClass('shadowSpan');
     send_hex.append(send_span);
     _area.append(send_hex);
-    send_hex.css('top', 50);
+    send_hex.css('top', 80);
     send_hex.css('left', 20);
     send_hex.click(function question() {
         if(mainParams.action == ACTION_LETTERS && mainParams.ready_to_send == SEND_READY)
@@ -25,6 +25,15 @@ function creating(mainParams, mainVars, own_socket)
         }
     });
     mainVars.sending_hex = send_hex;
+
+    var status_panel = $('<div></div>')
+        .attr('id',"status_panel")
+        .addClass('style_status');
+
+    _area.append(status_panel);
+    status_panel.css('top', 10);
+    status_panel.css('left', 210);
+    mainVars.status = status_panel;
 
     for (var i = 0; i < mainVars.field_size; i++) {
 
@@ -50,7 +59,7 @@ function creating(mainParams, mainVars, own_socket)
 
             hex_obj.append(span);
             _area.append(hex_obj);
-            hex_obj.css('top', 50 + 85 * i);
+            hex_obj.css('top', 80 + 85 * i);
             hex_obj.css('left', 50 + 105 * j + 52.5 * Math.abs(3 - i));
             hex_obj.click(clicked_action.bind(undefined, i, j, mainParams, mainVars));
 

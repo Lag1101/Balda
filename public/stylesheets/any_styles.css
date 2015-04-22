@@ -1,0 +1,9 @@
+.style_status {
+    position: absolute;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive;
+    width: 405px;
+    background: #ccc;
+    border: solid 1px black;
+    float: left;
+}

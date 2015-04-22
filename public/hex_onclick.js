@@ -6,11 +6,12 @@ function clicked_action(i,j, mainParams, mainVars) {
 
             mainParams.state.field[i][j].statement = NEW_LETTER_ACTIVE;
             mainParams.action = ACTION_WAITING;
+            mainVars.status.text("Хороший выбор. Введите букву с клавиатуры.");
 
             $('body').keypress(function(event){
                 mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
                 $(this).off("keypress");
-
+                mainVars.status.text("Отлично, приступайте ко вводу слова, последовательно выбирая буквы.");
                 changeField(1, mainParams, mainVars);
                 mainParams.action = ACTION_LETTERS;
                 update_field(mainParams, mainVars);
@@ -48,6 +49,7 @@ function clicked_action(i,j, mainParams, mainVars) {
             mainParams.ready_to_send = SEND_READY;
             changeField(2, mainParams, mainVars);
 
+
             for(var k=0; k<mainVars.near_list[i][j].length; k++)
             {
                 var neaghbor = mainVars.near_list[i][j][k];
@@ -62,10 +64,10 @@ function clicked_action(i,j, mainParams, mainVars) {
             }
             update_field(mainParams, mainVars);
         }
+        mainVars.status.text("Нажав на гекс слева вверху, вы можете отослать слово: " + mainVars.new_word);
     }
     else if(mainParams.action == ACTION_USE_SPELL)
     {
-
         if(mainParams.state.field[i][j].statement == PASSIVE_LETTER) {
             mainParams.state.field[i][j].statement = FROZEN_LETTER;
             mainParams.action = ACTION_NONE;

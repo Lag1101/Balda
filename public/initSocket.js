@@ -23,12 +23,14 @@ function initSocket(mainParams, mainVars) {
             {
                 redraw_field(mainParams ,mainVars);
                 mainParams.action = ACTION_USE_SPELL;
+                mainVars.status.text("Слово засчитано! Используйте особую способность ценой не более " + mainVars.new_word.length + " манны");
             }
             else
             {
                 mainVars.new_word = '';
                 mainParams.ready_to_send = SEND_NOT_READY;
 
+                mainVars.status.text("Error");
                 socket.emit(Events.state);
             }
         })
@@ -41,10 +43,15 @@ function initSocket(mainParams, mainVars) {
             mainParams.state = newState;
             if(newState.turn == "true")
             {
+                if(mainVars.status.text() !== "Error") {
+                    mainVars.status.text("Ваш ход. Выберите поле для новой буквы.");
+                }
+                else mainVars.status.text("Такого слова нет, придумайте другое!");
                 mainParams.action = ACTION_GET_PLACE;
             }
             else
             {
+                mainVars.status.text("Ход соперника. Ожидайте ...");
                 mainParams.action = ACTION_WAITING;
             }
             initNear(mainParams, mainVars);
