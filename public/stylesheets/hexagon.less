@@ -3,8 +3,8 @@
 @borderColor: #333333;
 @shadowSize: 20px;
 
-.hexagon {
-  position: relative;
+.hex_main {
+  position: absolute;
   width: sqrt(3)*@a;
   height: @a;
   align-content: center;
@@ -15,8 +15,8 @@
   box-shadow: 0 0 @shadowSize rgba(0,0,0,0.6);
 }
 
-.hexagon:before,
-.hexagon:after {
+.hex_main:before,
+.hex_main:after {
   content: "";
   z-index: 1;
   position: absolute;
@@ -33,18 +33,18 @@
   box-shadow: 0 0 @shadowSize rgba(0,0,0,0.6);
 }
 
-.hexagon:before{
+.hex_main:before{
   top: -@a * sqrt(3)/2;
   border-top: solid @border*2 @borderColor;
   border-right: solid @border*2 @borderColor;
 }
-.hexagon:after{
+.hex_main:after{
   bottom: -@a * sqrt(3)/2;
   border-bottom: solid @border*2 @borderColor;
   border-left: solid @border*2 @borderColor;
 }
 
-.hexagon .shadowSpan {
+.hex_main .shadowSpan {
 
   width: sqrt(3)*@a - @border*2;
   height: @a - 2*@border/sqrt(3);
@@ -59,7 +59,7 @@
 
   //left: @border;
 }
-.hexagon .fieldForLetter {
+.hex_main .fieldForLetter {
   margin: -10px 0;
   font-size: 40px;
   font-family: 'Comic Sans MS', cursive;
@@ -67,7 +67,7 @@
   z-index: 3;
 }
 
-.hexagon .fieldForPoints{
+.hex_main .fieldForPoints{
   margin: 0;
   font-size: 10px;
   font-family: 'Comic Sans MS', cursive;

@@ -1,4 +1,33 @@
 //
    Created by vasiliy.lomanov on 07.04.2015.
+extends layout/game
+block content
+    div( id='area')
+    div( id="stats")
 
-include ../public/test_page.html
+    script( src="views/stats/controller.js")
+    script( src="update_field.js")
+    script( src="hex_onclick.js")
+    script( src="constants.js")
+    script( src="creating.js")
+    script( src="initSocket.js")
+    script( src="Events.js")
+    script.
+        var statsController = new StatsController("stats");
+        $(document).ready(function(){
+
+            function initVar() {
+                var mainParams = {action: null, state: null, ready_to_send: SEND_NOT_READY};
+                var mainVars = {
+                    hex_objects: [],
+                    near_list: [],
+                    new_word: '',
+                    sending_hex: null,
+                    status: null,
+                    field_size: 7
+                };
+                initSocket(mainParams, mainVars);
+            }
+
+            initVar();
+        });
