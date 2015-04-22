@@ -52,13 +52,9 @@ module.exports = function(sessionStore) {
                 })
                 .on('disconnect', function () {
                     logger(user.username + ' disconnected');
-
-                    //clear(user.gameId);
                 })
                 .on(Events.state, function () {
                     logger('state event');
-
-                    //var game = gamePool.get(user.gameId);
 
                     var turn = "true";
                     if (game.currentPlayerUsername === null)
@@ -133,6 +129,7 @@ module.exports = function(sessionStore) {
                     cb && cb();
                 })
                 .on(Events.ready, function() {
+                    game.emit(Events.bonusLetters, game.getBonusLetters());
                     logger('Events.ready');
                     if(game && game.firstPlayer() && game.secondPlayer()) {
                         logger('Sent', 'ready');
