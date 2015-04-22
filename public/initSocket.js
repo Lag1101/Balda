@@ -23,38 +23,42 @@ function initSocket(mainParams, mainVars) {
             {
                 redraw_field(mainParams ,mainVars);
                 mainParams.action = ACTION_USE_SPELL;
-
-                $('body').keypress(function (event) {
-                    var new_spell = String.fromCharCode(event.which);
-                    switch (new_spell) {
-                        case '1':
-                            break;
-                        case '3':
-                            if(mainVars.new_word.length < 3) {
-                               mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
-                            }
-                            else {
-                                $(this).off("keypress");
-                                mainVars.status.text("Выбран спелл Заморозка буквы. Выберите букву!");
-                                mainParams.action = ACTION_FREEZ_LETTER;
-                            }
-                            break;
-                        case '4':
-                            if(mainVars.new_word.length < 4) {
-                                mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
-                            }
-                            else {
-                                $(this).off("keypress");
-                                mainVars.status.text("Выбран спелл Заморозка поля. Выберите локацию!");
-                                mainParams.action = ACTION_FREEZ_EMPTY;
-                            }
-                            break;
-                        default:
-                            console.log("не зашло");
-                            break;
-                    }
-                });
-                mainVars.status.text("Слово засчитано! У вас " + mainVars.new_word.length + " манны. Выберите на клавиатуре стоимость способности.");
+                if(mainVars.new_word.length < 5)
+                {
+                    mainParams.action = ACTION_NONE;
+                    mainVars.status.text("Для передачи хода повторно нажмите отправку.");
+                }
+                else {
+                    $('body').keypress(function (event) {
+                        var new_spell = String.fromCharCode(event.which);
+                        switch (new_spell) {
+                            case '5':
+                                if (mainVars.new_word.length < 5) {
+                                    mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
+                                }
+                                else {
+                                    $(this).off("keypress");
+                                    mainVars.status.text("Выбран спелл Заморозка буквы. Выберите букву!");
+                                    mainParams.action = ACTION_FREEZ_LETTER;
+                                }
+                                break;
+                            case '6':
+                                if (mainVars.new_word.length < 6) {
+                                    mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
+                                }
+                                else {
+                                    $(this).off("keypress");
+                                    mainVars.status.text("Выбран спелл Заморозка поля. Выберите локацию!");
+                                    mainParams.action = ACTION_FREEZ_EMPTY;
+                                }
+                                break;
+                            default:
+                                console.log("не зашло");
+                                break;
+                        }
+                    });
+                    mainVars.status.text("Слово засчитано! У вас " + mainVars.new_word.length + " манны. Выберите на клавиатуре стоимость способности. 5 или 6 xD");
+                }
             }
             else
             {
