@@ -33,10 +33,10 @@ function update_field(mainParams, mainVars)
                     case NEW_LETTER_PASSIVE:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_passive_letter").addClass("hex_new_letter");
                         break;
-                    case CHANGED_LETTER:
+                    case PICKED_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_picked");
                         break;
-                    case FROZEN:
+                    case FROZEN_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_frozen");
                         break;
                     default:

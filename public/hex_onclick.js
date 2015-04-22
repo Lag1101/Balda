@@ -5,6 +5,7 @@ function clicked_action(i,j, mainParams, mainVars) {
         if(mainParams.state.field[i][j].statement == ACTIVE_EMPTY) {
 
             mainParams.state.field[i][j].statement = NEW_LETTER_ACTIVE;
+            mainParams.action = ACTION_WAITING;
 
             $('body').keypress(function(event){
                 mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
@@ -22,7 +23,7 @@ function clicked_action(i,j, mainParams, mainVars) {
     {
         if(mainParams.state.field[i][j].statement == ACTIVE_LETTER) {
 
-            mainParams.state.field[i][j].statement = CHANGED_LETTER;
+            mainParams.state.field[i][j].statement = PICKED_LETTER;
             mainVars.new_word = mainVars.new_word + mainParams.state.field[i][j].letter;
             changeField(2, mainParams, mainVars);
 
@@ -42,7 +43,7 @@ function clicked_action(i,j, mainParams, mainVars) {
         }
         if(mainParams.state.field[i][j].statement == NEW_LETTER_ACTIVE) {
 
-            mainParams.state.field[i][j].statement = CHANGED_LETTER;
+            mainParams.state.field[i][j].statement = PICKED_LETTER;
             mainVars.new_word = mainVars.new_word + mainParams.state.field[i][j].letter;
             mainParams.ready_to_send = SEND_READY;
             changeField(2, mainParams, mainVars);
@@ -66,7 +67,7 @@ function clicked_action(i,j, mainParams, mainVars) {
     {
 
         if(mainParams.state.field[i][j].statement == PASSIVE_LETTER) {
-            mainParams.state.field[i][j].statement = FROZEN;
+            mainParams.state.field[i][j].statement = FROZEN_LETTER;
             mainParams.action = ACTION_NONE;
 
             update_field(mainParams, mainVars);
