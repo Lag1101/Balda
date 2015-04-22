@@ -4,14 +4,16 @@ function initSocket(mainParams, mainVars) {
         reconnect: true
     });
 
-    socket.on('connect', function(){
-        console.log("connected");
-        setTimeout(function(){
-            socket.emit(Events.ready);
-        }, 500);
-    });
-
     socket
+        .on('connect', function(){
+            console.log("connected");
+            setTimeout(function(){
+                socket.emit(Events.ready);
+            }, 500);
+        })
+        .on('disconnect', function(){
+            console.log("disconnected");
+        })
         .on(Events.waiting, function () {
             printState("waiting for an opponent");
         })
@@ -50,6 +52,10 @@ function initSocket(mainParams, mainVars) {
         })
         .on(Events.usedWords, function(words){
             statsController.setWords(words.me, words.opponent);
+        })
+        .on(Events.nullSession, function(){
+            console.log("Your session timed out");
+            socket.disconnect();
         });
 
 
