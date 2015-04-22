@@ -26,15 +26,16 @@ module.exports = function(sessionStore) {
     io.on('connection', function(s){
         authorization(s, function(err, socket){
 
-            if(err) {
+            var user = socket.handshake.user;
+            var gameId = socket.handshake.gameId;
+
+            if(err || !user || !gameId) {
                 socket.emit(Events.nullSession);
                 logger("anonimus session");
                 socket.disconnect();
                 return;
             }
 
-            var user = socket.handshake.user;
-            var gameId = socket.handshake.gameId;
 
 
             var game = gamePool.get(gameId);
