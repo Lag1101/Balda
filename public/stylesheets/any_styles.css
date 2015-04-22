@@ -9,5 +9,7 @@
 }
 
 .area{
+    width: auto;
+    height: auto;
     position: relative;
 }
