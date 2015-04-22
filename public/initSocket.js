@@ -54,7 +54,7 @@ function initSocket(mainParams, mainVars) {
                             break;
                     }
                 });
-                mainVars.status.text("Слово засчитано! Используйте особую способность ценой не более " + mainVars.new_word.length + " манны");
+                mainVars.status.text("Слово засчитано! У вас " + mainVars.new_word.length + " манны. Выберите на клавиатуре стоимость способности.");
             }
             else
             {
