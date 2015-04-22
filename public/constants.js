@@ -9,6 +9,8 @@ var ACTION_LETTERS = 2;
 var ACTION_USE_SPELL = 3;
 var ACTION_ADDITIONAL_TURN = 4;
 var ACTION_WAITING = 5;
+var ACTION_FREEZ_LETTER = 6;
+var ACTION_FREEZ_EMPTY = 7;
 
 //возможность отправки
 var SEND_READY = 1;
