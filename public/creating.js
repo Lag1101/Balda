@@ -1,5 +1,4 @@
-function creating(mainParams, mainVars, own_socket)
-{
+function creating(mainParams, mainVars, own_socket) {
     var _area = $('#area');
     var send_hex = $('<div></div>')
         .attr('id', "send")
@@ -9,14 +8,12 @@ function creating(mainParams, mainVars, own_socket)
     send_hex.append(send_span);
     _area.append(send_hex);
     send_hex.css('top', 80);
-    send_hex.css('left', 20);
+    send_hex.css('left', 10);
     send_hex.click(function question() {
-        if(mainParams.action == ACTION_LETTERS && mainParams.ready_to_send == SEND_READY)
-        {
+        if (mainParams.action == ACTION_LETTERS && mainParams.ready_to_send == SEND_READY) {
             own_socket.emit(Events.checkWord, mainVars.new_word);
         }
-        else if(mainParams.action == ACTION_NONE && mainParams.ready_to_send == SEND_READY)
-        {
+        else if (mainParams.action == ACTION_NONE && mainParams.ready_to_send == SEND_READY) {
             own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
             mainParams.ready_to_send = SEND_NOT_READY;
             mainVars.new_word = '';
@@ -27,12 +24,12 @@ function creating(mainParams, mainVars, own_socket)
     mainVars.sending_hex = send_hex;
 
     var status_panel = $('<div></div>')
-        .attr('id',"status_panel")
+        .attr('id', "status_panel")
         .addClass('style_status');
 
     _area.append(status_panel);
     status_panel.css('top', 10);
-    status_panel.css('left', 210);
+    status_panel.css('left', 250);
     mainVars.status = status_panel;
 
     for (var i = 0; i < mainVars.field_size; i++) {
@@ -42,7 +39,7 @@ function creating(mainParams, mainVars, own_socket)
         for (var j = 0; j < mainVars.field_size - Math.abs(Math.floor(mainVars.field_size/2) - i); j++) {
 
             var hex_obj = $('<div></div>')
-                .attr('id', "hex"+i+j)
+                .attr('id', "hex"+i+j);
 
             var span = $('<span></span>').addClass('shadowSpan');
             span.append(
@@ -59,8 +56,8 @@ function creating(mainParams, mainVars, own_socket)
 
             hex_obj.append(span);
             _area.append(hex_obj);
-            hex_obj.css('top', 80 + 85 * i);
-            hex_obj.css('left', 50 + 105 * j + 52.5 * Math.abs(3 - i));
+            hex_obj.css('top', 80 + 80 * i);
+            hex_obj.css('left', 110 + 95 * j + 47.5 * Math.abs(3 - i));
             hex_obj.click(clicked_action.bind(undefined, i, j, mainParams, mainVars));
 
             mainVars.hex_objects[i].push(hex_obj);
