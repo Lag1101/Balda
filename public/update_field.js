@@ -8,7 +8,6 @@ function update_field(mainParams, mainVars)
         for (var j = 0; j < 7 - Math.abs(3 - i); j++)
         {
             mainVars.hex_objects[i][j].find('.fieldForLetter').text(state_field[i][j].letter);
-            mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
 
             //hex_objects[i][j].find('.fieldForLetter').text(hex_objects[i][j].attr("id"));
             if(state_player == ACTIVE_PLAYER)
@@ -17,21 +16,27 @@ function update_field(mainParams, mainVars)
                 {
                     case ACTIVE_EMPTY:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_active_empty");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                         break;
                     case ACTIVE_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_active_letter");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text("");
                         break;
                     case PASSIVE_EMPTY:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_passive_empty");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                         break;
                     case PASSIVE_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_passive_letter");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text("");
                         break;
                     case NEW_LETTER_ACTIVE:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_active_letter").addClass("hex_new_letter");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                         break;
                     case NEW_LETTER_PASSIVE:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_passive_letter").addClass("hex_new_letter");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                         break;
                     case PICKED_LETTER:
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_picked");
@@ -55,10 +60,12 @@ function update_field(mainParams, mainVars)
             {
                 if(state_field[i][j].letter != '') {
                     mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_opponent_turn");
+                    mainVars.hex_objects[i][j].find('.fieldForPoints').text("");
                 }
                 else
                 {
                     mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_opponent_turn_empty");
+                    mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                 }
 
             }
