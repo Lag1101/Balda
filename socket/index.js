@@ -35,8 +35,6 @@ module.exports = function(sessionStore) {
                 return;
             }
 
-
-
             var game = gamePool.get(gameId);
 
 
@@ -129,14 +127,18 @@ module.exports = function(sessionStore) {
                     cb && cb();
                 })
                 .on(Events.ready, function() {
-                    game.emit(Events.bonusLetters, game.getBonusLetters());
+
+                    var target = game.started ? socket : game;
+
+                    target.emit(Events.bonusLetters, game.getBonusLetters());
                     logger('Events.ready');
                     if(game && game.firstPlayer() && game.secondPlayer()) {
                         logger('Sent', 'ready');
-                        game.emit(Events.ready, game.firstPlayer().user.username, game.secondPlayer().user.username);
+                        target.emit(Events.ready, game.firstPlayer().user.username, game.secondPlayer().user.username);
+                        game.started = true;
                     } else {
                         logger('Sent', 'waiting');
-                        game.emit(Events.waiting);
+                        target.emit(Events.waiting);
                     }
                 });
         });

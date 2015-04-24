@@ -17,6 +17,8 @@ function Game() {
     this.currentPlayerUsername = null;
 
     this.bonusLetters = new Queue();
+
+    this.started = false;
 }
 
 Game.Player = function(player) {
