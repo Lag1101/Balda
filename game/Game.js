@@ -26,6 +26,9 @@ Game.Player = function(player) {
     this.points = player.points || 0;
     this.words = player.words || [];
     this.socket = player.socket || null;
+    this.timeToLoose = 300000;
+    this.lastActive = null;
+
 };
 Object.defineProperty(Game.Player.prototype, "id", { get: function () {
     return this.user.username;
@@ -140,6 +143,7 @@ Game.prototype.getField = function() {
 };
 Game.prototype.createState = function(turn) {
     return {
+        timeToLoose: this.timeToLoose,
         field: this.getField(),
         turn: turn
     };

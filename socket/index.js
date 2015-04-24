@@ -65,8 +65,9 @@ module.exports = function(sessionStore) {
                     socket.emit(Events.state, state);
                 })
                 .on(Events.checkAndCommit, function (word, field) {
-
                     logger('checkAndCommit event', word, field);
+
+                    var date = new Date();
 
                     //var game = gamePool.get(user.gameId);
                     if (wordTree.exist(word)) {
@@ -75,17 +76,19 @@ module.exports = function(sessionStore) {
                         }
                         if (game.currentPlayerUsername === user.username) {
                             var players = game.players;
-                            var firstPlayer = game.firstPlayer();
-                            var secondPlayer = game.secondPlayer();
+
+                            var currentPLayer = (game.firstPlayer().id === user.username) ? game.firstPlayer() : game.secondPlayer();
+                            var secondPlayer = (game.firstPlayer().id === user.username) ? game.secondPlayer() : game.firstPlayer();
 
                             players.get(user.username).addWord(word);
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
-                            game.currentPlayerUsername = (firstPlayer.id === user.username) ? secondPlayer.id : firstPlayer.id;
+                            if(currentPLayer.lastActive)
+                                currentPLayer.timeToLoose = (date.getTime() - currentPLayer.lastActive.getTime());
+                            currentPLayer.lastActive = date;
 
-
-                            firstPlayer.socket.emit(Events.points, {
+                            currentPLayer.socket.emit(Events.points, {
                                 me: firstPlayer.getPoints(),
                                 opponent: secondPlayer.getPoints()
                             });
@@ -94,16 +97,16 @@ module.exports = function(sessionStore) {
                                 opponent: firstPlayer.getPoints()
                             });
 
-                            firstPlayer.socket.emit(Events.usedWords, {
-                                me: firstPlayer.getWords(),
+                            currentPLayer.socket.emit(Events.usedWords, {
+                                me: currentPLayer.getWords(),
                                 opponent: secondPlayer.getWords()
                             });
                             secondPlayer.socket.emit(Events.usedWords, {
                                 me: secondPlayer.getWords(),
-                                opponent: firstPlayer.getWords()
+                                opponent: currentPLayer.getWords()
                             });
 
-
+                            game.currentPlayerUsername = secondPlayer.id;
                             players.keys.map(function (key) {
                                 var player = players.get(key);
                                 var curUser = player.user;
