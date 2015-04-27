@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
     var game = gamePool.get(req.query.id);
     if(!game) throw new HttpError(401, "Игра не найдена");
 
-    if( game.firstPlayer().id !== req.session.username && (game.secondPlayer() && game.secondPlayer().id !== req.session.username)) {
+    if( game.hostPlayer().id !== req.session.username && (game.opponentPlayer() && game.opponentPlayer().id !== req.session.username)) {
         throw new HttpError(403, "Доступ запрещен");
     }
 

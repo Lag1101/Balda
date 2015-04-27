@@ -70,8 +70,8 @@ module.exports = function(sessionStore) {
                         }
                         if (game.currentPlayerUsername === user.username) {
 
-                            var currentPLayer = (game.firstPlayer().id === user.username) ? game.firstPlayer() : game.secondPlayer();
-                            var secondPlayer = (game.firstPlayer().id === user.username) ? game.secondPlayer() : game.firstPlayer();
+                            var currentPLayer = game.firstPlayer();
+                            var secondPlayer = game.secondPlayer();
 
                             players.get(user.username).addWord(word);
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
@@ -90,17 +90,6 @@ module.exports = function(sessionStore) {
                             secondPlayer.socket.emit(Events.points, {
                                 me: secondPlayer.getPoints(),
                                 opponent: currentPLayer.getPoints()
-                            });
-
-                            currentPLayer.socket.emit(Events.usedWords, {
-                                startWord: game.startWord,
-                                me: currentPLayer.getWords(),
-                                opponent: secondPlayer.getWords()
-                            });
-                            secondPlayer.socket.emit(Events.usedWords, {
-                                startWord: game.startWord,
-                                me: secondPlayer.getWords(),
-                                opponent: currentPLayer.getWords()
                             });
 
                             if(secondPlayer.timeToLoose > 0)
@@ -135,9 +124,9 @@ module.exports = function(sessionStore) {
 
                     target.emit(Events.bonusLetters, game.getBonusLetters());
                     logger('Events.ready');
-                    if(game && game.firstPlayer() && game.secondPlayer()) {
+                    if(game && game.hostPlayer() && game.opponentPlayer()) {
                         logger('Sent', 'ready');
-                        target.emit(Events.ready, game.firstPlayer().user.username, game.secondPlayer().user.username);
+                        target.emit(Events.ready, game.hostPlayer().user.username, game.opponentPlayer().user.username);
                         game.started = true;
                         game.lastActive = new Date();
                     } else {
@@ -151,6 +140,20 @@ module.exports = function(sessionStore) {
                         var state = game.createState(player);
 
                         player.socket.emit(Events.gameOver, state);
+                    });
+                })
+                .on(Events.usedWords, function() {
+                    var currentPLayer = game.firstPlayer();
+                    var secondPlayer = game.secondPlayer();
+                    currentPLayer.socket.emit(Events.usedWords, {
+                        startWord: game.startWord,
+                        me: currentPLayer.getWords(),
+                        opponent: secondPlayer.getWords()
+                    });
+                    secondPlayer.socket.emit(Events.usedWords, {
+                        startWord: game.startWord,
+                        me: secondPlayer.getWords(),
+                        opponent: currentPLayer.getWords()
                     });
                 });
         });

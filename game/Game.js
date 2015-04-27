@@ -108,12 +108,19 @@ Game.prototype.ready = function() {
     return this.players.len() >= 2;
 };
 
-Game.prototype.firstPlayer = function() {
+Game.prototype.hostPlayer = function() {
     return this.players.get(this.players.keys[0]);
 };
-Game.prototype.secondPlayer = function() {
+Game.prototype.opponentPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
+Game.prototype.firstPlayer = function(username) {
+    return (this.firstPlayer().id === username) ? this.firstPlayer() : this.secondPlayer();
+};
+Game.prototype.secondPlayer = function(username) {
+    return (this.firstPlayer().id === username) ? this.secondPlayer() : this.firstPlayer();
+};
+
 Game.prototype.calcPointsByNewField = function(newField) {
     var points = 0;
     var currentField = this.field;
@@ -145,7 +152,7 @@ Game.prototype.getField = function() {
 };
 Game.prototype.createState = function(player) {
     var me = this.players.get(player.user.username);
-    var opponent = (this.firstPlayer().user.username === me.user.username) ? this.secondPlayer() : this.firstPlayer();
+    var opponent = (this.hostPlayer().user.username === me.user.username) ? this.opponentPlayer() : this.hostPlayer();
 
 
     var turn = (!this.currentPlayerUsername || this.currentPlayerUsername === player.user.username) ? "true" : "false";

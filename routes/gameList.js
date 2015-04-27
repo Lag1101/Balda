@@ -34,7 +34,7 @@ router.get('/list', function(req, res, next) {
         var game = gamePool.waitingQueue.get(key);
         allGames.push({
             gameId: key,
-            username: game.firstPlayer().user.username
+            username: game.hostPlayer().user.username
         });
     });
 

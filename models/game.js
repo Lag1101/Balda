@@ -94,11 +94,11 @@ schema.methods.ready = function() {
     return this.players.len() >= 2;
 };
 
-schema.methods.firstPlayer = function() {
+schema.methods.hostPlayer = function() {
     return this.players.get(this.players.keys[0]);
 };
 
-schema.methods.secondPlayer = function() {
+schema.methods.opponentPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
 
