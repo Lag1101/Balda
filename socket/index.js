@@ -54,13 +54,7 @@ module.exports = function(sessionStore) {
                 .on(Events.state, function () {
                     logger('state event');
 
-                    var turn = "true";
-                    if (game.currentPlayerUsername === null)
-                        turn = "true";
-                    else
-                        turn = (user.username === game.currentPlayerUsername) ? "true" : "false";
-
-                    var state = game.createState(turn);
+                    var state = game.createState(game.players.get(user.username));
                     logger('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
@@ -89,12 +83,12 @@ module.exports = function(sessionStore) {
                             currentPLayer.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
-                                me: firstPlayer.getPoints(),
+                                me: currentPLayer.getPoints(),
                                 opponent: secondPlayer.getPoints()
                             });
                             secondPlayer.socket.emit(Events.points, {
                                 me: secondPlayer.getPoints(),
-                                opponent: firstPlayer.getPoints()
+                                opponent: currentPLayer.getPoints()
                             });
 
                             currentPLayer.socket.emit(Events.usedWords, {
@@ -110,7 +104,8 @@ module.exports = function(sessionStore) {
                             players.keys.map(function (key) {
                                 var player = players.get(key);
                                 var curUser = player.user;
-                                var state = game.createState((game.currentPlayerUsername === curUser.username) ? "true" : "false");
+                                var state = game.createState(player);
+
                                 logger('emited to', curUser.username, state);
                                 player.socket.emit(Events.state, state);
                             });
@@ -118,7 +113,7 @@ module.exports = function(sessionStore) {
                         }
                     }
                     else {
-                        var state = game.createState("true");
+                        var state = game.createState(game.players.get(user.username));
                         logger('emited to', user.username, state);
                         socket.emit(Events.state, state);
                     }

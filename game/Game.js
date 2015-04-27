@@ -141,9 +141,18 @@ Game.prototype.setField = function(field) {
 Game.prototype.getField = function() {
     return this.field;
 };
-Game.prototype.createState = function(turn) {
+Game.prototype.createState = function(player) {
+    var me = this.players.get(player.user.username);
+    var opponent = (this.firstPlayer().user.username === me.user.username) ? this.secondPlayer() : this.firstPlayer();
+
+
+    var turn = (!this.currentPlayerUsername || this.currentPlayerUsername === player.user.username) ? "true" : "false";
+
     return {
-        timeToLoose: this.timeToLoose,
+        time: {
+            me: me.timeToLoose,
+            opponent: opponent.timeToLoose
+        },
         field: this.getField(),
         turn: turn
     };
