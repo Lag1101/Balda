@@ -67,6 +67,8 @@ module.exports = function(sessionStore) {
                     if (wordTree.exist(word)) {
                         if (game.currentPlayerUsername === null) {
                             game.currentPlayerUsername = user.username;
+                            game.firstPlayer().lastActive = date;
+                            game.secondPlayer().lastActive = date;
                         }
                         if (game.currentPlayerUsername === user.username) {
                             var players = game.players;
@@ -78,8 +80,7 @@ module.exports = function(sessionStore) {
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
-                            if(currentPLayer.lastActive)
-                                currentPLayer.timeToLoose = (date.getTime() - currentPLayer.lastActive.getTime());
+                            currentPLayer.timeToLoose -= (date.getTime() - currentPLayer.lastActive.getTime());
                             currentPLayer.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
