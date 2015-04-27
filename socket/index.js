@@ -101,7 +101,9 @@ module.exports = function(sessionStore) {
                                 opponent: currentPLayer.getWords()
                             });
 
-                            game.currentPlayerUsername = secondPlayer.id;
+                            if(secondPlayer.timeToLoose > 0)
+                                game.currentPlayerUsername = secondPlayer.id;
+
                             players.keys.map(function (key) {
                                 var player = players.get(key);
                                 var curUser = player.user;
