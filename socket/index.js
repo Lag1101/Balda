@@ -36,6 +36,7 @@ module.exports = function(sessionStore) {
             }
 
             var game = gamePool.get(gameId);
+            var players = game.players;
 
 
             game.players.get(user.username).setSocket(socket);
@@ -71,7 +72,6 @@ module.exports = function(sessionStore) {
                             game.secondPlayer().lastActive = date;
                         }
                         if (game.currentPlayerUsername === user.username) {
-                            var players = game.players;
 
                             var currentPLayer = (game.firstPlayer().id === user.username) ? game.firstPlayer() : game.secondPlayer();
                             var secondPlayer = (game.firstPlayer().id === user.username) ? game.secondPlayer() : game.firstPlayer();
@@ -141,6 +141,14 @@ module.exports = function(sessionStore) {
                         logger('Sent', 'waiting');
                         target.emit(Events.waiting);
                     }
+                })
+                .on(Events.gameOver, function(){
+                    players.keys.map(function (key) {
+                        var player = players.get(key);
+                        var state = game.createState(player);
+
+                        player.socket.emit(Events.gameOver, state);
+                    });
                 });
         });
 

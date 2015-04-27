@@ -20,7 +20,9 @@ var Events = (function(){
         waiting: getId(),
         ready: getId(),
         bonusLetters: getId(),
-        nullSession: getId()
+        nullSession: getId(),
+        gameOver: getId(),
+        gameResult: getId()
     };
 })();
 
