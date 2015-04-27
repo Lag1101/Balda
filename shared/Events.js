@@ -22,7 +22,11 @@ var Events = (function(){
         bonusLetters: getId(),
         nullSession: getId(),
         gameOver: getId(),
-        gameResult: getId()
+        gameResult: getId(),
+
+        bonuses: {
+            addTime: getId()
+        }
     };
 })();
 

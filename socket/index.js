@@ -148,6 +148,10 @@ module.exports = function(sessionStore) {
                 })
                 .on('error', function(err){
                     logger(err);
+                })
+                .on(Events.bonuses.addTime, function(howMuch){
+                    game.players.get(user.username).timeToLoose += howMuch;
+                    game.touch();
                 });
         });
 
