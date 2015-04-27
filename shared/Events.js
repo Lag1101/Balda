@@ -10,7 +10,7 @@ var Events = (function(){
     }
     return {
         checkWord: getId(),
-        checkAndCommit: getId(),
+        turn: getId(),
         state: getId(),
         message: getId(),
         joinGame: getId(),

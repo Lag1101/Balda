@@ -60,8 +60,8 @@ module.exports = function(sessionStore) {
                     logger('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
-                .on(Events.checkAndCommit, function (word, field) {
-                    logger('checkAndCommit event', word, field);
+                .on(Events.turn, function (word, field) {
+                    logger('turn event', word, field);
 
                     game.touch();
 

@@ -124,8 +124,8 @@ Game.prototype.touch =function () {
     var date = new Date();
 
     if(!this.currentPlayerUsername){
-        Game.hostPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
-        Game.opponentPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
+        this.hostPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
+        this.opponentPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
     } else {
         var player = this.players.get(this.currentPlayerUsername);
         player.timeToLoose -= (date.getTime() - this.lastActive.getTime());

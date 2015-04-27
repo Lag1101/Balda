@@ -15,7 +15,7 @@ function creating(mainParams, mainVars, own_socket) {
         }
         else if (mainParams.action == ACTION_NONE && mainParams.ready_to_send == SEND_READY) {
 
-            own_socket.emit(Events.checkAndCommit, mainVars.new_word, mainParams.state.field);
+            own_socket.emit(Events.turn, mainVars.new_word, mainParams.state.field);
 
             mainParams.ready_to_send = SEND_NOT_READY;
             mainVars.new_word = '';
