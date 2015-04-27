@@ -133,6 +133,14 @@ Game.prototype.touch =function () {
         var player = this.players.get(this.currentPlayerUsername);
         player.timeToLoose -= (date.getTime() - this.lastActive.getTime());
     }
+
+    var players = this.players;
+    this.players.keys.map(function(k){
+        var player = players.get(k);
+        if( player.timeToLoose < 0 )
+            player.timeToLoose = 0;;
+    });
+
     this.lastActive = date;
 };
 Game.prototype.calcPointsByNewField = function(newField) {
