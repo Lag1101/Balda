@@ -143,17 +143,12 @@ module.exports = function(sessionStore) {
                     });
                 })
                 .on(Events.usedWords, function() {
-                    var currentPLayer = game.firstPlayer();
-                    var secondPlayer = game.secondPlayer();
-                    currentPLayer.socket.emit(Events.usedWords, {
+                    var me = game.players.get(user.username);
+                    var opponent = (game.hostPlayer().id === me.id) ? game.opponentPlayer() : game.hostPlayer();
+                    socket.emit(Events.usedWords, {
                         startWord: game.startWord,
-                        me: currentPLayer.getWords(),
-                        opponent: secondPlayer.getWords()
-                    });
-                    secondPlayer.socket.emit(Events.usedWords, {
-                        startWord: game.startWord,
-                        me: secondPlayer.getWords(),
-                        opponent: currentPLayer.getWords()
+                        me: me.getWords(),
+                        opponent: opponent.getWords()
                     });
                 });
         });
