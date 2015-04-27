@@ -90,16 +90,23 @@ function creating(mainParams, mainVars, own_socket) {
     var IntervalID = setInterval(function timer_on(){
         if(mainVars.lost_time.my_time !== null)
         {
-            if (mainParams.state.turn == 'true') {
+            if (mainParams.state.turn == 'true')
+            {
                 mainVars.lost_time.my_time = mainVars.lost_time.my_time - SECOND;
+                if(mainParams.state.roundNumber == 0) {
+                    mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
+                }
             }
-            else {
+            else
+            {
                 mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
             }
-            mainVars.my_pannel.text("Ваше время: " + Math.floor(mainVars.lost_time.my_time / TIME_TO_MINUTS / SECOND) + ":" +
-                (Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS >= 10 ? Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS : "0" + Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS));
-            mainVars.op_pannel.text("Противник: " + Math.floor(mainVars.lost_time.op_time / TIME_TO_MINUTS / SECOND) + ":" +
-                (Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS >= 10 ? Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS : "0" + Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS));
+
+            var my_time = {minutes: Math.floor(mainVars.lost_time.my_time / TIME_TO_MINUTS / SECOND), seconds: Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS};
+            var op_time = {minutes: Math.floor(mainVars.lost_time.op_time / TIME_TO_MINUTS / SECOND), seconds: Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS};
+
+            mainVars.my_pannel.text("Ваше время: " + my_time.minutes + ":" + (my_time.seconds >= 10 ? my_time.seconds : "0" + my_time.seconds));
+            mainVars.op_pannel.text("Противник: " + op_time.minutes + ":" + (op_time.seconds >= 10 ? op_time.seconds : "0" + op_time.seconds));
         }
     }, 1000);
 
