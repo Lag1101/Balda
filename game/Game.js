@@ -19,6 +19,9 @@ function Game() {
     this.bonusLetters = new Queue();
 
     this.started = false;
+    this.lastActive = null;
+
+    this.roundNumber = 0;
 }
 
 Game.Player = function(player) {
@@ -27,7 +30,6 @@ Game.Player = function(player) {
     this.words = player.words || [];
     this.socket = player.socket || null;
     this.timeToLoose = 300000;
-    this.lastActive = null;
 
 };
 Object.defineProperty(Game.Player.prototype, "id", { get: function () {
@@ -154,7 +156,8 @@ Game.prototype.createState = function(player) {
             opponent: opponent.timeToLoose
         },
         field: this.getField(),
-        turn: turn
+        turn: turn,
+        roundNumber: this.roundNumber
     };
 };
 

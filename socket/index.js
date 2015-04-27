@@ -43,7 +43,6 @@ module.exports = function(sessionStore) {
 
             logger(user.username + ' connected');
 
-
             socket
                 .on(Events.message, function (text, cb) {
                     game.emit(Events.message, text);
@@ -68,8 +67,6 @@ module.exports = function(sessionStore) {
                     if (wordTree.exist(word)) {
                         if (game.currentPlayerUsername === null) {
                             game.currentPlayerUsername = user.username;
-                            game.firstPlayer().lastActive = date;
-                            game.secondPlayer().lastActive = date;
                         }
                         if (game.currentPlayerUsername === user.username) {
 
@@ -80,8 +77,11 @@ module.exports = function(sessionStore) {
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
-                            currentPLayer.timeToLoose -= (date.getTime() - secondPlayer.lastActive.getTime());
-                            currentPLayer.lastActive = date;
+                            currentPLayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
+                            if(game.roundNumber === 0)
+                                secondPlayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
+
+                            game.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
                                 me: currentPLayer.getPoints(),
@@ -104,6 +104,7 @@ module.exports = function(sessionStore) {
                             if(secondPlayer.timeToLoose > 0)
                                 game.currentPlayerUsername = secondPlayer.id;
 
+                            game.roundNumber++;
                             players.keys.map(function (key) {
                                 var player = players.get(key);
                                 var curUser = player.user;
@@ -112,7 +113,6 @@ module.exports = function(sessionStore) {
                                 logger('emited to', curUser.username, state);
                                 player.socket.emit(Events.state, state);
                             });
-
                         }
                     }
                     else {
@@ -137,6 +137,7 @@ module.exports = function(sessionStore) {
                         logger('Sent', 'ready');
                         target.emit(Events.ready, game.firstPlayer().user.username, game.secondPlayer().user.username);
                         game.started = true;
+                        game.lastActive = new Date();
                     } else {
                         logger('Sent', 'waiting');
                         target.emit(Events.waiting);
