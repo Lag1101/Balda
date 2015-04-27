@@ -19,7 +19,6 @@ function creating(mainParams, mainVars, own_socket) {
 
             mainParams.ready_to_send = SEND_NOT_READY;
             mainVars.new_word = '';
-            mainParams.state.turn = "false";
             update_field(mainParams, mainVars);
         }
     });
@@ -92,21 +91,34 @@ function creating(mainParams, mainVars, own_socket) {
         {
             if (mainParams.state.turn == 'true')
             {
-                mainVars.lost_time.my_time = mainVars.lost_time.my_time - SECOND;
-                if(mainParams.state.roundNumber == 0) {
+                if(mainVars.lost_time.my_time >= SECOND) {
+                    mainVars.lost_time.my_time = mainVars.lost_time.my_time - SECOND;
+                }
+                else {
+                    if(mainVars.lost_time.op_time >= SECOND) own_socket.emit(Events.turn, mainVars.new_word, mainParams.state.field);
+                    else own_socket.emit(Events.gameOver);
+                }
+
+                if(mainParams.state.roundNumber === 0) {
                     mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
                 }
             }
             else
             {
-                mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
+                if(mainVars.lost_time.op_time >= SECOND) mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
             }
 
             var my_time = {minutes: Math.floor(mainVars.lost_time.my_time / TIME_TO_MINUTS / SECOND), seconds: Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS};
             var op_time = {minutes: Math.floor(mainVars.lost_time.op_time / TIME_TO_MINUTS / SECOND), seconds: Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS};
 
-            mainVars.my_pannel.text("Ваше время: " + my_time.minutes + ":" + (my_time.seconds >= 10 ? my_time.seconds : "0" + my_time.seconds));
-            mainVars.op_pannel.text("Противник: " + op_time.minutes + ":" + (op_time.seconds >= 10 ? op_time.seconds : "0" + op_time.seconds));
+            if(mainVars.lost_time.my_time >= SECOND) {
+                mainVars.my_pannel.text("Ваше время: " + my_time.minutes + ":" + (my_time.seconds >= 10 ? my_time.seconds : "0" + my_time.seconds));
+            }
+            else mainVars.my_pannel.text("Ваше время: 0:00");
+            if(mainVars.lost_time.op_time >= SECOND) {
+                mainVars.op_pannel.text("Противник: " + op_time.minutes + ":" + (op_time.seconds >= 10 ? op_time.seconds : "0" + op_time.seconds));
+            }
+            else mainVars.op_pannel.text("Противник: 0:00");
         }
     }, 1000);
 

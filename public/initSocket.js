@@ -106,6 +106,11 @@ function initSocket(mainParams, mainVars) {
             initNear(mainParams, mainVars);
             initGame(mainParams, mainVars);
         })
+        .on(Events.gameOver, function (newState) {
+            mainParams.state = newState;
+            mainParams.action = ACTION_NONE;
+            update_field(mainParams, mainVars);
+        })
         .on(Events.points, function(points){
             statsController.setPoints(points.me, points.opponent);
         })

@@ -29,7 +29,7 @@ Game.Player = function(player) {
     this.points = player.points || 0;
     this.words = player.words || [];
     this.socket = player.socket || null;
-    this.timeToLoose = 300000;
+    this.timeToLoose = 120000;
 
 };
 Object.defineProperty(Game.Player.prototype, "id", { get: function () {
