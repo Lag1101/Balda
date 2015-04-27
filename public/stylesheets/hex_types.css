@@ -41,6 +41,10 @@
     background-color: #dda51c;
 }
 
+.hex_changed{
+    background-color: #dd7ad5;
+}
+
 .hex_send {
     background-color: #28cc2b;
 }

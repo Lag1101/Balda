@@ -23,7 +23,7 @@ function initSocket(mainParams, mainVars) {
                 if(isNewWord(mainVars) === 1) {
                     redraw_field(mainParams, mainVars);
                     mainParams.action = ACTION_USE_SPELL;
-                    if (mainVars.new_word.length < 5) {
+                    if (mainVars.new_word.length < 3) {
                         mainParams.action = ACTION_NONE;
                         mainVars.status.text(TXT_TURN_END);
                     }
@@ -31,6 +31,26 @@ function initSocket(mainParams, mainVars) {
                         $('body').keypress(function (event) {
                             var new_spell = String.fromCharCode(event.which);
                             switch (new_spell) {
+                                case '3':
+                                    if (mainVars.new_word.length < 3) {
+                                        mainVars.status.text(TXT_NO_MANA + mainVars.new_word.length);
+                                    }
+                                    else {
+                                        $(this).off("keypress");
+                                        mainVars.status.text(TXT_FREEZ_EMPTY);
+                                        mainParams.action = ACTION_FREEZ_EMPTY;
+                                    }
+                                    break;
+                                case '4':
+                                    if (mainVars.new_word.length < 4) {
+                                        mainVars.status.text(TXT_NO_MANA + mainVars.new_word.length);
+                                    }
+                                    else {
+                                        $(this).off("keypress");
+                                        mainVars.status.text(TXT_SWAP);
+                                        mainParams.action = ACTION_SWAPPING;
+                                    }
+                                    break;
                                 case '5':
                                     if (mainVars.new_word.length < 5) {
                                         mainVars.status.text(TXT_NO_MANA + mainVars.new_word.length);
@@ -47,11 +67,13 @@ function initSocket(mainParams, mainVars) {
                                     }
                                     else {
                                         $(this).off("keypress");
-                                        mainVars.status.text(TXT_FREEZ_EMPTY);
-                                        mainParams.action = ACTION_FREEZ_EMPTY;
+                                        mainVars.status.text(TXT_CHANGE_LETTER);
+                                        mainParams.action = ACTION_CHANGED;
                                     }
                                     break;
                                 default:
+                                    mainParams.action = ACTION_NONE;
+                                    mainVars.status.text(TXT_TURN_END);
                                     break;
                             }
                         });
@@ -137,8 +159,6 @@ function isNewWord(mainVars)
 {
     var word_is = mainVars.new_word;
     var flag = 1;
-
-    console.log(mainVars.list_words.list1);
 
     if(word_is !== mainVars.list_words.list1)
     {

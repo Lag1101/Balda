@@ -11,6 +11,8 @@ var ACTION_ADDITIONAL_TURN = 4;
 var ACTION_WAITING = 5;
 var ACTION_FREEZ_LETTER = 6;
 var ACTION_FREEZ_EMPTY = 7;
+var ACTION_SWAPPING = 8;
+var ACTION_CHANGED = 9;
 
 //возможность отправки
 var SEND_READY = 1;
@@ -40,8 +42,10 @@ var TXT_ANOTHER_WORD = "Это слово уже было, придумайте 
 var TXT_TURN_END = "Для передачи хода повторно нажмите отправку.";
 var TXT_NO_MANA = "Не хватает маны! У вас:";
 var TXT_SUCCESS = "Слово засчитано. У вас ";
-var TXT_SPELL_TIME = " манны. Выберите на клавиатуре стоимость способности. 5 или 6 xD";
+var TXT_SPELL_TIME = " манны. Выберите на клавиатуре стоимость способности (или нажмите любую клавишу для отмены)";
 var TXT_OPPONENT_TURN = "Ход соперника. Ожидайте ...";
+var TXT_SWAP = "Выберите 2 поля, которые вы хотите обменять местами!";
+var TXT_CHANGE_LETTER = "Выберите букву, которую желаете изменить!";
 
 var TXT_FREEZ_LETTER = "Выбран спелл Заморозка буквы. Выберите букву!";
 var TXT_FREEZ_EMPTY = "Выбран спелл Заморозка поля. Выберите локацию!";

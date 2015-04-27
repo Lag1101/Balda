@@ -9,12 +9,18 @@ function clicked_action(i,j, mainParams, mainVars) {
             mainVars.status.text("Хороший выбор. Введите букву с клавиатуры.");
 
             $('body').keypress(function(event){
-                mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
-                $(this).off("keypress");
-                mainVars.status.text("Отлично, приступайте ко вводу слова, последовательно выбирая буквы.");
-                changeField(1, mainParams, mainVars);
-                mainParams.action = ACTION_LETTERS;
-                update_field(mainParams, mainVars);
+                if(event.which >= 1072 && event.which <= 1103) {
+                    mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
+                    $(this).off("keypress");
+                    mainVars.status.text("Отлично, приступайте ко вводу слова, последовательно выбирая буквы.");
+                    changeField(1, mainParams, mainVars);
+                    mainParams.action = ACTION_LETTERS;
+                    update_field(mainParams, mainVars);
+                }
+                else
+                {
+                    mainVars.status.text("Проверьте язык клавиатуры!");
+                }
             });
             update_field(mainParams, mainVars);
         }
@@ -82,6 +88,48 @@ function clicked_action(i,j, mainParams, mainVars) {
             mainParams.action = ACTION_NONE;
 
             update_field(mainParams, mainVars);
+        }
+    }
+    else if(mainParams.action == ACTION_SWAPPING)
+    {
+
+        if(mainVars.buffer === null) {
+            mainParams.state.field[i][j].statement = SWAPED;
+            mainVars.buffer = {buf_hex:mainParams.state.field[i][j], buf_i:i, buf_j:j};
+        }
+        else if(!(i === mainVars.buffer.buf_i && j === mainVars.buffer.buf_j) )
+        {
+            mainParams.state.field[i][j].statement = SWAPED;
+            mainParams.state.field[mainVars.buffer.buf_i][mainVars.buffer.buf_j] = mainParams.state.field[i][j];
+            mainParams.state.field[i][j] = mainVars.buffer.buf_hex;
+            mainVars.buffer = null;
+
+            mainParams.action = ACTION_NONE;
+        }
+        update_field(mainParams, mainVars);
+    }
+    else if(mainParams.action == ACTION_CHANGED)
+    {
+        if(mainVars.buffer === null) {
+            mainVars.buffer = "выбрано";
+            if (mainParams.state.field[i][j].statement == PASSIVE_LETTER) {
+                mainParams.state.field[i][j].statement = CHANGED;
+                update_field(mainParams, mainVars);
+                $('body').keypress(function (event) {
+                    if (event.which >= 1072 && event.which <= 1103) {
+                        mainParams.state.field[i][j].letter = String.fromCharCode(event.which);
+                        $(this).off("keypress");
+                        mainVars.status.text("Буква изменена! Нажмите отправку для передачи хода.");
+                        mainParams.action = ACTION_NONE;
+                        mainVars.buffer = null;
+                        update_field(mainParams, mainVars);
+                    }
+                    else {
+                        mainVars.status.text("Проверьте язык клавиатуры!");
+                    }
+
+                });
+            }
         }
     }
 };
