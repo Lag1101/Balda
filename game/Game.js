@@ -120,7 +120,18 @@ Game.prototype.firstPlayer = function(user) {
 Game.prototype.secondPlayer = function(user) {
     return (this.hostPlayer().id === user.username) ? this.opponentPlayer() : this.hostPlayer();
 };
+Game.prototype.touch =function () {
+    var date = new Date();
 
+    if(!this.currentPlayerUsername){
+        Game.hostPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
+        Game.opponentPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
+    } else {
+        var player = this.players.get(this.currentPlayerUsername);
+        player.timeToLoose -= (date.getTime() - this.lastActive.getTime());
+    }
+    this.lastActive = date;
+};
 Game.prototype.calcPointsByNewField = function(newField) {
     var points = 0;
     var currentField = this.field;

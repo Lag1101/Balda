@@ -54,6 +54,8 @@ module.exports = function(sessionStore) {
                 .on(Events.state, function () {
                     logger('state event');
 
+                    game.touch();
+
                     var state = game.createState(game.players.get(user.username));
                     logger('emited to', user.username, state);
                     socket.emit(Events.state, state);
@@ -61,9 +63,8 @@ module.exports = function(sessionStore) {
                 .on(Events.checkAndCommit, function (word, field) {
                     logger('checkAndCommit event', word, field);
 
-                    var date = new Date();
+                    game.touch();
 
-                    //var game = gamePool.get(user.gameId);
                     if (wordTree.exist(word)) {
                         if (game.currentPlayerUsername === null) {
                             game.currentPlayerUsername = user.username;
@@ -76,11 +77,6 @@ module.exports = function(sessionStore) {
                             players.get(user.username).addWord(word);
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
-
-                            currentPLayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
-                            if(game.roundNumber === 0)
-                                secondPlayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
-                            game.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
                                 me: currentPLayer.getPoints(),
@@ -134,7 +130,7 @@ module.exports = function(sessionStore) {
                     }
                 })
                 .on(Events.gameOver, function(){
-                    players.keys.map(function (fkey) {
+                    players.keys.map(function (key) {
                         var player = players.get(key);
                         var state = game.createState(player);
 
