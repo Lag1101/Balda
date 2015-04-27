@@ -70,8 +70,8 @@ module.exports = function(sessionStore) {
                         }
                         if (game.currentPlayerUsername === user.username) {
 
-                            var currentPLayer = game.firstPlayer();
-                            var secondPlayer = game.secondPlayer();
+                            var currentPLayer = game.firstPlayer(user);
+                            var secondPlayer = game.secondPlayer(user);
 
                             players.get(user.username).addWord(word);
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
@@ -80,7 +80,6 @@ module.exports = function(sessionStore) {
                             currentPLayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
                             if(game.roundNumber === 0)
                                 secondPlayer.timeToLoose -= (date.getTime() - game.lastActive.getTime());
-
                             game.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
@@ -135,7 +134,7 @@ module.exports = function(sessionStore) {
                     }
                 })
                 .on(Events.gameOver, function(){
-                    players.keys.map(function (key) {
+                    players.keys.map(function (fkey) {
                         var player = players.get(key);
                         var state = game.createState(player);
 
@@ -150,6 +149,9 @@ module.exports = function(sessionStore) {
                         me: me.getWords(),
                         opponent: opponent.getWords()
                     });
+                })
+                .on('error', function(err){
+                    logger(err);
                 });
         });
 

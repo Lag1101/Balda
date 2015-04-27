@@ -114,11 +114,11 @@ Game.prototype.hostPlayer = function() {
 Game.prototype.opponentPlayer = function() {
     return this.players.get(this.players.keys[1]);
 };
-Game.prototype.firstPlayer = function(username) {
-    return (this.firstPlayer().id === username) ? this.firstPlayer() : this.secondPlayer();
+Game.prototype.firstPlayer = function(user) {
+    return (this.hostPlayer().id === user.username) ? this.hostPlayer() : this.opponentPlayer();
 };
-Game.prototype.secondPlayer = function(username) {
-    return (this.firstPlayer().id === username) ? this.secondPlayer() : this.firstPlayer();
+Game.prototype.secondPlayer = function(user) {
+    return (this.hostPlayer().id === user.username) ? this.opponentPlayer() : this.hostPlayer();
 };
 
 Game.prototype.calcPointsByNewField = function(newField) {
