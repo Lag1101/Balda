@@ -121,9 +121,9 @@ module.exports = function(sessionStore) {
                     logger('Events.ready');
                     if(game && game.hostPlayer() && game.opponentPlayer()) {
                         logger('Sent', 'ready');
-                        target.emit(Events.ready, game.hostPlayer().user.username, game.opponentPlayer().user.username);
+                        target.emit(Events.ready, game.hostPlayer().id, game.opponentPlayer().id);
                         game.started = true;
-                        game.lastActive = new Date();
+                        game.touch();
                     } else {
                         logger('Sent', 'waiting');
                         target.emit(Events.waiting);

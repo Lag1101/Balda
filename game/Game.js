@@ -123,6 +123,9 @@ Game.prototype.secondPlayer = function(user) {
 Game.prototype.touch =function () {
     var date = new Date();
 
+    if(!this.lastActive)
+        this.lastActive = date;
+
     if(!this.currentPlayerUsername){
         this.hostPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
         this.opponentPlayer().timeToLoose -= (date.getTime() - this.lastActive.getTime());
