@@ -80,7 +80,7 @@ module.exports = function(sessionStore) {
                             players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
-                            currentPLayer.timeToLoose -= (date.getTime() - currentPLayer.lastActive.getTime());
+                            currentPLayer.timeToLoose -= (date.getTime() - secondPlayer.lastActive.getTime());
                             currentPLayer.lastActive = date;
 
                             currentPLayer.socket.emit(Events.points, {
