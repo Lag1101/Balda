@@ -33,6 +33,24 @@ var CHANGED = 11;
 var FROZEN_LETTER = 12;
 var BOOSTED = 13;
 
+//текст статусов
+var TXT_GET_FIELD = "Ваш ход. Выберите поле для новой буквы.";
+var TXT_ERROR_WORD = "Такого слова нет, придумайте другое!";
+var TXT_TURN_END = "Для передачи хода повторно нажмите отправку.";
+var TXT_NO_MANA = "Не хватает маны! У вас:";
+var TXT_SUCCESS = "Слово засчитано. У вас ";
+var TXT_SPELL_TIME = " манны. Выберите на клавиатуре стоимость способности. 5 или 6 xD";
+var TXT_OPPONENT_TURN = "Ход соперника. Ожидайте ...";
+
+var TXT_FREEZ_LETTER = "Выбран спелл Заморозка буквы. Выберите букву!";
+var TXT_FREEZ_EMPTY = "Выбран спелл Заморозка поля. Выберите локацию!";
+
+//перевод времени
+var TIME_TO_MINUTS = 60;
+var SECOND = 1000;
+
+
+
 
 
 

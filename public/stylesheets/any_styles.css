@@ -8,6 +8,16 @@
     float: left;
 }
 
+.style_timer {
+    position: absolute;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive;
+    width: 100px;
+    background: #ccc;
+    border: solid 1px black;
+    float: left;
+}
+
 .area{
     width: auto;
     height: auto;

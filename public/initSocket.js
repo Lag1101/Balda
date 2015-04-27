@@ -26,7 +26,7 @@ function initSocket(mainParams, mainVars) {
                 if(mainVars.new_word.length < 5)
                 {
                     mainParams.action = ACTION_NONE;
-                    mainVars.status.text("Для передачи хода повторно нажмите отправку.");
+                    mainVars.status.text(TXT_TURN_END);
                 }
                 else {
                     $('body').keypress(function (event) {
@@ -34,30 +34,29 @@ function initSocket(mainParams, mainVars) {
                         switch (new_spell) {
                             case '5':
                                 if (mainVars.new_word.length < 5) {
-                                    mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
+                                    mainVars.status.text(TXT_NO_MANA + mainVars.new_word.length);
                                 }
                                 else {
                                     $(this).off("keypress");
-                                    mainVars.status.text("Выбран спелл Заморозка буквы. Выберите букву!");
+                                    mainVars.status.text(TXT_FREEZ_LETTER);
                                     mainParams.action = ACTION_FREEZ_LETTER;
                                 }
                                 break;
                             case '6':
                                 if (mainVars.new_word.length < 6) {
-                                    mainVars.status.text("Не хватает маны! У вас:" + mainVars.new_word.length);
+                                    mainVars.status.text(TXT_NO_MANA + mainVars.new_word.length);
                                 }
                                 else {
                                     $(this).off("keypress");
-                                    mainVars.status.text("Выбран спелл Заморозка поля. Выберите локацию!");
+                                    mainVars.status.text(TXT_FREEZ_EMPTY);
                                     mainParams.action = ACTION_FREEZ_EMPTY;
                                 }
                                 break;
                             default:
-                                console.log("не зашло");
                                 break;
                         }
                     });
-                    mainVars.status.text("Слово засчитано! У вас " + mainVars.new_word.length + " манны. Выберите на клавиатуре стоимость способности. 5 или 6 xD");
+                    mainVars.status.text(TXT_SUCCESS + mainVars.new_word.length + TXT_SPELL_TIME);
                 }
             }
             else
@@ -76,17 +75,21 @@ function initSocket(mainParams, mainVars) {
         })
         .on(Events.state, function (newState) {
             mainParams.state = newState;
+            console.log(newState);
+            mainVars.lost_time.my_time = newState.time.me;
+            mainVars.lost_time.op_time = newState.time.opponent;
+
             if(newState.turn == "true")
             {
                 if(mainVars.status.text() !== "Error") {
-                    mainVars.status.text("Ваш ход. Выберите поле для новой буквы.");
+                    mainVars.status.text(TXT_GET_FIELD);
                 }
-                else mainVars.status.text("Такого слова нет, придумайте другое!");
+                else mainVars.status.text(TXT_ERROR_WORD);
                 mainParams.action = ACTION_GET_PLACE;
             }
             else
             {
-                mainVars.status.text("Ход соперника. Ожидайте ...");
+                mainVars.status.text(TXT_OPPONENT_TURN);
                 mainParams.action = ACTION_WAITING;
             }
             initNear(mainParams, mainVars);

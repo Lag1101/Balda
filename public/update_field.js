@@ -49,6 +49,10 @@ function update_field(mainParams, mainVars)
                         mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_frozen");
                         mainVars.hex_objects[i][j].find('.fieldForPoints').text(state_field[i][j].points);
                         break;
+                    case SWAPED:
+                        mainVars.hex_objects[i][j].removeClass().addClass("hex_main").addClass("hex_swaped");
+                        mainVars.hex_objects[i][j].find('.fieldForPoints').text("");
+                        break;
                     default:
                         break;
                 }

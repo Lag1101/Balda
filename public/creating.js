@@ -64,6 +64,45 @@ function creating(mainParams, mainVars, own_socket) {
             mainVars.hex_objects[i].push(hex_obj);
         }
     }
+
+    var my_timer_panel = $('<div></div>')
+        .attr('id', "my_timer_panel")
+        .addClass('style_timer');
+
+    _area.append(my_timer_panel);
+    my_timer_panel.css('top', 10);
+    my_timer_panel.css('left', 10);
+    my_timer_panel.text("Ваше время: ");
+
+    mainVars.my_pannel = my_timer_panel;
+
+    var op_timer_panel = $('<div></div>')
+        .attr('id', "op_timer_panel")
+        .addClass('style_timer');
+
+    _area.append(op_timer_panel);
+    op_timer_panel.css('top', 10);
+    op_timer_panel.css('left', 700);
+    op_timer_panel.text("Противник: ");
+
+    mainVars.op_pannel = op_timer_panel;
+
+    var IntervalID = setInterval(function timer_on(){
+        if(mainVars.lost_time.my_time !== null)
+        {
+            if (mainParams.state.turn == 'true') {
+                mainVars.lost_time.my_time = mainVars.lost_time.my_time - SECOND;
+            }
+            else {
+                mainVars.lost_time.op_time = mainVars.lost_time.op_time - SECOND;
+            }
+            mainVars.my_pannel.text("Ваше время: " + Math.floor(mainVars.lost_time.my_time / TIME_TO_MINUTS / SECOND) + ":" +
+                (Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS >= 10 ? Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS : "0" + Math.floor(mainVars.lost_time.my_time / SECOND) % TIME_TO_MINUTS));
+            mainVars.op_pannel.text("Противник: " + Math.floor(mainVars.lost_time.op_time / TIME_TO_MINUTS / SECOND) + ":" +
+                (Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS >= 10 ? Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS : "0" + Math.floor(mainVars.lost_time.op_time / SECOND) % TIME_TO_MINUTS));
+        }
+    }, 1000);
+
 }
 
 function initNear(mainParams, mainVars)
