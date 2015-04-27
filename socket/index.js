@@ -93,10 +93,12 @@ module.exports = function(sessionStore) {
                             });
 
                             currentPLayer.socket.emit(Events.usedWords, {
+                                startWord: game.startWord,
                                 me: currentPLayer.getWords(),
                                 opponent: secondPlayer.getWords()
                             });
                             secondPlayer.socket.emit(Events.usedWords, {
+                                startWord: game.startWord,
                                 me: secondPlayer.getWords(),
                                 opponent: currentPLayer.getWords()
                             });
