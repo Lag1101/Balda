@@ -133,7 +133,7 @@ module.exports = function(sessionStore) {
                     players.keys.map(function (key) {
                         var player = players.get(key);
                         var state = game.createState(player);
-
+                        state.turn = "false";
                         player.socket.emit(Events.gameOver, state);
                     });
                 })
