@@ -32,7 +32,7 @@ module.exports = function(sessionStore) {
                         return callback(new HttpError(401, "No session"));
                     }
 
-                    logger("Loaded session " + session);
+                    logger.info("Loaded session " + session);
 
                     socket.handshake.session = session;
 
