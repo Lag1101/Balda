@@ -4,10 +4,9 @@
 
 var fs = require('fs');
 var async = require('async');
-var error = require('debug')('WordTree:error');
-var logger = require('debug')('WordTree:log');
+var logger = require('../lib/logger');
 
-var Queue = require('./Utils').Queue;
+var Queue = require('./../lib/Utils').Queue;
 
 var WordTree = (function(){
     function Node(){
@@ -69,12 +68,6 @@ var WordTree = (function(){
 
             this.wordsByLength.get(word.length).push(word);
         }
-        this.createTree(function(err){
-            if(err)
-                error(err);
-            else
-                logger('WordTree created');
-        });
     };
     WordTree.prototype.createTree = function(cb){
         try{

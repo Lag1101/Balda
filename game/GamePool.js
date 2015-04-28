@@ -4,7 +4,7 @@
 
 var Queue = require('../lib/Utils').Queue;
 var Game = require('./Game');
-var logger = require('debug')('GamePool');
+var logger = require('../lib/logger');
 
 function GamePool(){
     this.waitingQueue = new Queue();
@@ -15,7 +15,7 @@ function GamePool(){
 GamePool.prototype.createGame = function(user1) {
     var game  = new Game();
 
-    logger('Created game ' + game._id + ' by user ' + user1.username);
+    logger.debug('Created game ' + game._id + ' by user ' + user1.username);
 
     game.players.push(user1.username, new Game.Player({
         user: user1
@@ -36,7 +36,7 @@ GamePool.prototype.joinGame = function(user2, gameId) {
     var game = this.waitingQueue.get(gameId);
     this.waitingQueue.erase(gameId);
 
-    logger(user2.username + ' engage in game ' + game._id);
+    logger.debug(user2.username + ' engage in game ' + game._id);
 
     game.players.push(user2.username, new Game.Player({
         user: user2

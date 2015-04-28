@@ -1,4 +1,5 @@
-var logger = require('debug')('socket');
+
+var logger = require('../lib/logger');
 var HttpError = require('../error').HttpError;
 var Game = require('../game').Game;
 var gamePool = require('../game').gamePool;
@@ -6,7 +7,13 @@ var Events = require('../shared/Events');
 var config = require('../config');
 var loadUser = require('./loadUser');
 
-var wordTree = require('../lib/WordTree').wordTree;
+var wordTree = require('../dictionary/WordTree').wordTree;
+wordTree.createTree(function(err){
+    if(err)
+        error(err);
+    else
+        logger.info('WordTree created');
+});
 
 module.exports = function(sessionStore) {
 
@@ -15,8 +22,8 @@ module.exports = function(sessionStore) {
     function authorization(socket, cb) {
 
         loadUser(sessionStore)(socket, function (err, s) {
-            if(err) logger(err);
-            else logger(socket.handshake.user.username + " loaded");
+            if(err) logger.error(err);
+            else logger.info(socket.handshake.user.username + " loaded");
 
             return cb(err, socket);
         });
@@ -30,7 +37,7 @@ module.exports = function(sessionStore) {
 
             if(err || !user || !gameId) {
                 socket.emit(Events.nullSession);
-                logger("anonimus session");
+                logger.info("anonimus session");
                 socket.disconnect();
                 return;
             }
@@ -41,7 +48,7 @@ module.exports = function(sessionStore) {
 
             game.players.get(user.username).setSocket(socket);
 
-            logger(user.username + ' connected');
+            logger.info(user.username + ' connected');
 
             socket
                 .on(Events.message, function (text, cb) {
@@ -49,19 +56,19 @@ module.exports = function(sessionStore) {
                     cb && cb();
                 })
                 .on('disconnect', function () {
-                    logger(user.username + ' disconnected');
+                    logger.info(user.username + ' disconnected');
                 })
                 .on(Events.state, function () {
-                    logger('state event');
+                    logger.info('state event');
 
                     game.touch();
 
                     var state = game.createState(game.players.get(user.username));
-                    logger('emited to', user.username, state);
+                    logger.info('emited to', user.username, state);
                     socket.emit(Events.state, state);
                 })
                 .on(Events.turn, function (word, field) {
-                    logger('turn event', word, field);
+                    logger.info('turn event', word, field);
 
                     game.touch();
 
@@ -96,19 +103,19 @@ module.exports = function(sessionStore) {
                                 var curUser = player.user;
                                 var state = game.createState(player);
 
-                                logger('emited to', curUser.username, state);
+                                logger.info('emited to', curUser.username, state);
                                 player.socket.emit(Events.state, state);
                             });
                         }
                     }
                     else {
                         var state = game.createState(game.players.get(user.username));
-                        logger('emited to', user.username, state);
+                        logger.info('emited to', user.username, state);
                         socket.emit(Events.state, state);
                     }
                 })
                 .on(Events.checkWord, function (word, cb) {
-                    logger('checkWord event', word);
+                    logger.info('checkWord event', word);
                     var ans = wordTree.exist(word) ? "true" : "false";
                     socket.emit(Events.checkWord, ans);
                     cb && cb();
@@ -118,14 +125,14 @@ module.exports = function(sessionStore) {
                     var target = game.started ? socket : game;
 
                     target.emit(Events.bonusLetters, game.getBonusLetters());
-                    logger('Events.ready');
+                    logger.info('Events.ready');
                     if(game && game.hostPlayer() && game.opponentPlayer()) {
-                        logger('Sent', 'ready');
+                        logger.info('Sent', 'ready');
                         target.emit(Events.ready, game.hostPlayer().id, game.opponentPlayer().id);
                         game.started = true;
                         game.touch();
                     } else {
-                        logger('Sent', 'waiting');
+                        logger.info('Sent', 'waiting');
                         target.emit(Events.waiting);
                     }
                 })
@@ -147,7 +154,7 @@ module.exports = function(sessionStore) {
                     });
                 })
                 .on('error', function(err){
-                    logger(err);
+                    logger.error(err);
                 })
                 .on(Events.bonuses.addTime, function(howMuch){
                     game.players.get(user.username).timeToLoose += howMuch;

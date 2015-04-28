@@ -6,14 +6,14 @@ var HttpError = require('../error').HttpError;
 var User = require('../models/user').User;
 var config = require('../config');
 var async = require('async');
-var logger = require('debug')('loadUser');
+var logger = require('../lib/logger');
 var CookieParser = require('cookie-parser');
 
 
 module.exports = function(sessionStore) {
 
     function loadUser(socket, callback) {
-        logger("Try to load user");
+        logger.info("Try to load user");
 
         async.waterfall([
                 function(callback) {
@@ -21,14 +21,14 @@ module.exports = function(sessionStore) {
                     var secretSid = cookies[config.get('session:key')];
                     var sid = CookieParser.signedCookie(secretSid, config.get('session:secret'));
 
-                    logger("Got sid " + sid);
+                    logger.info("Got sid " + sid);
 
                     return loadSession(sid, callback);
                 },
                 function(session, callback) {
 
                     if (!session) {
-                        logger("No session");
+                        logger.error("No session");
                         return callback(new HttpError(401, "No session"));
                     }
 
@@ -40,11 +40,11 @@ module.exports = function(sessionStore) {
                 },
                 function(user, gameId, callback) {
                     if (!user) {
-                        logger("Anonymous session may not connect");
+                        logger.error("Anonymous session may not connect");
                         callback(new HttpError(403, "Anonymous session may not connect"));
                     }
 
-                    logger("Loaded user " + user);
+                    logger.info("Loaded user " + user);
                     socket.handshake.user = user;
                     socket.handshake.gameId = gameId;
 

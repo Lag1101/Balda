@@ -1,13 +1,13 @@
 /**
  * Created by vasiliy.lomanov on 15.04.2015.
  */
-var logger = require('debug')('gameList');
+var logger = require('../lib/logger');
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user').User;
 var config = require('../config');
 var gamePool = require('../game').gamePool;
-var wordTree = require('../lib/WordTree').wordTree;
+var wordTree = require('../dictionary/WordTree').wordTree;
 var Queue = require('../lib/Utils').Queue;
 
 /* GET home page. */
@@ -55,8 +55,8 @@ router.post('/createGame', function(req, res, next) {
 
         req.session.gameId = game._id;
 
-        logger("Created game " + user.gameId);
-        logger("Games count " + gamePool.len());
+        logger.info("Created game " + user.gameId);
+        logger.info("Games count " + gamePool.len());
 
         res.end();
     });
