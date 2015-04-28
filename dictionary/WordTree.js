@@ -5,49 +5,11 @@
 var fs = require('fs');
 var async = require('async');
 var logger = require('../lib/logger');
-
 var Queue = require('./../lib/Utils').Queue;
 
 var WordTree = (function(){
-    function Node(){
-        this.nodes = {};
-    }
-
-    Node.prototype.end = '#';
-
-    Node.prototype.add = function(word, letterNumber) {
-        letterNumber = letterNumber || 0;
-
-        if( word.length <= letterNumber )
-        {
-            this.nodes[this.end] = {};
-            return;
-        }
-        var letter = word[letterNumber];
-
-        if ( this.nodes[letter] === undefined )
-            this.nodes[letter] = new Node();
-
-        this.nodes[letter].add(word, letterNumber+1)
-    };
-    Node.prototype.exist = function(word, letterNumber){
-        letterNumber = letterNumber || 0;
-        if( word.length <= letterNumber  )
-        {
-            return this.nodes[this.end] !== undefined;
-        }
-        var letter = word[letterNumber];
-
-        if( this.nodes[letter] === undefined )
-        {
-            return false;
-        }
-
-        return this.nodes[letter].exist( word, letterNumber+1 );
-    };
-
     function WordTree(source) {
-        this.tree = new Node();
+        this.tree = require('./cpp/build/Release/WordTree.node');
         this.words = [];
         this.wordsByLength = new Queue();
 
@@ -71,10 +33,10 @@ var WordTree = (function(){
     };
     WordTree.prototype.createTree = function(cb){
         try{
-            this.tree = new Node();
-
             var tree = this.tree;
             var words = this.words;
+
+            tree.clear();
             async.waterfall([function(cb){
                     words.map(function(word){
                         tree.add(word);

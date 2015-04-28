@@ -12,20 +12,22 @@ async.waterfall([
     function(callback){
         var weightedWords = [];
 
-        async.map(wordTree.words, function(word){
+        for(var i = 0; i < wordTree.words.length; i++){
+            var word = wordTree.words[i];
+            logger.debug(word);
             var stat = {
                 word: word,
                 levenstein: 0
             };
-            wordTree.words.map(function(comparingWord){
+            for(var k = 0; k < wordTree.words.length; k++){
+                var comparingWord = wordTree.words[k];
                 var distance = levenstein(word, comparingWord);
 
                 stat.levenstein += distance < 4;
-            });
-            logger.debug(stat);
+            }
 
             weightedWords.push(stat);
-        });
+        }
 
         callback(null, weightedWords);
     },
@@ -35,7 +37,7 @@ async.waterfall([
     }
 ], function(err){
     if (!err) {
-        logger('All good!');
+        logger.info('All good!');
     } else {
         error(err);
     }
