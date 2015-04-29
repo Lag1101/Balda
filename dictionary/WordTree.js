@@ -9,7 +9,7 @@ var Queue = require('./../lib/Utils').Queue;
 
 var WordTree = (function(){
     function WordTree(source) {
-        this.tree = require('./cpp/build/Release/WordTree.node');
+        this.tree = require('./WordTree.node');
         this.words = [];
         this.wordsByLength = new Queue();
 
