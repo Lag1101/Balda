@@ -41,6 +41,7 @@ var WordTree = (function(){
                     words.map(function(word){
                         tree.add(word);
                     });
+                    tree.calcStats();
                     cb(null);
                 }],
             function(err){
@@ -57,11 +58,8 @@ var WordTree = (function(){
     };
 
     WordTree.prototype.getRandomWordByLettersCount = function(lettersCount) {
-        var words = this.wordsByLength.get(lettersCount);
 
-        var n = Math.floor(Math.random()*words.length);
-
-        return words[n];
+        return this.tree.getEasyWordByLength(lettersCount);
     };
 
     return WordTree;

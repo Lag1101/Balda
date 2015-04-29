@@ -1,25 +1,28 @@
 #pragma once
 
+#include <vector>
+#include <string>
 #include <map>
 
-class Node{
-	static const int lettersCount = 33;
-	static const int offset = 'а';
-	static const char end = '#';
+#include "Node.h"
 
-	typedef std::map<char, Node> nodes_t;
-
-
-	nodes_t nodes;
-
-public:
-	void add(const std::string & word, size_t letterNumber = 0);
-
-	bool exist(const std::string & word, size_t letterNumber = 0) const;
-
-	void clear();
+struct Word{
+	std::string str;
+	size_t weight;
+	Word(const std::string & str) : str(str), weight(0) {}
 };
 
-char easytolower(char in);
-
-bool consistNonAlphaBetic(const std::string & word);
+class WordTree{
+public:
+	void add(const std::string & word);
+	bool exist(const std::string & word) const;
+	void clear();
+	void calcStats();
+	std::string getEasyWordByLength(size_t length) const;
+private:
+	static size_t levenshtein_distance(const std::string &s1, const std::string &s2);
+private:
+	Node root;
+	std::vector<Word> words;
+	std::map<size_t, std::vector<Word> > wordsByLength;
+};
