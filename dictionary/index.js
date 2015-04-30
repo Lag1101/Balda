@@ -12,39 +12,27 @@ var bindings = require('bindings');
 var WordTree = (function(){
     function WordTree(source) {
         this.tree = bindings('WordTree');
-        this.words = [];
-        this.wordsByLength = new Queue();
-
-        this.load(source);
+        this.filename = source;
     }
-    WordTree.prototype.load = function(filename){
-        var data = fs.readFileSync(filename, 'utf8');
-
-        this.words = data.split('\n');
-
-        for(var i = this.words.length; i--;){
-            var word = this.words[i].replace('\r','').toLowerCase();
-
-            this.words[i] = word;
-
-            if(!this.wordsByLength.exist(word.length))
-                this.wordsByLength.push(word.length, []);
-
-            this.wordsByLength.get(word.length).push(word);
-        }
-    };
     WordTree.prototype.createTree = function(cb){
         var tree = this.tree;
-        var words = this.words;
+        var filename = this.filename;
         async.series([
             function(cb) {
                 tree.clear();
                 return cb();
             },
             function(cb){
-                words.map(function(word){
+                var data = fs.readFileSync(filename, 'utf8');
+
+                var words = data.split('\n');
+
+                for(var i = words.length; i--;){
+                    var word = words[i].replace('\r','').toLowerCase();
+
                     tree.add(word);
-                });
+                }
+
                 return cb();
             }
         ], function(err){
