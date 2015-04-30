@@ -3,13 +3,14 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <random>
 
 #include "Node.h"
 
 struct Word{
 	std::string str;
-	size_t weight;
-	Word(const std::string & str) : str(str), weight(0) {}
+	double weight;
+	Word(const std::string & str) : str(str), weight(0.0) {}
 };
 
 class WordTree{

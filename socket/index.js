@@ -6,14 +6,19 @@ var gamePool = require('../game').gamePool;
 var Events = require('../shared/Events');
 var config = require('../config');
 var loadUser = require('./loadUser');
+var async = require('async');
 
 var wordTree = require('../dictionary').wordTree;
-wordTree.createTree(function(err){
-    if(err)
-        error(err);
-    else
-        logger.info('WordTree created');
-});
+async.series([
+        wordTree.createTree.bind(wordTree),
+        wordTree.calcStats.bind(wordTree)
+    ],
+    function(err){
+        if(err)
+            error(err);
+        else
+            logger.info('WordTree created and calc');
+    });
 
 module.exports = function(sessionStore) {
 

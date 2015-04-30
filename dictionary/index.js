@@ -69,7 +69,7 @@ var WordTree = (function(){
     };
     WordTree.prototype.getRandomWordByLettersCount = function(lettersCount) {
 
-        return this.tree.getEasyWordByLength(lettersCount);
+        return this.tree.getEasyWordByLength(2*lettersCount); // todo fucking x2
     };
 
     return WordTree;

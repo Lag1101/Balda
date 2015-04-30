@@ -6,7 +6,7 @@
 #include <numeric>
 #include <iterator>
 #include <iostream>
-
+#include <ctime>
 
 void WordTree::add(const std::string & word)
 {
@@ -23,45 +23,70 @@ void WordTree::clear()
 	wordsByLength.clear();
 	words.clear();
 }
+
 void WordTree::calcStats()
 {
+	std::map<char, double> hist;
+	size_t count = 0;
+	for(int i = 0; i < words.size(); i++)
+	{
+		Word & word = words[i];
+		
+		std::for_each(word.str.cbegin(), word.str.cend(), [&](char c){
+			if( hist.find(c) == hist.cend()	 )
+				hist.insert(std::make_pair(c, 0));
+			hist[c] ++;
+			count++;
+		});
+	}
+
+	for(auto it = hist.begin(); it != hist.end(); ++it){
+		it->second /= count;
+	}
+
+
 	#pragma omp parallel for
 	for(int i = 0; i < words.size(); i++)
 	{
 		Word & word = words[i];
-		size_t weight = 0;
-		std::for_each(words.begin(), words.end(), [&](const Word & comparingWord){
-			size_t distance = levenshtein_distance(word.str, comparingWord.str);
-
-			weight += (distance <= 3) ? 1 : 0;
+		word.weight = 0;
+		std::for_each(word.str.begin(), word.str.end(), [&](char c){
+			word.weight += hist[c];
 		});
+		word.weight /= word.str.size();
 
 		#pragma omp critical
 		{
-			std::cerr << word.str << ": " << word.weight << std::endl;
-			wordsByLength[word.str.size()].push_back(word);
+
+			if( wordsByLength.find(word.str.size()) == wordsByLength.cend()	 )
+				wordsByLength.insert(std::make_pair(word.str.size(), std::vector<Word>()));
+			//std::cerr << word.str << ": " << word.weight << std::endl;
+			wordsByLength.find(word.str.size())->second.push_back(word);
 		}
 	}
-
-	std::for_each(wordsByLength.begin(), wordsByLength.end(), [](std::pair<size_t, std::vector<Word>> pair){
-		auto & wordsByStats = pair.second;
+	for(auto it = wordsByLength.begin(); it != wordsByLength.end(); ++it){
+		auto & wordsByStats = it->second;
 		std::sort(wordsByStats.begin(), wordsByStats.end(), [](Word & w1, Word & w2){
-			return w1.weight < w2.weight;
+			return w1.weight > w2.weight;
 		});
-	});
+	}
+
+	std::srand(std::time(0));
 }
 std::string WordTree::getEasyWordByLength(size_t length) const
 {
-	auto wordsByStatsIt = wordsByLength.find(length);
-	if(wordsByStatsIt == wordsByLength.cbegin()) return "";
+	std::cout << length << std::endl;
+	std::map<size_t, std::vector<Word> >::const_iterator wordsByStatsIt = wordsByLength.find(length);
+	if(wordsByStatsIt == wordsByLength.cend()) return "";
 
 	const auto & wordsByStats = wordsByStatsIt->second;
+	std::cout << wordsByStats.size() << std::endl;
 
 	double alpha = 0.1;
 
 	size_t goodWordsInterval = alpha * wordsByStats.size();
 
-	size_t randomIndex = goodWordsInterval * (std::rand() / (double) RAND_MAX);
+	size_t randomIndex = std::rand() % goodWordsInterval;
 
 	return wordsByStats[randomIndex].str;
 }
