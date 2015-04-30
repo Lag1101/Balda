@@ -7,7 +7,7 @@
 #include <iterator>
 #include <string>
 
-void Node::add(const std::wstring & word, size_t letterNumber)
+void Node::add(const std::string & word, size_t letterNumber)
 {
 	if( word.length() <= letterNumber )
 	{
@@ -22,7 +22,7 @@ void Node::add(const std::wstring & word, size_t letterNumber)
 	node.add(word, letterNumber+1);
 }
 
-bool Node::exist(const std::wstring & word, size_t letterNumber) const
+bool Node::exist(const std::string & word, size_t letterNumber) const
 {
 	if( word.length() <= letterNumber  ) 
 	{

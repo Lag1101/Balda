@@ -3,28 +3,11 @@
 #include "WordTree.h"
 
 #include <iostream>
-#include <codecvt>
 #include <string>
 
 using namespace v8;
 
 WordTree wordTree;
-
-std::wstring s2ws(const std::string& str)
-{
-	typedef std::codecvt_utf16<wchar_t> convert_typeX;
-	std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-	return converterX.from_bytes(str);
-}
-
-std::string ws2s(const std::wstring& str)
-{
-	typedef std::codecvt_utf16<wchar_t> convert_typeX;
-	std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-	return converterX.to_bytes(str);
-}
 
 NAN_METHOD(Clear) {
     NanScope();
@@ -60,17 +43,9 @@ NAN_METHOD(GetWordByLength) {
 		}
 	}
 
-	try{
-		size_t length = args[0]->Uint32Value();
-		auto word = wordTree.getWordByLength(length, start, end);
-		NanReturnValue(ws2s(word));
-	}
-	catch(const std::runtime_error & e)
-	{
-		std::cerr << e.what() << std::endl;
-		NanThrowTypeError(e.what());
-		NanReturnUndefined();
-	}
+	size_t length = args[0]->Uint32Value();
+	auto word = wordTree.getWordByLength(2*length, start, end);
+	NanReturnValue(word);
 
 }
 NAN_METHOD(CalcStats) {
@@ -93,7 +68,7 @@ NAN_METHOD(Add) {
     }
 
 	String::Utf8Value utf(args[0]->ToString());
-	std::wstring word = s2ws(*utf);
+	std::string word = *utf;
 
 	wordTree.add(word);
 
@@ -113,7 +88,7 @@ NAN_METHOD(Exist) {
     }
 
 	String::Utf8Value utf(args[0]->ToString());
-	std::wstring word = s2ws(*utf);
+	std::string word = *utf;
 
     NanReturnValue(wordTree.exist(word));
 }

@@ -19,5 +19,5 @@ async.series([
     logger.info('WordTree created and calc');
 
     for(var i = 0; i < 100; i++)
-        logger.info(wordTree.getRandomWordByLettersCount(5, 0, 1));
+        logger.info(wordTree.getRandomWordByLettersCount(5, 0.9, 1));
 });

@@ -8,7 +8,7 @@
         "./cpp"
       ],
       'cflags': [
-        '/openmp'
+        "-std=c++11",
       ]
     }
   ]
