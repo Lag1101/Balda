@@ -2,10 +2,30 @@
 
 #include "WordTree.h"
 
+#include <iostream>
+#include <codecvt>
+#include <string>
+
 using namespace v8;
 
-
 WordTree wordTree;
+
+std::wstring s2ws(const std::string& str)
+{
+	typedef std::codecvt_utf16<wchar_t> convert_typeX;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.from_bytes(str);
+}
+
+std::string ws2s(const std::wstring& str)
+{
+	typedef std::codecvt_utf16<wchar_t> convert_typeX;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.to_bytes(str);
+}
+
 NAN_METHOD(Clear) {
     NanScope();
 
@@ -28,7 +48,7 @@ NAN_METHOD(getEasyWordByLength) {
 	size_t length = args[0]->Uint32Value();
 	auto word = wordTree.getEasyWordByLength(length);
 
-	NanReturnValue(word);
+	NanReturnValue(ws2s(word));
 }
 NAN_METHOD(CalcStats) {
 	NanScope();
@@ -49,8 +69,10 @@ NAN_METHOD(Add) {
         NanReturnUndefined();
     }
 
-    std::string word(*String::Utf8Value(args[0]->ToString()));
-    wordTree.add(word);
+	String::Utf8Value utf(args[0]->ToString());
+	std::wstring word = s2ws(*utf);
+
+	wordTree.add(word);
 
     NanReturnUndefined();
 }
@@ -66,7 +88,9 @@ NAN_METHOD(Exist) {
         NanThrowTypeError("Wrong arguments");
         NanReturnUndefined();
     }
-    std::string word(*String::Utf8Value(args[0]->ToString()));
+
+	String::Utf8Value utf(args[0]->ToString());
+	std::wstring word = s2ws(*utf);
 
     NanReturnValue(wordTree.exist(word));
 }

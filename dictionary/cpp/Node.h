@@ -13,9 +13,9 @@ class Node{
 	nodes_t nodes;
 
 public:
-	void add(const std::string & word, size_t letterNumber = 0);
+	void add(const std::wstring & word, size_t letterNumber = 0);
 
-	bool exist(const std::string & word, size_t letterNumber = 0) const;
+	bool exist(const std::wstring & word, size_t letterNumber = 0) const;
 
 	void clear();
 

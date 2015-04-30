@@ -8,20 +8,20 @@
 #include "Node.h"
 
 struct Word{
-	std::string str;
+	std::wstring str;
 	double weight;
-	Word(const std::string & str) : str(str), weight(0.0) {}
+	Word(const std::wstring & str) : str(str), weight(0.0) {}
 };
 
 class WordTree{
 public:
-	void add(const std::string & word);
-	bool exist(const std::string & word) const;
+	void add(const std::wstring & word);
+	bool exist(const std::wstring & word) const;
 	void clear();
 	void calcStats();
-	std::string getEasyWordByLength(size_t length) const;
+	std::wstring getEasyWordByLength(size_t length) const;
 private:
-	static size_t levenshtein_distance(const std::string &s1, const std::string &s2);
+	static size_t levenshtein_distance(const std::wstring &s1, const std::wstring &s2);
 private:
 	Node root;
 	std::vector<Word> words;

@@ -8,12 +8,12 @@
 #include <iostream>
 #include <ctime>
 
-void WordTree::add(const std::string & word)
+void WordTree::add(const std::wstring & word)
 {
 	root.add(word);
 	words.push_back(word);
 }
-bool WordTree::exist(const std::string & word) const
+bool WordTree::exist(const std::wstring & word) const
 {
 	return root.exist(word);
 }
@@ -60,7 +60,6 @@ void WordTree::calcStats()
 
 			if( wordsByLength.find(word.str.size()) == wordsByLength.cend()	 )
 				wordsByLength.insert(std::make_pair(word.str.size(), std::vector<Word>()));
-			//std::cerr << word.str << ": " << word.weight << std::endl;
 			wordsByLength.find(word.str.size())->second.push_back(word);
 		}
 	}
@@ -73,14 +72,12 @@ void WordTree::calcStats()
 
 	std::srand(std::time(0));
 }
-std::string WordTree::getEasyWordByLength(size_t length) const
+std::wstring WordTree::getEasyWordByLength(size_t length) const
 {
-	std::cout << length << std::endl;
 	std::map<size_t, std::vector<Word> >::const_iterator wordsByStatsIt = wordsByLength.find(length);
-	if(wordsByStatsIt == wordsByLength.cend()) return "";
+	if(wordsByStatsIt == wordsByLength.cend()) return L"";
 
 	const auto & wordsByStats = wordsByStatsIt->second;
-	std::cout << wordsByStats.size() << std::endl;
 
 	double alpha = 0.1;
 
@@ -90,7 +87,7 @@ std::string WordTree::getEasyWordByLength(size_t length) const
 
 	return wordsByStats[randomIndex].str;
 }
-size_t WordTree::levenshtein_distance(const std::string &s1, const std::string &s2)
+size_t WordTree::levenshtein_distance(const std::wstring &s1, const std::wstring &s2)
 {
 	size_t s1len = s1.size();
 	size_t s2len = s2.size();

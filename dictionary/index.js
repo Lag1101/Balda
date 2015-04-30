@@ -14,6 +14,14 @@ var WordTree = (function(){
         this.tree = bindings('WordTree');
         this.filename = source;
     }
+
+    function isWord(word){
+        for(var i = 0; i < word.length; i++)
+            if(word[i] < 'а' || word[i] > 'я')
+                return false;
+        return true;
+    }
+
     WordTree.prototype.createTree = function(cb){
         var tree = this.tree;
         var filename = this.filename;
@@ -29,6 +37,8 @@ var WordTree = (function(){
 
                 for(var i = words.length; i--;){
                     var word = words[i].replace('\r','').toLowerCase();
+
+                    if(!isWord(word)) continue;
 
                     tree.add(word);
                 }
@@ -57,7 +67,7 @@ var WordTree = (function(){
     };
     WordTree.prototype.getRandomWordByLettersCount = function(lettersCount) {
 
-        return this.tree.getEasyWordByLength(2*lettersCount); // todo fucking x2
+        return this.tree.getEasyWordByLength(lettersCount); // todo fucking x2
     };
 
     return WordTree;
