@@ -25,28 +25,45 @@ var WordTree = (function(){
     WordTree.prototype.createTree = function(cb){
         var tree = this.tree;
         var filename = this.filename;
-        tree.clear();
+        async.series([
+            function(cb) {
+                tree.clear();
+                return cb();
+            },
+            function(cb){
+                var data = fs.readFileSync(filename, 'utf8');
 
-        var data = fs.readFileSync(filename, 'utf8');
+                var words = data.split('\n');
 
-        var words = data.split('\n');
+                for(var i = words.length; i--;){
+                    var word = words[i].replace('\r','').toLowerCase();
 
-        for(var i = words.length; i--;){
-            var word = words[i].replace('\r','').toLowerCase();
+                    if(!isWord(word)) continue;
 
-            if(!isWord(word)) continue;
+                    tree.add(word);
+                }
 
-            tree.add(word);
-        }
-        return cb && cb(null);
+                return cb();
+            }
+        ], function(err){
+            return cb && cb(err);
+        });
     };
     WordTree.prototype.exist = function(word){
         return this.tree.exist(word);
     };
 
     WordTree.prototype.calcStats = function(cb){
-        this.tree.calcStats();
-        return cb && cb(null);
+        var tree = this.tree;
+        async.series([
+            function(cb) {
+                tree.calcStats();
+                return cb();
+            }
+        ], function(err){
+            return cb && cb(err);
+        });
+
     };
     WordTree.prototype.getRandomWordByLettersCount = function(lettersCount, start, end) {
 
