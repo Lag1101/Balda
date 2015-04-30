@@ -19,7 +19,7 @@ public:
 	bool exist(const std::wstring & word) const;
 	void clear();
 	void calcStats();
-	std::wstring getEasyWordByLength(size_t length) const;
+	std::wstring getWordByLength(size_t length, double start, double end) const;
 private:
 	static size_t levenshtein_distance(const std::wstring &s1, const std::wstring &s2);
 private:

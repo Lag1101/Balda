@@ -50,7 +50,7 @@ router.post('/createGame', function(req, res, next) {
         if(err) throw err;
         var game = gamePool.createGame(user);
 
-        game.generateField(wordTree.getRandomWordByLettersCount(5), 7);
+        game.generateField(wordTree.getRandomWordByLettersCount(5, 0.0, 0.1), 7);
         game.fillBonusLetters();
 
         req.session.gameId = game._id;

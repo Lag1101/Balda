@@ -72,18 +72,26 @@ void WordTree::calcStats()
 
 	std::srand(std::time(0));
 }
-std::wstring WordTree::getEasyWordByLength(size_t length) const
+std::wstring WordTree::getWordByLength(size_t length, double start, double end) const
 {
 	std::map<size_t, std::vector<Word> >::const_iterator wordsByStatsIt = wordsByLength.find(length);
-	if(wordsByStatsIt == wordsByLength.cend()) return L"";
+	if(wordsByStatsIt == wordsByLength.cend()) 
+	{
+		throw std::runtime_error("There is no words with length " + std::to_string((long long)length));
+	}
 
 	const auto & wordsByStats = wordsByStatsIt->second;
 
-	double alpha = 0.1;
+	size_t goodWordsStart = start * wordsByStats.size();
+	size_t goodWordsInterval = (end - start) * wordsByStats.size();
 
-	size_t goodWordsInterval = alpha * wordsByStats.size();
+	size_t randomIndex = std::min(goodWordsStart + std::rand() % goodWordsInterval, wordsByStats.size()-1);
 
-	size_t randomIndex = std::rand() % goodWordsInterval;
+// 	std::wcerr << L"goodWordsStart " << goodWordsStart << std::endl;
+// 	std::wcerr << L"goodWordsInterval " << goodWordsInterval << std::endl;
+// 	std::wcerr << L"size " << wordsByStats.size() << std::endl;
+// 	std::wcerr << L"randomIndex " << randomIndex << std::endl;
+// 	std::wcerr << L"wordsByStats " << wordsByStats[randomIndex].str << std::endl;
 
 	return wordsByStats[randomIndex].str;
 }

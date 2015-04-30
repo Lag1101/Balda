@@ -25,49 +25,32 @@ var WordTree = (function(){
     WordTree.prototype.createTree = function(cb){
         var tree = this.tree;
         var filename = this.filename;
-        async.series([
-            function(cb) {
-                tree.clear();
-                return cb();
-            },
-            function(cb){
-                var data = fs.readFileSync(filename, 'utf8');
+        tree.clear();
 
-                var words = data.split('\n');
+        var data = fs.readFileSync(filename, 'utf8');
 
-                for(var i = words.length; i--;){
-                    var word = words[i].replace('\r','').toLowerCase();
+        var words = data.split('\n');
 
-                    if(!isWord(word)) continue;
+        for(var i = words.length; i--;){
+            var word = words[i].replace('\r','').toLowerCase();
 
-                    tree.add(word);
-                }
+            if(!isWord(word)) continue;
 
-                return cb();
-            }
-        ], function(err){
-            return cb && cb(err);
-        });
+            tree.add(word);
+        }
+        return cb && cb(null);
     };
     WordTree.prototype.exist = function(word){
         return this.tree.exist(word);
     };
 
     WordTree.prototype.calcStats = function(cb){
-        var tree = this.tree;
-        async.series([
-            function(cb) {
-                tree.calcStats();
-                return cb();
-            }
-        ], function(err){
-            return cb && cb(err);
-        });
-
+        this.tree.calcStats();
+        return cb && cb(null);
     };
-    WordTree.prototype.getRandomWordByLettersCount = function(lettersCount) {
+    WordTree.prototype.getRandomWordByLettersCount = function(lettersCount, start, end) {
 
-        return this.tree.getEasyWordByLength(lettersCount); // todo fucking x2
+        return this.tree.getWordByLength(lettersCount, start, end);
     };
 
     return WordTree;
