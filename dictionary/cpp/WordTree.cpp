@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iterator>
+#include <iostream>
 
 
 void WordTree::add(const std::string & word)
@@ -37,6 +38,7 @@ void WordTree::calcStats()
 
 		#pragma omp critical
 		{
+			std::cerr << word.str << ": " << word.weight << std::endl;
 			wordsByLength[word.str.size()].push_back(word);
 		}
 	}

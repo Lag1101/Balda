@@ -7,9 +7,11 @@ var async = require('async');
 var logger = require('../lib/logger');
 var Queue = require('./../lib/Utils').Queue;
 
+var bindings = require('bindings');
+
 var WordTree = (function(){
     function WordTree(source) {
-        this.tree = require('./WordTree.node');
+        this.tree = bindings('WordTree');
         this.words = [];
         this.wordsByLength = new Queue();
 
@@ -32,31 +34,39 @@ var WordTree = (function(){
         }
     };
     WordTree.prototype.createTree = function(cb){
-        try{
-            var tree = this.tree;
-            var words = this.words;
-
-            tree.clear();
-            async.waterfall([function(cb){
-                    words.map(function(word){
-                        tree.add(word);
-                    });
-                    tree.calcStats();
-                    cb(null);
-                }],
-            function(err){
-                return cb && cb(err);
-            });
-
-        } catch(e){
-            return cb && cb(e.message);
-        }
-
+        var tree = this.tree;
+        var words = this.words;
+        async.series([
+            function(cb) {
+                tree.clear();
+                return cb();
+            },
+            function(cb){
+                words.map(function(word){
+                    tree.add(word);
+                });
+                return cb();
+            }
+        ], function(err){
+            return cb && cb(err);
+        });
     };
     WordTree.prototype.exist = function(word){
         return this.tree.exist(word);
     };
 
+    WordTree.prototype.calcStats = function(cb){
+        var tree = this.tree;
+        async.series([
+            function(cb) {
+                tree.calcStats();
+                return cb();
+            }
+        ], function(err){
+            return cb && cb(err);
+        });
+
+    };
     WordTree.prototype.getRandomWordByLettersCount = function(lettersCount) {
 
         return this.tree.getEasyWordByLength(lettersCount);

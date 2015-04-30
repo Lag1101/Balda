@@ -7,7 +7,7 @@ var router = express.Router();
 var User = require('../models/user').User;
 var config = require('../config');
 var gamePool = require('../game').gamePool;
-var wordTree = require('../dictionary/WordTree').wordTree;
+var wordTree = require('../dictionary').wordTree;
 var Queue = require('../lib/Utils').Queue;
 
 /* GET home page. */

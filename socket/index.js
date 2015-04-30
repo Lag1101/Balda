@@ -7,7 +7,7 @@ var Events = require('../shared/Events');
 var config = require('../config');
 var loadUser = require('./loadUser');
 
-var wordTree = require('../dictionary/WordTree').wordTree;
+var wordTree = require('../dictionary').wordTree;
 wordTree.createTree(function(err){
     if(err)
         error(err);
