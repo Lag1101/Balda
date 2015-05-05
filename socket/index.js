@@ -89,11 +89,11 @@ module.exports = function(sessionStore) {
                             players.get(user.username).addWord(word);
                             game.setField(field);
 
-                            currentPLayer.socket.emit(Events.points, {
+                            currentPLayer.emit(Events.points, {
                                 me: currentPLayer.getPoints(),
                                 opponent: secondPlayer.getPoints()
                             });
-                            secondPlayer.socket.emit(Events.points, {
+                            secondPlayer.emit(Events.points, {
                                 me: secondPlayer.getPoints(),
                                 opponent: currentPLayer.getPoints()
                             });
@@ -108,7 +108,7 @@ module.exports = function(sessionStore) {
                                 var state = game.createState(player);
 
                                 logger.info('emited to', curUser.username, state);
-                                player.socket.emit(Events.state, state);
+                                player.emit(Events.state, state);
                             });
                         }
                     }
@@ -145,7 +145,7 @@ module.exports = function(sessionStore) {
                         var player = players.get(key);
                         var state = game.createState(player);
                         state.turn = "false";
-                        player.socket.emit(Events.gameOver, state);
+                        player.emit(Events.gameOver, state);
                     });
 
                     setTimeout(function(){

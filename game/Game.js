@@ -54,6 +54,11 @@ Game.Player.prototype.getWords = function() {
 Game.Player.prototype.setSocket = function(socket) {
     this.socket = socket;
 };
+Game.Player.prototype.emit = function (v1,v2,v3,v4,v5,v6) {
+    if(!this.socket) return;
+
+    this.socket.emit(v1,v2,v3,v4,v5,v6);
+};
 
 Game.Cell = function(cell){
     this.letter = cell.letter || '';
@@ -101,8 +106,7 @@ Game.prototype.emit = function(key, val1, val2) {
     var players = this.players;
     this.players.keys.map(function(k){
         var player = players.get(k);
-        if( player.socket )
-            player.socket.emit(key, val1, val2);
+        player.emit(key, val1, val2);
     });
 };
 Game.prototype.ready = function() {
