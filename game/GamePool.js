@@ -53,12 +53,6 @@ GamePool.prototype.deleteGame = function(id) {
     var game = this.get(id);
     if(!game) return false;
 
-    if(this.players && this.players.keys)
-        this.players.keys.map(function(key){
-            var user = game.players.get(key).user;
-            if (user) user.gameId = null;
-        });
-
     this.waitingQueue.erase(id);
     this.runningQueue.erase(id);
 
