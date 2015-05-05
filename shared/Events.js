@@ -25,7 +25,7 @@ var Events = (function(){
         gameResult: getId(),
 
         bonuses: {
-            addTime: getId()
+            changeTime: getId()
         }
     };
 })();

@@ -167,8 +167,8 @@ module.exports = function(sessionStore) {
                 .on('error', function(err){
                     logger.error(err);
                 })
-                .on(Events.bonuses.addTime, function(howMuch){
-                    game.players.get(user.username).timeToLoose += howMuch;
+                .on(Events.bonuses.changeTime, function(target/*"me", "opponent"*/, howMuchMs){
+                    (target === "me" ? game.firstPlayer(user) : game.secondPlayer(user)).timeToLoose += howMuchMs;
                     game.touch();
                 });
         });
