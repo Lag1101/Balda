@@ -34,7 +34,7 @@ var StatsController = (function(){
         this.bonusLettersEl.empty();
         var bonusLettersEl = this.bonusLettersEl;
         bonusLetters.map(function(bonusLetter){
-            $('<li>').text(bonusLetter.letter + " : " + bonusLetter.points).appendTo(bonusLettersEl);
+            $('<p>').text(bonusLetter.letter + " : " + bonusLetter.points).appendTo(bonusLettersEl);
         });
     };
 
@@ -42,12 +42,12 @@ var StatsController = (function(){
         this.myWordsEl.empty();
         var myWordsEl = this.myWordsEl;
         myWords.map(function(word){
-            $('<li>').text(word).appendTo(myWordsEl);
+            $('<p>').text(word).appendTo(myWordsEl);
         });
         this.opponentWordsEl.empty();
         var opponentWordsEl = this.opponentWordsEl;
         opponentWords.map(function(word){
-            $('<li>').text(word).appendTo(opponentWordsEl);
+            $('<p>').text(word).appendTo(opponentWordsEl);
         });
     };
 
