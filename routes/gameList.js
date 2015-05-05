@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 });
 router.get('/list', function(req, res, next) {
     var myGames = [];
-    if(req.session.gameId)
+    if(req.session.gameId && gamePool.exist(req.session.gameId))
         myGames.push({
             gameId: req.session.gameId
         });
@@ -64,6 +64,10 @@ router.post('/createGame', function(req, res, next) {
 });
 
 router.post('/joinGame', function(req, res, next) {
+
+    if(gamePool.get(req.body.gameId).hostPlayer().id === req.session.username)
+        res.end();
+
     User.findOne({username: req.session.username}, function(err, user){
 
         if(err) throw err;

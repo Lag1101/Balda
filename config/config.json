@@ -12,5 +12,9 @@
   },
   "mongoose": {
     "uri": "mongodb://127.0.0.1/balda"
+  },
+  "game": {
+    "timeToDeleteInactiveGameMs": 60000,
+    "timeToLoose": 180000
   }
 }

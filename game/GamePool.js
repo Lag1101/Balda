@@ -73,4 +73,8 @@ GamePool.prototype.len = function() {
     return this.runningQueue.len() || this.waitingQueue.len();
 };
 
+GamePool.prototype.exist = function(_id) {
+    return this.runningQueue.exist(_id) || this.waitingQueue.exist(_id);
+};
+
 module.exports = GamePool;

@@ -6,6 +6,10 @@
       <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
       <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
       <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/insight/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.async-tests.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/bower/node_modules/inquirer/node_modules/rx/ts/rx.backpressure-tests.js" />
     </CLASSES>
     <SOURCES />
   </library>

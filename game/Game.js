@@ -4,6 +4,7 @@
 
 var Utils = require('../lib/Utils');
 var Queue = Utils.Queue;
+var config = require('../config');
 
 var _id = 1;
 function Game() {
@@ -29,7 +30,7 @@ Game.Player = function(player) {
     this.points = player.points || 0;
     this.words = player.words || [];
     this.socket = player.socket || null;
-    this.timeToLoose = 180000;
+    this.timeToLoose = config.get('game:timeToLoose');
 
 };
 Object.defineProperty(Game.Player.prototype, "id", { get: function () {

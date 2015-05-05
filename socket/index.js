@@ -148,6 +148,12 @@ module.exports = function(sessionStore) {
                         state.turn = "false";
                         player.socket.emit(Events.gameOver, state);
                     });
+
+                    setTimeout(function(){
+                        gamePool.deleteGame(gameId);
+                        socket.disconnect();
+                        logger.info('Game', gameId, 'deleted');
+                    },config.get("game:timeToDeleteInactiveGameMs"))
                 })
                 .on(Events.usedWords, function() {
                     var me = game.players.get(user.username);
