@@ -26,7 +26,8 @@ var Events = (function(){
 
         bonuses: {
             changeTime: getId()
-        }
+        },
+        changePoints: getId()
     };
 })();
 

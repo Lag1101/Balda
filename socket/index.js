@@ -87,7 +87,6 @@ module.exports = function(sessionStore) {
                             var secondPlayer = game.secondPlayer(user);
 
                             players.get(user.username).addWord(word);
-                            players.get(user.username).addPoints(game.calcPointsByNewField(field));
                             game.setField(field);
 
                             currentPLayer.socket.emit(Events.points, {
@@ -170,6 +169,9 @@ module.exports = function(sessionStore) {
                 .on(Events.bonuses.changeTime, function(target/*"me", "opponent"*/, howMuchMs){
                     (target === "me" ? game.firstPlayer(user) : game.secondPlayer(user)).timeToLoose += howMuchMs;
                     game.touch();
+                })
+                .on(Events.changePoints, function(target/*"me", "opponent"*/, howMuchMs){
+                    (target === "me" ? game.firstPlayer(user) : game.secondPlayer(user)).addPoints(howMuchMs);
                 });
         });
 

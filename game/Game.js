@@ -144,28 +144,6 @@ Game.prototype.touch =function () {
 
     this.lastActive = date;
 };
-Game.prototype.calcPointsByNewField = function(newField) {
-    var points = 0;
-    var currentField = this.field;
-    var bonusLetters = this.bonusLetters;
-
-    Utils.xRange({end: currentField.length}).map(function(i) {
-        var line = currentField[i];
-        var nLine = newField[i];
-        Utils.xRange({end: line.length}).map(function(k) {
-            var cell = line[k];
-            var nCell = nLine[k];
-            var newLetter = nCell.letter;
-            if (newLetter !== cell.letter) {
-                points += cell.points;
-                if (bonusLetters.exist(newLetter))
-                    points += bonusLetters.get(newLetter);
-            }
-        });
-    });
-
-    return points;
-};
 
 Game.prototype.setField = function(field) {
     this.field = field;
@@ -192,9 +170,9 @@ Game.prototype.createState = function(player) {
 };
 
 Game.prototype.fillBonusLetters = function(){
-    this.bonusLetters.push('е', 2);
-    this.bonusLetters.push('р', 3);
-    this.bonusLetters.push('я', 5);
+    this.bonusLetters.push('е', 1);
+    this.bonusLetters.push('р', 1);
+    this.bonusLetters.push('я', 1);
 };
 
 Game.prototype.getBonusLetters = function(){
