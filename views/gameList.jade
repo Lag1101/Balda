@@ -2,10 +2,13 @@ extends layout/page
 block content
     button(id='createGame') Create game
 
-    h2 Game list
-        ul(id='gameList')
-    h2 My games
-        ul(id='myGameList')
+    div(class="row")
+        div(class="col-md-6")
+            h2 Game list
+                ul(id='gameList')
+        div(class="col-md-6")
+            h2 My games
+                ul(id='myGameList')
 
     script.
         var list = $('#gameList');
