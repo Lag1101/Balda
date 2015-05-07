@@ -49,6 +49,9 @@ router.post('/createGame', function(req, res, next) {
     User.findOne({username: req.session.username}, function(err, user){
 
         if(err) throw err;
+
+        if(req.session.gameId)
+            gamePool.deleteGame(req.session.gameId);
         var game = gamePool.createGame(user);
 
         game.generateField(wordTree.getRandomWordByLettersCount(5, 0.0, 0.1), 7);

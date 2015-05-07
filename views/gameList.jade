@@ -1,6 +1,7 @@
 extends layout/page
 block content
     button(id='createGame') Create game
+    p(class='status')
 
     div(class="row")
         div(class="col-sm-6")
@@ -25,6 +26,7 @@ block content
         var list = $('.gameList');
         var myList = $('#myGameList');
         var template = $('#item-template');
+        var logEl = $('.status');
 
         $('#createGame').click(createGame);
 
@@ -58,22 +60,28 @@ block content
         }
 
         function createGame(){
-            $.post(window.location.pathname + "/createGame");
+            $.post(window.location.pathname + "/createGame")
+                .done(function () {
+                    logger.info("Game created");
+                })
+                .fail(function (error) {
+                    logger.error(error.responseText);
+                });
         }
 
         function joinGame(id) {
             $.post(window.location.pathname + "/joinGame", {gameId: id})
                 .done(function(){
-                    console.log("You're in game " + id);
+                    logger.info("You're in game " + id);
                 })
                 .fail(function (error) {
-                    console.error(error.responseText);
+                    logger.error(error.responseText);
                 });
         }
 
         function updateList(games) {
 
-            var i, gameId, li;
+            var i, gameId;
 
             list.empty();
             for(i = 0; i < games.all.length; i++){
@@ -90,5 +98,42 @@ block content
                 createMyItem(gameId).appendTo(myList);
             }
         }
+
+        var logger = (function(){
+            var timeoutId = null;
+            var msToShadow = 5000;
+
+            var el = logEl;
+
+            function clear() {
+                el.empty();
+                timeoutId = null;
+            }
+
+            function log(type, msg) {
+                switch(type) {
+                    case "info":
+                        el.css("background-color", "green");
+                        break;
+                    case "error":
+                        el.css("background-color", "red");
+                        break;
+                    default :
+                        el.css("background-color", "white");
+                }
+                el.text(msg);
+
+                if(timeoutId)
+                    clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(clear, msToShadow);
+            }
+            return {
+                info: log.bind(undefined, "info"),
+                error: log.bind(undefined, "error")
+            };
+        })();
+
+
 
 
