@@ -9,6 +9,7 @@ var config = require('../config');
 var gamePool = require('../game').gamePool;
 var wordTree = require('../dictionary').wordTree;
 var Queue = require('../lib/Utils').Queue;
+var HttpError = require('../error').HttpError;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -66,7 +67,10 @@ router.post('/createGame', function(req, res, next) {
 router.post('/joinGame', function(req, res, next) {
 
     if(gamePool.get(req.body.gameId).hostPlayer().id === req.session.username)
-        res.end();
+    {
+        res.status(403);
+        return res.send("It's your game");
+    }
 
     User.findOne({username: req.session.username}, function(err, user){
 
@@ -77,8 +81,7 @@ router.post('/joinGame', function(req, res, next) {
 
         req.session.gameId = gameId;
 
-        res.end();
-
+        return res.end();
     });
 
 });

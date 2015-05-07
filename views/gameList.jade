@@ -3,20 +3,53 @@ block content
     button(id='createGame') Create game
 
     div(class="row")
-        div(class="col-md-6")
+        div(class="col-sm-6")
             h2 Game list
-                ul(id='gameList')
-        div(class="col-md-6")
+            ul(class='gameList')
+        div(class="col-sm-6")
             h2 My games
-                ul(id='myGameList')
+            ul(id='myGameList')
+
+    div(id='item-template' class="hide")
+        div(id="list-item" class="game-item row")
+            div(class='col-sm-6')
+                p(class='user-field') user:
+                p(class='id-field') id:
+            div(class='col-sm-6')
+                button(class='join-button') Join
+        div(id="my-list-item" class="game-item row")
+            div(class='col-sm-6')
+                a(href='gamePage?id=') id:
 
     script.
-        var list = $('#gameList');
+        var list = $('.gameList');
         var myList = $('#myGameList');
+        var template = $('#item-template');
 
         $('#createGame').click(createGame);
 
         subscribe();
+
+        function createItem(username, id) {
+            var item = template.find('div#list-item').clone();
+            var idField = item.find('.id-field');
+            var userField = item.find('.user-field');
+            var joinButton = item.find('.join-button');
+
+            idField.text(idField.text() + id);
+            userField.text(userField.text() + username);
+            joinButton.click(joinGame.bind(undefined, id));
+
+            return item;
+        }
+        function createMyItem(id) {
+            var item = template.find('div#my-list-item').clone();
+            var a = item.find('a');
+            a.text(a.text() + id);
+            a.attr('href', a.attr('href')+id);
+            return item;
+        }
+
         function subscribe() {
             $.get(window.location.pathname + "/list", function (data) {
                 updateList(data);
@@ -29,40 +62,32 @@ block content
         }
 
         function joinGame(id) {
-            $.post(window.location.pathname + "/joinGame", {gameId: id});
+            $.post(window.location.pathname + "/joinGame", {gameId: id})
+                .done(function(){
+                    console.log("You're in game " + id);
+                })
+                .fail(function (error) {
+                    console.error(error.responseText);
+                });
         }
 
         function updateList(games) {
+
+            var i, gameId, li;
+
             list.empty();
-            for(var i = 0; i < games.all.length; i++){
-                var gameId = games.all[i].gameId;
+            for(i = 0; i < games.all.length; i++){
+                gameId = games.all[i].gameId;
                 var username = games.all[i].username;
-                var li = $('<li></li>');
 
-                $('<div></div>').attr('href', 'gamePage?id=' + gameId)
-                        .append($('<p></p>').text('user: ' + username))
-                        .append($('<p></p>').text('id: ' + gameId))
-                        .append($("<button></button>")
-                                .text("Join")
-                                .click(joinGame.bind(undefined, gameId)))
-                        .appendTo(li);
-
-
-                li.appendTo(list);
+                createItem(username, gameId).appendTo(list);
             }
 
             myList.empty();
-            for (var i = 0; i < games.my.length; i++) {
-                var gameId = games.my[i].gameId;
+            for (i = 0; i < games.my.length; i++) {
+                gameId = games.my[i].gameId;
 
-                var li = $('<li></li>');
-
-                $('<a></a>').attr('href', 'gamePage?id=' + gameId)
-                        .append($('<p></p>').text('id: ' + gameId))
-                        .appendTo(li);
-
-
-                li.appendTo(myList);
+                createMyItem(gameId).appendTo(myList);
             }
         }
 

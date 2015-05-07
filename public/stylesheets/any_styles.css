@@ -23,3 +23,9 @@
     height: auto;
     position: relative;
 }
+
+.game-item{
+    width: 300px;
+    background: #ccc;
+    border: solid 1px black;
+}
