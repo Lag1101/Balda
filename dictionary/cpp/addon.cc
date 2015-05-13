@@ -21,7 +21,7 @@ NAN_METHOD(WordsCountWhichLengthGreaterThen) {
 		NanReturnUndefined();
 	}
 
-	auto length = args[0]->Uint32Value();
+	auto length = 2*args[0]->Uint32Value();
 	auto count = wordTree.wordsCountWhichLengthGreaterThen(length);
 
 	NanReturnValue(count);
