@@ -93,6 +93,21 @@ std::string WordTree::getWordByLength(size_t length, double start, double end) c
 
 	return wordsByStats[randomIndex].str;
 }
+
+size_t WordTree::wordsCountWhichLengthGreaterThen(size_t size) const
+{
+	size_t count = 0;
+
+	for(auto it = wordsByLength.cbegin(); it != wordsByLength.cend(); ++it)
+	{
+		auto l = it->first;
+		const auto & w = it->second;
+		if(l > size)
+			count += w.size();
+	}
+
+	return count;
+}
 size_t WordTree::levenshtein_distance(const std::string &s1, const std::string &s2)
 {
 	size_t s1len = s1.size();

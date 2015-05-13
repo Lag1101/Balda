@@ -20,4 +20,8 @@ async.series([
 
     for(var i = 0; i < 100; i++)
         logger.info(wordTree.getRandomWordByLettersCount(5, 0.9, 1));
+
+    for(var i = 0; i < 30; i++){
+        logger.info('Words greater then', i, wordTree.wordsCountWhichLengthGreaterThen(i));
+    }
 });

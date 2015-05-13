@@ -9,6 +9,24 @@ using namespace v8;
 
 WordTree wordTree;
 
+NAN_METHOD(WordsCountWhichLengthGreaterThen) {
+	NanScope();
+
+	if (args.Length() < 1) {
+		NanThrowTypeError("Wrong number of arguments");
+		NanReturnUndefined();
+	}
+	if (!args[0]->IsUint32() ) {
+		NanThrowTypeError("Wrong arguments");
+		NanReturnUndefined();
+	}
+
+	auto length = args[0]->Uint32Value();
+	auto count = wordTree.wordsCountWhichLengthGreaterThen(length);
+
+	NanReturnValue(count);
+}
+
 NAN_METHOD(Clear) {
     NanScope();
 
@@ -94,11 +112,12 @@ NAN_METHOD(Exist) {
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(NanNew("add"), NanNew<FunctionTemplate>(Add)->GetFunction());
-  exports->Set(NanNew("exist"), NanNew<FunctionTemplate>(Exist)->GetFunction());
-  exports->Set(NanNew("clear"), NanNew<FunctionTemplate>(Clear)->GetFunction());
-  exports->Set(NanNew("calcStats"), NanNew<FunctionTemplate>(CalcStats)->GetFunction());
-  exports->Set(NanNew("getWordByLength"), NanNew<FunctionTemplate>(GetWordByLength)->GetFunction());
+	exports->Set(NanNew("add"), NanNew<FunctionTemplate>(Add)->GetFunction());
+	exports->Set(NanNew("exist"), NanNew<FunctionTemplate>(Exist)->GetFunction());
+	exports->Set(NanNew("clear"), NanNew<FunctionTemplate>(Clear)->GetFunction());
+	exports->Set(NanNew("calcStats"), NanNew<FunctionTemplate>(CalcStats)->GetFunction());
+	exports->Set(NanNew("getWordByLength"), NanNew<FunctionTemplate>(GetWordByLength)->GetFunction());
+	exports->Set(NanNew("wordsCountWhichLengthGreaterThen"), NanNew<FunctionTemplate>(WordsCountWhichLengthGreaterThen)->GetFunction());
 }
 
 NODE_MODULE(WordTree, Init)

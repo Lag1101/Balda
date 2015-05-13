@@ -26,6 +26,7 @@ public:
 	bool exist(const std::string & word) const;
 	void clear();
 	void calcStats();
+	size_t wordsCountWhichLengthGreaterThen(size_t size) const;
 	std::string getWordByLength(size_t length, double start, double end) const;
 private:
 	static size_t levenshtein_distance(const std::string &s1, const std::string &s2);

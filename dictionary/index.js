@@ -70,6 +70,11 @@ var WordTree = (function(){
         return this.tree.getWordByLength(lettersCount, start, end);
     };
 
+    WordTree.prototype.wordsCountWhichLengthGreaterThen = function(length) {
+
+        return this.tree.wordsCountWhichLengthGreaterThen(length);
+    };
+
     return WordTree;
 })();
 
