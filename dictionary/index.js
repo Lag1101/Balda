@@ -11,7 +11,19 @@ var bindings = require('bindings');
 
 var WordTree = (function(){
     function WordTree(source) {
-        this.tree = bindings('WordTree');
+        try{
+            this.tree = bindings('WordTree');
+        } catch(e){
+            logger.error(e.message);
+            this.tree = {
+                clear : function(){},
+                add: function(){},
+                exist: function(){return true;},
+                calcStats: function(){},
+                getWordByLength: function(){return "ракал";},
+                wordsCountWhichLengthGreaterThen: function(){return [];}
+            }
+        }
         this.filename = source;
     }
 
